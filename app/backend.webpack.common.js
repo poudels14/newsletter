@@ -6,30 +6,34 @@ module.exports = {
   target: 'node',
   externals: [nodeExternals()],
   output: {
-    path: path.resolve(__dirname, 'build/server'),
+    path: path.resolve(__dirname, 'build/server/'),
     filename: '[name].js',
   },
   resolve: {
-    alias: {},
+    alias: {
+      Http: path.resolve(__dirname, 'backend/http'),
+      Utils: path.resolve(__dirname, 'backend/utils'),
+      Authorize: path.resolve(__dirname, 'backend/authorize'),
+    },
     extensions: ['.ts', '.js', '.json'],
   },
   module: {
     rules: [
       {
         enforce: 'pre',
-        test: /\.js$/,
+        test: /\.(js|ts)$/,
         exclude: /node_modules/,
         use: {
           loader: 'eslint-loader',
           options: {
-            emitError: true,
+            emitError: process.env.NODE_ENV === 'production',
             emitWarning: true,
-            failOnError: true,
+            failOnError: process.env.NODE_ENV === 'production',
           },
         },
       },
       {
-        test: /\.(js|ts)$/,
+        test: /\.(js|ts|jsx)$/,
         exclude: /(node_modules)/,
         use: {
           loader: 'babel-loader',

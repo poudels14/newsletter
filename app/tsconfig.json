@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "outDir": "./build/",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "esModuleInterop": true,
+    "module": "es6",
+    "target": "es6",
+    "jsx": "react",
+    // "allowJs": true,
+    "paths": {
+      "*": ["*"]
+    },
+    "skipLibCheck": true,
+    "lib": ["es2019"]
+  },
+  "exclude": ["node_modules"],
+  "include": ["backend/**/*"]
+}
