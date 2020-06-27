@@ -1,0 +1,46 @@
+{
+  "name": "newletter",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "dev": "npm-run-all --parallel backend:dev",
+    "build": "npm-run-all --parallel backend:build",
+    "backend:dev": "npm-run-all --parallel backend:dev:webpack backend:dev:nodemon",
+    "backend:dev:webpack": "webpack --watch --config backend.webpack.dev.js",
+    "backend:dev:nodemon": "nodemon --watch build/server/ build/server/main.js",
+    "backend:build": "webpack --config backend.webpack.prod.js",
+    "start": "node build/server/main.js"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "googleapis": "39",
+    "imap": "^0.8.19"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.10.3",
+    "@babel/plugin-proposal-optional-chaining": "^7.10.3",
+    "babel-eslint": "^10.1.0",
+    "babel-loader": "^8.1.0",
+    "eslint": "^7.3.1",
+    "eslint-loader": "^4.0.2",
+    "husky": "^4.2.5",
+    "nodemon": "^2.0.4",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.0.5",
+    "pretty-quick": "^2.0.1",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.0",
+    "webpack-merge": "^4.2.2",
+    "webpack-node-externals": "^1.7.2"
+  }
+}

@@ -1,0 +1,10 @@
+.env
+
+build/
+node_modules/
+
+yarn-error.log
+yarn.lock
+
+# ignore all secrets folders and files
+.env
