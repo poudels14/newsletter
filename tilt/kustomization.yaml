@@ -1,0 +1,25 @@
+namePrefix: tilt-
+bases:
+  - ../kube/app
+  - ../kube/envoy/
+  - ../kube/postgres/
+resources:
+  - pvc.yaml
+  - pgadmin/service.yaml
+  - pgadmin/deployment.yaml
+patches:
+  - app/dev-patch.yaml
+secretGenerator:
+  - name: appserver-env-secrets
+    files:
+      - open-secrets/POSTGRES_USER
+      - open-secrets/POSTGRES_PASSWORD
+  - name: postgres-env-secrets
+    files:
+      - open-secrets/POSTGRES_USER
+      - open-secrets/POSTGRES_PASSWORD
+images:
+  - name: pgadmin-container
+    newName: dpage/pgadmin4
+  - name: app-container
+    newName: tilt-app-container

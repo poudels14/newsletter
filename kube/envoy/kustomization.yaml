@@ -1,0 +1,11 @@
+resources:
+  - service.yaml
+  - deployment.yaml
+configMapGenerator:
+  - name: envoy-config
+    files:
+      - envoy.yaml
+images:
+  - name: envoy-container
+    newName: envoyproxy/envoy
+    newTag: v1.14.2

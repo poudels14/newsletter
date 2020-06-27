@@ -8,3 +8,4 @@ yarn.lock
 
 # ignore all secrets folders and files
 .env
+secrets

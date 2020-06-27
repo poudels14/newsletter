@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pgadmin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pgadmin
+  template:
+    metadata:
+      labels:
+        app: pgadmin
+    spec:
+      containers:
+        - name: pgadmin
+          image: pgadmin-container
+          ports:
+            - containerPort: 80
+          env:
+            - name: PGADMIN_DEFAULT_EMAIL
+              value: user@domain.com
+            - name: PGADMIN_DEFAULT_PASSWORD
+              value: SuperSecret
+            # - name: ME_CONFIG_MONGODB_ADMINUSERNAME
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: mongodb-env-secrets
+            #       key: MONGO_INITDB_ROOT_USERNAME
+            # - name: ME_CONFIG_MONGODB_ADMINPASSWORD
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: mongodb-env-secrets
+            #       key: MONGO_INITDB_ROOT_PASSWORD
+            # - name: ME_CONFIG_MONGODB_SERVER
+            #   value: 'mongodb'
