@@ -1,0 +1,43 @@
+import * as uuid from 'uuid';
+import { Context } from 'Http/request';
+import { Cookies } from 'Http/cookies';
+import { Response } from 'Http/response';
+import { database } from 'Utils/postgres';
+
+import * as Gmail from 'Authorize/gmail';
+
+const insertUserInfoToDb = ({ id, email, refreshtoken }: any) => {
+  return database.query(
+    `INSERT INTO users(id, email, refreshToken) VALUES($1, $2, $3) 
+     ON CONFLICT (email) DO UPDATE
+     SET refreshtoken = EXCLUDED.refreshtoken`,
+    [id, email, refreshtoken]
+  );
+};
+
+const setAuthorizationCode = async (ctxt: Context, res: Response) => {
+  const { code } = ctxt.body;
+
+  if (!!code) {
+    const token = await Gmail.getToken(code);
+    const user = await Gmail.getUserInfo(token['id_token']);
+
+    const id = uuid.v1();
+    await insertUserInfoToDb({
+      id,
+      email: user.email,
+      refreshtoken: token['refresh_token'],
+    });
+
+    Cookies.setUser(res, { id, exp: user.exp });
+    res.json({ success: true });
+  } else {
+    // The frontend might send error that Google Auth sent during authentication
+    // for example, error is thrown if user abandons the signup
+    // TODO(sagar): log the error for analytics
+    console.log('Error: ', ctxt.body);
+    res.json({ success: false });
+  }
+};
+
+export default setAuthorizationCode;
