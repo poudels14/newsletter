@@ -1,4 +1,4 @@
-import { Request } from './request';
+import { Context } from './request';
 import { Response } from './response';
 import jwt from 'jsonwebtoken';
 
@@ -12,28 +12,41 @@ const setUser = (res: Response, user: UserCookie) => {
   res.cookie('logged-user', token, { maxAge: 604800, httpOnly: true });
 };
 
-type GetUser = (req: Request) => Promise<any>;
+type GetUser = (req: Context) => Promise<any>;
 const getUser: GetUser = (req) => {
   return new Promise((resolve, reject) => {
+    // TODO(sagar): make sure the expired tokens are invalid
     jwt.verify(
       req.cookies['logged-user'],
       process.env.LOGIN_COOKIE_SIGNING_KEY,
       (err: any, user: any) => {
         if (err) {
-          reject(err);
+          console.error(err);
+          resolve(null);
         } else {
-          resolve(user);
+          resolve({ id: user.id });
         }
       }
     );
   });
 };
 
-type AuthorizedOnly = () => (req: Request, res: Response, next: any) => void;
+type AuthorizedOnly = () => (
+  req: Context,
+  res: Response,
+  next: any
+) => Promise<void>;
 const authorizedOnly: AuthorizedOnly = () => async (req, res, next) => {
   getUser(req)
-    .then((user) => next())
-    .catch((err) => res.send(401));
+    .catch((err) => res.sendStatus(403))
+    .then((user) => {
+      if (!!user) {
+        req.user = user;
+        next();
+      } else {
+        res.sendStatus(403);
+      }
+    });
 };
 
 export const Cookies = { getUser, setUser, authorizedOnly };

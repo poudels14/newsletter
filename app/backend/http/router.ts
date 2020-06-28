@@ -19,19 +19,29 @@ class Router {
       user: req.user,
       query: req.query,
       body: req.body,
+      cookies: req.cookies,
     };
   }
 
-  get(path: string, handler: Handler): void {
+  get(path: string, middleware: any, handler: Handler): void {
+    if (!handler) {
+      handler = middleware;
+      middleware = (req: any, res: any, next: any) => next();
+    }
     this.express.get(
       path,
+      middleware,
       async (req: express.Request, res: express.Response, next: () => void) => {
         handler(this.buildContext(req), res).catch(next);
       }
     );
   }
 
-  post(path: string, handler: Handler): void {
+  post(path: string, middleware: any, handler: Handler): void {
+    if (!handler) {
+      handler = middleware;
+      middleware = (req: any, res: any, next: any) => next();
+    }
     this.express.post(
       path,
       (req: express.Request, res: express.Response, next: () => void) => {

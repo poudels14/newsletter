@@ -18,7 +18,7 @@ app.use(bodyParser.json());
 app.get('/authorized', Cookies.authorizedOnly(), (req, res) =>
   res.send('I am authorized')
 );
-app.use('/', routes.express);
+app.use('/api/', routes.express);
 
 app.listen(port, '0.0.0.0', () => {
   console.log(`Listening at 0.0.0.0:${port}`);

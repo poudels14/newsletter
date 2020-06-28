@@ -28,6 +28,7 @@
     "express": "^4.17.1",
     "googleapis": "39",
     "imap": "^0.8.19",
+    "js-base64": "^2.6.2",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.15",
     "pg": "^8.2.1",

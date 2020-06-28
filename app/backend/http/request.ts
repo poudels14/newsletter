@@ -4,6 +4,7 @@ interface Context {
   query?: any;
   body?: any;
   files?: any;
+  cookies?: any;
 }
 
 export { Context };

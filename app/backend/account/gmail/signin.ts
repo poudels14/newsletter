@@ -35,14 +35,15 @@ const signIn = async (ctxt: Context, res: Response) => {
         res.json({ success: false, isUser: false });
       }
     } catch (err) {
-      res.json({ success: false, error: 'Server error' });
+      console.log('Error: ', err);
+      res.sendStatus(503);
     }
   } else {
     // The frontend might send error that Google Auth sent during authentication
     // for example, error is thrown if user abandons the signup
     // TODO(sagar): log the error for analytics
     console.log('Error: ', ctxt.body);
-    res.json({ success: false, error: ctxt.body });
+    res.sendStatus(400);
   }
 };
 
