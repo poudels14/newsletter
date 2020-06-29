@@ -3,6 +3,7 @@ bases:
   - ../kube/app
   - ../kube/envoy/
   - ../kube/postgres/
+  - ../kube/staticserver/
 resources:
   - pvc.yaml
   - pgadmin/service.yaml
@@ -23,3 +24,5 @@ images:
     newName: dpage/pgadmin4
   - name: app-container
     newName: tilt-app-container
+  - name: staticserver-container
+    newName: tilt-staticserver-container

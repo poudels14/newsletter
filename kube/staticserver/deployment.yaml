@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: staticserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: staticserver
+  template:
+    metadata:
+      labels:
+        app: staticserver
+    spec:
+      volumes:
+        - name: staticserver-volume
+          persistentVolumeClaim:
+            claimName: staticserver-pvc
+      containers:
+        - name: staticserver
+          image: staticserver-container
+          ports:
+            - containerPort: 8003
+          volumeMounts:
+            - mountPath: "/data/"
+              name: staticserver-volume
