@@ -2,16 +2,20 @@ import { useState, useCallback } from 'react';
 import { css } from '@emotion/core';
 import { Button, Message } from 'semantic-ui-react';
 
-import { signIn as googleSignIn } from '../authenticate/gmail';
+import { requestOfflineAccess } from '../authenticate/gmail';
 
-const Signin = (props) => {
+const RequestGmailAccess = (props) => {
   const [errorMessage, setErrorMessage] = useState();
 
-  const signIn = useCallback(() => {
+  const grantAccess = useCallback(() => {
     setErrorMessage(); // reset error
-    googleSignIn()
+    requestOfflineAccess()
       .then((user) => {
-        props.setUser(user);
+        if (user) {
+          props.setUser(user);
+        } else {
+          setErrorMessage('Error signing in! Please refresh the page');
+        }
       })
       .catch((err) => {
         console.error(err);
@@ -63,9 +67,9 @@ const Signin = (props) => {
               color: 'white',
             }}
             size="large"
-            onClick={signIn}
+            onClick={grantAccess}
           >
-            Sign in with Google
+            Grant access
           </Button>
         </div>
       </div>
@@ -73,4 +77,4 @@ const Signin = (props) => {
   );
 };
 
-export { Signin };
+export { RequestGmailAccess };

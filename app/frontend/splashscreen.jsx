@@ -1,4 +1,9 @@
-const SplashScreen = () => {
-  return <div>Loading app</div>;
+const SplashScreen = (props) => {
+  return (
+    <>
+      <div>Loading app</div>
+    </>
+  );
 };
+
 export { SplashScreen };

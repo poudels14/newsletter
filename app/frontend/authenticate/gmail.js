@@ -19,25 +19,26 @@ const loadAuth2 = () => {
   });
 };
 
-const initAuthentication = async () => {
-  await loadAuth2();
+const initClient = async () => {
   await gapi.client.init({
     ...gmailConfig,
     discoveryDocs: DISCOVERY_DOCS,
-    scope: SCOPES,
+    scope: 'profile',
   });
+};
+
+const initAuthentication = async () => {
+  await loadAuth2();
+  await initClient();
 
   const auth2 = gapi.auth2.getAuthInstance();
-  const isSignedIn = auth2.isSignedIn.get();
-  if (isSignedIn) {
-    const user = auth2.currentUser.get();
-    if (!user.hasGrantedScopes(SCOPES)) {
-      await user.grant({ scope: SCOPES });
-    }
+  const loggedIntoGoogle = auth2.isSignedIn.get();
+  const user = auth2.currentUser.get();
 
-    await setCookies(user);
-
-    return getUserProfile(user);
+  if (loggedIntoGoogle) {
+    // Note(sagar): if the user is already logged in to Google,
+    //     sign in to our server to make sure our cookies are set and valid
+    return await setCookies(user);
   }
   return null;
 };
@@ -45,23 +46,25 @@ const initAuthentication = async () => {
 const signIn = async () => {
   const auth2 = gapi.auth2.getAuthInstance();
   const user = await auth2.signIn();
-  await setCookies(user);
-  return getUserProfile(user);
+  return await setCookies(user);
 };
 
 const setCookies = async (user) => {
   const authResponse = user.getAuthResponse(true);
-
   const { id_token: authenticationCode, scope } = authResponse;
   const { data } = await axios.post('/api/account/gmail/signin', {
     authenticationCode,
     scope,
   });
 
-  if (!data.success) {
-    return await requestOfflineAccess(user);
+  const { signedIn, hasRequiredAccess } = data;
+  if (signedIn) {
+    return {
+      ...getUserProfile(user),
+      hasRequiredAccess,
+    };
   }
-  return true;
+  return null;
 };
 
 const getUserProfile = (user) => {
@@ -70,11 +73,27 @@ const getUserProfile = (user) => {
     email: profile.getEmail(),
     firstName: profile.getGivenName(),
     lastName: profile.getFamilyName(),
+    hasRequiredAccess: user.hasGrantedScopes(SCOPES),
   };
 };
 
-const requestOfflineAccess = async (user) => {
-  const { success } = await user
+const hasRequiredAccess = async () => {
+  const authResponse = gapi.auth2
+    .getAuthInstance()
+    .currentUser.get()
+    .getAuthResponse(true);
+
+  const { id_token: authenticationCode, scope } = authResponse;
+  const { data } = await axios.post('/api/account/gmail/signin', {
+    authenticationCode,
+    scope,
+  });
+  return data.hasRequiredAccess;
+};
+
+const requestOfflineAccess = async () => {
+  await gapi.auth2
+    .getAuthInstance()
     .grantOfflineAccess({
       client_id: gmailConfig.clientId,
       access_type: 'offline',
@@ -82,21 +101,25 @@ const requestOfflineAccess = async (user) => {
     })
     .then((res) => axios.post('/api/account/gmail/authorize', res));
 
-  return success;
+  // Note(sagar): reinit client so that google info is reloaded
+  // TODO(sagar): this might not be needed, investigate later
+  await initClient();
+  return getUserProfile(gapi.auth2.getAuthInstance().currentUser.get());
 };
 
-export { initAuthentication, signIn };
+export { initAuthentication, signIn, hasRequiredAccess, requestOfflineAccess };
 
 /** Redux */
 const Actions = {
-  INITIALIZED: '/gmail/initialzied',
+  INITIALIZE: '/gmail/initialzied',
   SET_USER: '/gmail/user/set',
 };
 
 const reducer = (prevState = {}, action) => {
   switch (action.type) {
-    case Actions.INITIALIZED: {
+    case Actions.INITIALIZE: {
       return {
+        ...prevState,
         initialized: true,
       };
     }
@@ -115,7 +138,7 @@ const mapStateToProps = (state) => state.gmail || {};
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setInitialized: () => dispatch({ type: Actions.INITIALIZED }),
+    initialize: () => dispatch({ type: Actions.INITIALIZE }),
     setUser: (user) => {
       return dispatch({ type: Actions.SET_USER, user });
     },
