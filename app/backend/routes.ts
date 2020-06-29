@@ -14,5 +14,10 @@ routes.get(
   Cookies.authorizedOnly(),
   newsletters.populate
 );
+routes.get(
+  '/newsletters/listDigests',
+  Cookies.authorizedOnly(),
+  newsletters.listDigests
+);
 
 export { routes };

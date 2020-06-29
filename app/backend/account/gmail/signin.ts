@@ -1,3 +1,4 @@
+import * as uuid from 'uuid';
 import { Context } from 'Http/request';
 import { Response } from 'Http/response';
 import { Cookies } from 'Http/cookies';
@@ -12,12 +13,16 @@ const getUser = async (email: string) => {
   return res.rows[0];
 };
 
+const addUser = async ({ id, email }: any) => {
+  await database.query(
+    `INSERT INTO users(id, email) VALUES($1, $2) 
+     ON CONFLICT (email) DO NOTHING`,
+    [id, email]
+  );
+};
+
 const signIn = async (ctxt: Context, res: Response) => {
   const { authenticationCode, scope } = ctxt.body;
-
-  if (!Gmail.hasRequiredScopes(scope)) {
-    return res.json({ success: false, error: 'Missing required scopes' });
-  }
 
   if (!!authenticationCode) {
     try {
@@ -25,14 +30,19 @@ const signIn = async (ctxt: Context, res: Response) => {
       const dbUser = await getUser(user.email);
 
       if (!!dbUser) {
+        Cookies.setUser(res, { id: dbUser.id, exp: user.exp });
+        const signedIn = true;
+
         // This is to make sure the refreshToken in the db is still valid
         // TODO(sagar): there might be better way to check this
-        await Gmail.refreshAccessToken(dbUser['refreshtoken']);
-
-        Cookies.setUser(res, { id: dbUser.id, exp: user.exp });
-        res.json({ success: true });
+        await Gmail.refreshAccessToken(dbUser['refreshtoken']).catch(() =>
+          res.json({ signedIn, hasRequiredAccess: false })
+        );
+        res.json({ signedIn, hasRequiredAccess: true });
       } else {
-        res.json({ success: false, isUser: false });
+        // add user info to db if it's a new user
+        await addUser({ id: uuid.v1(), email: user.email });
+        res.json({ signedIn: true });
       }
     } catch (err) {
       console.log('Error: ', err);

@@ -8,8 +8,8 @@ interface ParsedEmail {
   vendorsNewsletterId: string;
   newsletterUrl: string;
 
-  digestSenderEmail: string;
-  digestReceiverEmail: string;
+  digestFrom: string;
+  digestTo: string;
   digestReceivedDate: string;
   digestGmailId: string;
   digestTitle: string;
@@ -19,6 +19,8 @@ interface ParsedEmail {
   deliveredTo: string;
   messageId: string;
 }
+
+const parseSender = (sender: string) => {};
 
 const headerParser = (headers: any) => (name: string) => {
   return lo.find(headers, { name: name })?.value;
@@ -61,8 +63,8 @@ const parse: (email: any) => ParsedEmail = (email) => {
     vendorsNewsletterId: 'string',
     newsletterUrl: listUrl,
 
-    digestSenderEmail: from,
-    digestReceiverEmail: to,
+    digestFrom: from,
+    digestTo: to,
     digestReceivedDate: date,
     digestGmailId,
     digestTitle: subject,
