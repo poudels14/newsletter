@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: postgress-pvc
+  name: mysql-pvc
 spec:
   storageClassName: microk8s-hostpath
   accessModes:

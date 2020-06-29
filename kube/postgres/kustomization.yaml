@@ -1,7 +1,0 @@
-resources:
-  - service.yaml
-  - deployment.yaml
-images:
-  - name: postgres-container
-    newName: postgres
-    newTag: 12.3-alpine

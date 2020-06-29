@@ -2,26 +2,32 @@ namePrefix: tilt-
 bases:
   - ../kube/app
   - ../kube/envoy/
-  - ../kube/postgres/
+  - ../kube/mysql
   - ../kube/staticserver/
 resources:
   - pvc.yaml
-  - pgadmin/service.yaml
-  - pgadmin/deployment.yaml
 patches:
   - app/dev-patch.yaml
 secretGenerator:
   - name: appserver-env-secrets
     files:
-      - open-secrets/POSTGRES_USER
-      - open-secrets/POSTGRES_PASSWORD
-  - name: postgres-env-secrets
+      - open-secrets/MYSQL_HOST
+      - open-secrets/MYSQL_DATABASE
+      - open-secrets/MYSQL_USERNAME
+      - open-secrets/MYSQL_PASSWORD
+  - name: mysql-env-secrets
     files:
-      - open-secrets/POSTGRES_USER
-      - open-secrets/POSTGRES_PASSWORD
+      - open-secrets/MYSQL_ROOT_PASSWORD
+      - open-secrets/MYSQL_DATABASE
+      - open-secrets/MYSQL_USERNAME
+      - open-secrets/MYSQL_PASSWORD
 images:
-  - name: pgadmin-container
-    newName: dpage/pgadmin4
+  - name: envoy-container
+    newName: envoyproxy/envoy
+    newTag: v1.14.2
+  - name: mysql-container
+    newName: mysql
+    newTag: "8.0"
   - name: app-container
     newName: tilt-app-container
   - name: staticserver-container

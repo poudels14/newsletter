@@ -9,13 +9,18 @@ spec:
       containers:
         - name: appserver
           env:
-            - name: POSTGRES_USER
+            - name: MYSQL_HOST
               valueFrom:
                 secretKeyRef:
                   name: appserver-env-secrets
-                  key: POSTGRES_USER
-            - name: POSTGRES_PASSWORD
+                  key: MYSQL_HOST
+            - name: MYSQL_USERNAME
               valueFrom:
                 secretKeyRef:
                   name: appserver-env-secrets
-                  key: POSTGRES_PASSWORD
+                  key: MYSQL_USERNAME
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: appserver-env-secrets
+                  key: MYSQL_PASSWORD
