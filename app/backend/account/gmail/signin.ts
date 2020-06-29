@@ -2,21 +2,22 @@ import * as uuid from 'uuid';
 import { Context } from 'Http/request';
 import { Response } from 'Http/response';
 import { Cookies } from 'Http/cookies';
-import { database } from 'Utils/postgres';
+import { database } from 'Utils';
 
 import * as Gmail from 'Authorize/gmail';
 
 const getUser = async (email: string) => {
-  const res = await database.query(`SELECT * FROM users WHERE email = $1`, [
-    email,
-  ]);
-  return res.rows[0];
+  const [rows, _] = await database.query(
+    `SELECT * FROM users WHERE email = ?`,
+    [email]
+  );
+  return rows[0];
 };
 
 const addUser = async ({ id, email }: any) => {
   await database.query(
-    `INSERT INTO users(id, email) VALUES($1, $2) 
-     ON CONFLICT (email) DO NOTHING`,
+    `INSERT INTO users(id, email) VALUES(?, ?) 
+     ON DUPLICATE KEY UPDATE email=email`,
     [id, email]
   );
 };
@@ -35,10 +36,12 @@ const signIn = async (ctxt: Context, res: Response) => {
 
         // This is to make sure the refreshToken in the db is still valid
         // TODO(sagar): there might be better way to check this
-        await Gmail.refreshAccessToken(dbUser['refreshtoken']).catch(() =>
-          res.json({ signedIn, hasRequiredAccess: false })
-        );
-        res.json({ signedIn, hasRequiredAccess: true });
+        try {
+          await Gmail.refreshAccessToken(dbUser['refreshToken']);
+          res.json({ signedIn, hasRequiredAccess: true });
+        } catch (err) {
+          res.json({ signedIn, hasRequiredAccess: false });
+        }
       } else {
         // add user info to db if it's a new user
         await addUser({ id: uuid.v1(), email: user.email });

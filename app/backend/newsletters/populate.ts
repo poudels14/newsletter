@@ -4,7 +4,7 @@ import * as uuid from 'uuid';
 import { Context } from 'Http/request';
 import { Response } from 'Http/response';
 import { Cookies } from 'Http/cookies';
-import { database } from 'Utils/postgres';
+import { database } from 'Utils';
 import * as Gmail from 'Authorize/gmail';
 
 import { parser } from './parser';
@@ -21,7 +21,7 @@ const insertDigest = ({
   contentUrl,
 }: any) => {
   return database.query(
-    `INSERT INTO newsletter_digests(id, newsletter_id, user_id, title, receiver_email, received_date, gmail_id, content_url)
+    `INSERT INTO newsletter_digests(id, newsletter_id, user_id, title, receiverEmail, receivedDate, gmailId, contentUrl)
      VALUES($1, $2, $3, $4, $5, $6, $7, $8)`,
     [
       id,

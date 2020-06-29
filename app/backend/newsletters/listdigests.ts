@@ -1,12 +1,12 @@
 import { Context } from 'Http/request';
 import { Response } from 'Http/response';
-import { database } from 'Utils/postgres';
+import { database } from 'Utils';
 
 const query = async ({ newsletterId }: any) => {
   const {
     rows,
   } = await database.query(
-    `SELECT * FROM newsletter_digests WHERE newsletter_id = $1`,
+    `SELECT * FROM newsletter_digests WHERE newsletter_id = ?`,
     [newsletterId]
   );
   return rows;
@@ -16,7 +16,6 @@ const listDigests = async (ctxt: Context, res: Response) => {
   // const { code } = ctxt.body;
 
   const rows = await query({ newsletterId: '1' });
-  console.log(rows);
 
   res.json(rows);
 };

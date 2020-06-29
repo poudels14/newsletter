@@ -2,16 +2,15 @@ import * as uuid from 'uuid';
 import { Context } from 'Http/request';
 import { Cookies } from 'Http/cookies';
 import { Response } from 'Http/response';
-import { database } from 'Utils/postgres';
+import { database } from 'Utils';
 
 import * as Gmail from 'Authorize/gmail';
 
 const insertUserInfoToDb = ({ id, email, refreshtoken }: any) => {
   return database.query(
-    `INSERT INTO users(id, email, refreshToken) VALUES($1, $2, $3) 
-     ON CONFLICT (email) DO UPDATE
-     SET refreshtoken = EXCLUDED.refreshtoken`,
-    [id, email, refreshtoken]
+    `INSERT INTO users(id, email, refreshToken) VALUES(?, ?, ?) 
+     ON DUPLICATE KEY UPDATE refreshToken=?`,
+    [id, email, refreshtoken, refreshtoken]
   );
 };
 
@@ -23,7 +22,7 @@ const setAuthorizationCode = async (ctxt: Context, res: Response) => {
     const user = await Gmail.getUserInfo(token['id_token']);
 
     const id = uuid.v1();
-    await insertUserInfoToDb({
+    const data = await insertUserInfoToDb({
       id,
       email: user.email,
       refreshtoken: token['refresh_token'],
