@@ -20,4 +20,4 @@ docker_build('tilt-app-container', '.',
 
 docker_build('tilt-staticserver-container', '.',
     dockerfile='./kube/staticserver/Dockerfile',
-    only=['./newsletters'])
+    only=['./staticserver'])
