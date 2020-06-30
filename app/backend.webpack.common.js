@@ -13,7 +13,6 @@ module.exports = {
     alias: {
       Http: path.resolve(__dirname, 'backend/http'),
       Utils: path.resolve(__dirname, 'backend/utils'),
-      Authorize: path.resolve(__dirname, 'backend/authorize'),
     },
     extensions: ['.ts', '.js', '.json'],
   },

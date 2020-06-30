@@ -4,7 +4,7 @@ import { Cookies } from 'Http/cookies';
 import { Response } from 'Http/response';
 import { database } from 'Utils';
 
-import * as Gmail from 'Authorize/gmail';
+import * as Gmail from 'Utils/gmail';
 
 const insertUserInfoToDb = ({ id, email, refreshtoken }: any) => {
   return database.query(

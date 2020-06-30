@@ -6,6 +6,10 @@ dotenv.config();
 const REQUIRED_SCOPES =
   'openid profile email https://www.googleapis.com/auth/gmail.readonly';
 
+console.log(
+  'process.env.GMAIL_REDIRECT_URL = ',
+  process.env.GMAIL_REDIRECT_URL
+);
 const oAuth2Client = () => {
   return new google.auth.OAuth2(
     process.env.GMAIL_CLIENT_ID,

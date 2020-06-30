@@ -4,7 +4,7 @@ import { Response } from 'Http/response';
 import { Cookies } from 'Http/cookies';
 import { database } from 'Utils';
 
-import * as Gmail from 'Authorize/gmail';
+import * as Gmail from 'Utils/gmail';
 
 const getUser = async (email: string) => {
   const [rows, _] = await database.query(
