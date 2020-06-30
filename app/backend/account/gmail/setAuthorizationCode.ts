@@ -34,7 +34,7 @@ const setAuthorizationCode = async (ctxt: Context, res: Response) => {
     // The frontend might send error that Google Auth sent during authentication
     // for example, error is thrown if user abandons the signup
     // TODO(sagar): log the error for analytics
-    console.log('Error: ', ctxt.body);
+    console.error('Error: ', ctxt.body);
     res.json({ success: false });
   }
 };

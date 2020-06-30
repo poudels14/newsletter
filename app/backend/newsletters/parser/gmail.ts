@@ -18,8 +18,6 @@ const parseEmailAddress = (address: string) => {
 
   const { name, email } = match;
   const sanitizedName = name?.trim();
-
-  console.log('sanitizedName =', sanitizedName);
   const quotesRemoved = sanitizedName?.replace(
     /"/g,
     (character: string, index: number) => {
@@ -27,13 +25,8 @@ const parseEmailAddress = (address: string) => {
     }
   );
 
-  console.log('name + email = ', {
-    ...match,
-    name: quotesRemoved,
-    email,
-  });
   return {
-    name: sanitizedName,
+    name: quotesRemoved,
     email,
   };
 };

@@ -31,7 +31,6 @@ const listDigests = async (ctxt: Context, res: Response) => {
   const { id: userId } = await Cookies.getUser(ctxt);
 
   const digests = (await queryDigests({ userId })).map((d: any) => {
-    console.log(d);
     return {
       id: d.id,
       newsletterId: d['newsletter_id'],
@@ -45,7 +44,6 @@ const listDigests = async (ctxt: Context, res: Response) => {
     (digest: any) => digest.newsletterId
   );
 
-  console.log('ids = ', Object.keys(groupedDigests));
   const newsletters = await queryNewsletters({
     newsletterIds: Object.keys(groupedDigests),
   });
@@ -61,8 +59,6 @@ const listDigests = async (ctxt: Context, res: Response) => {
       digests: groupedDigests[newsletterId],
     };
   });
-
-  console.log('newsletterDigests = ', newsletterDigests);
 
   const groupedNewsletterDigests = lo.mapValues(
     lo.groupBy(newsletterDigests, (digest: any) => digest['id']),

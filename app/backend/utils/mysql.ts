@@ -2,11 +2,6 @@ import { createPool } from 'mysql2';
 
 console.log('Creating db pool...');
 
-// console.log(process.env);
-
-console.log('process.env.MYSQL_USERNAME = ', process.env.MYSQL_USERNAME);
-console.log('process.env.MYSQL_PASSWORD = ', process.env.MYSQL_PASSWORD);
-
 const pool = createPool({
   host: process.env.MYSQL_HOST,
   user: process.env.MYSQL_USER,
