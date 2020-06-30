@@ -9,7 +9,7 @@ console.log('process.env.MYSQL_PASSWORD = ', process.env.MYSQL_PASSWORD);
 
 const pool = createPool({
   host: process.env.MYSQL_HOST,
-  user: process.env.MYSQL_USERNAME,
+  user: process.env.MYSQL_USER,
   password: process.env.MYSQL_PASSWORD,
   database: 'thereadingapp',
   waitForConnections: true,

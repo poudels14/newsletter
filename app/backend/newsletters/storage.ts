@@ -1,5 +1,3 @@
-import fs from 'fs';
-import * as uuid from 'uuid';
 import axios from 'axios';
 
 const testStorage = () => async (req: any) => {

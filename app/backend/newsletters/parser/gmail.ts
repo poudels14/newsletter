@@ -1,78 +1,83 @@
 import lo from 'lodash';
+const Base64 = require('js-base64').Base64;
+import regex from 'xregexp';
 
-interface ParsedEmail {
-  authorEmail: string;
-  authorName: string;
+const emailAddressRegexp = regex(
+  `(?<name> [^<]+ )? -?  # name
+  (["]?)
+   <(?<email> (.+) )> -? # email address`,
+  'giuyx'
+);
 
-  newsletterName: string;
-  vendorsNewsletterId: string;
-  newsletterUrl: string;
-
-  digestFrom: string;
-  digestTo: string;
-  digestReceivedDate: string;
-  digestGmailId: string;
-  digestTitle: string;
-  digestContent: string;
-
-  /** debug fields */
-  deliveredTo: string;
-  messageId: string;
-}
-
-const parseSender = (sender: string) => {};
-
-const headerParser = (headers: any) => (name: string) => {
-  return lo.find(headers, { name: name })?.value;
-};
-
-const htmlContent = (email: any) => {
-  // Note(sagar): check if the parsed email has body
-  //              it won't have body if the content is in parts
-  const bodyData = email?.body?.data;
-  if (!!bodyData) {
-    return bodyData;
+const parseEmailAddress = (address: string) => {
+  const match = regex.exec(address, emailAddressRegexp);
+  if (!!!match) {
+    console.error("Couldn't parse email address:", address);
+    return {};
   }
 
-  const { parts } = email;
-  return lo.find(parts, { mimeType: 'text/html' })?.body?.data;
-};
+  const { name, email } = match;
+  const sanitizedName = name?.trim();
 
-const parse: (email: any) => ParsedEmail = (email) => {
-  const { id: digestGmailId, payload } = email;
-  const headers = headerParser(payload.headers);
+  console.log('sanitizedName =', sanitizedName);
+  const quotesRemoved = sanitizedName?.replace(
+    /"/g,
+    (character: string, index: number) => {
+      return index === 0 || index === sanitizedName.length - 1 ? '' : character;
+    }
+  );
 
-  const sender = headers('Sender');
-  const from = headers('From');
-  const to = headers('To');
-  const subject = headers('Subject');
-  const deliveredTo = headers('Delivered-To');
-  const date = headers('Date');
-  const messageId = headers('Message-Id');
-  const listUrl = headers('List-Url');
-
-  // console.log(payload);
-  const content = htmlContent(payload);
-  // console.log(content);
-
+  console.log('name + email = ', {
+    ...match,
+    name: quotesRemoved,
+    email,
+  });
   return {
-    authorEmail: sender,
-    authorName: sender,
-
-    newsletterName: 'newsletterName',
-    vendorsNewsletterId: 'string',
-    newsletterUrl: listUrl,
-
-    digestFrom: from,
-    digestTo: to,
-    digestReceivedDate: date,
-    digestGmailId,
-    digestTitle: subject,
-    digestContent: content,
-
-    deliveredTo,
-    messageId,
+    name: sanitizedName,
+    email,
   };
 };
 
-export default { parse };
+function camelize(str: string) {
+  return str
+    .replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
+      return index === 0 ? word.toLowerCase() : word.toUpperCase();
+    })
+    .replace(/\s+/g, '');
+}
+
+const parseNewsletter = (payload: any) => {
+  // Note(sagar): check if the parsed email has body
+  //              it won't have body if the content is in parts
+  let data = payload?.body?.data;
+  if (!data) {
+    data = lo.find(payload.parts, { mimeType: 'text/html' })?.body?.data;
+  }
+
+  return {
+    base64: data,
+    html: Base64.decode(data),
+  };
+};
+
+const parseHeaders = (gmailId: string, headers: any) => {
+  const keyValuesList = headers.map((h: any) => {
+    const key = camelize(h.name.replace('-', ''));
+    return { [key]: h.value };
+  });
+
+  const mergedObject = lo.reduce(
+    keyValuesList,
+    (collection: any, n: any) => {
+      return lo.merge(collection, n);
+    },
+    {}
+  );
+
+  return {
+    ...mergedObject,
+    base64Headers: Base64.encode(JSON.stringify(mergedObject)),
+  };
+};
+
+export default { parseHeaders, parseNewsletter, parseEmailAddress };
