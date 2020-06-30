@@ -1,5 +1,7 @@
 {
   "env": {
     "browser": true
-  }
+  },
+  "plugins": ["react", "react-hooks"],
+  "extends": ["plugin:react/recommended"]
 }

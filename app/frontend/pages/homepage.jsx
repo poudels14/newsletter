@@ -1,7 +1,7 @@
 import { css } from '@emotion/core';
-import { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import axios from 'axios';
-import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 const DigestList = () => {
   const [state, setState] = useState({});
@@ -62,7 +62,7 @@ const PrivatePages = () => {
   );
 };
 
-const Homepage = (props) => {
+const Homepage = () => {
   return (
     <>
       <PrivatePages />

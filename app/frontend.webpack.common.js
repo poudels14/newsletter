@@ -1,6 +1,5 @@
 const path = require('path');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
-require('dotenv').config();
 
 module.exports = {
   entry: './frontend/index.jsx',
@@ -10,14 +9,7 @@ module.exports = {
     filename: '[name].[chunkhash].js',
   },
   resolve: {
-    alias: {
-      Data: path.resolve(__dirname, 'frontend/data'),
-      Components: path.resolve(__dirname, 'frontend/components'),
-      Images: path.resolve(__dirname, 'frontend/images'),
-      Assets: path.resolve(__dirname, 'frontend/assets'),
-      Pages: path.resolve(__dirname, 'frontend/pages'),
-      Account: path.resolve(__dirname, 'frontend/account'),
-    },
+    alias: {},
     extensions: ['.js', '.jsx', '.json'],
   },
   externals: {

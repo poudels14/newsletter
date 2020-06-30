@@ -1,5 +1,6 @@
 import { connect as reduxConnect } from 'react-redux';
 import axios from 'axios';
+/* global gapi */
 
 const gmailConfig = JSON.parse(
   document.getElementById('gmail-config').innerText
@@ -12,7 +13,7 @@ const SCOPES =
   'openid profile email https://www.googleapis.com/auth/gmail.readonly';
 
 const loadAuth2 = () => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     gapi.load('client:auth2', () => {
       resolve();
     });

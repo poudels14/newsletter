@@ -1,4 +1,5 @@
-import { useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
+import PropTypes from 'prop-types';
 import { css } from '@emotion/core';
 import { Button, Message } from 'semantic-ui-react';
 
@@ -75,6 +76,9 @@ const RequestGmailAccess = (props) => {
       </div>
     </div>
   );
+};
+RequestGmailAccess.propTypes = {
+  setUser: PropTypes.func.isRequired,
 };
 
 export { RequestGmailAccess };
