@@ -19,8 +19,5 @@ docker_build('tilt-app-container', '.',
 
 
 docker_build('tilt-staticserver-container', '.',
-    dockerfile='./tilt/staticserver/Dockerfile',
-    only=['./newsletters'],
-    live_update=[
-        sync('./newsletters/public', '/app/public'),
-])
+    dockerfile='./kube/staticserver/Dockerfile',
+    only=['./newsletters'])

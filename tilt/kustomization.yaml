@@ -6,8 +6,6 @@ bases:
   - ../kube/staticserver/
 resources:
   - pvc.yaml
-patches:
-  - app/dev-patch.yaml
 secretGenerator:
   - name: appserver-env-secrets
     files:
