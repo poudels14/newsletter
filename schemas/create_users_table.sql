@@ -2,6 +2,6 @@ CREATE TABLE users
 (
 	id VARCHAR(36) PRIMARY KEY,
 	email VARCHAR(255) UNIQUE,
-	refreshtoken VARCHAR(1024),
-	createdate TIMESTAMPTZ DEFAULT Now() 
+	refreshToken VARCHAR(1024),
+	createDate TIMESTAMP DEFAULT Now() 
 );
