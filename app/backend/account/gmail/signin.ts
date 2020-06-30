@@ -7,14 +7,13 @@ import { database } from 'Utils';
 import * as Gmail from 'Utils/gmail';
 
 const getUser = async (email: string) => {
-  const [rows, _] = await database.query(
-    `SELECT * FROM users WHERE email = ?`,
-    [email]
-  );
+  const [rows] = await database.query(`SELECT * FROM users WHERE email = ?`, [
+    email,
+  ]);
   return rows[0];
 };
 
-const addUser = async ({ id, email }: any) => {
+const addUser = async ({ id, email }: { id: string; email: string }) => {
   await database.query(
     `INSERT INTO users(id, email) VALUES(?, ?) 
      ON DUPLICATE KEY UPDATE email=email`,
@@ -25,14 +24,19 @@ const addUser = async ({ id, email }: any) => {
 const signIn = async (ctxt: Context, res: Response) => {
   const { authenticationCode, scope } = ctxt.body;
 
-  if (!!authenticationCode) {
+  if (authenticationCode) {
     try {
       const user = await Gmail.getUserInfo(authenticationCode);
       const dbUser = await getUser(user.email);
 
-      if (!!dbUser) {
+      if (dbUser) {
         Cookies.setUser(res, { id: dbUser.id, exp: user.exp });
         const signedIn = true;
+
+        if (!Gmail.hasRequiredScopes(scope)) {
+          res.json({ signedIn, hasRequiredAccess: false });
+          return;
+        }
 
         // This is to make sure the refreshToken in the db is still valid
         // TODO(sagar): there might be better way to check this

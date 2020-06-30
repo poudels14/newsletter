@@ -110,7 +110,7 @@ const loadAndStoreGmail = async (
   userId: string,
   gmailId: string
 ) => {
-  let email = await Gmail.getEmail(client, gmailId);
+  const email = await Gmail.getEmail(client, gmailId);
 
   const headers = parser.gmail.parseHeaders(gmailId, email.payload?.headers);
   const newsletter = parser.gmail.parseNewsletter(email.payload);
@@ -132,7 +132,7 @@ const loadAndStoreGmail = async (
 
     const dbNewsletter = await getNewsletter(senderEmail);
     const newsletterId = dbNewsletter?.id || uuid.v1();
-    if (!!!dbNewsletter) {
+    if (!dbNewsletter) {
       await insertNewsletter(
         newsletterId,
         senderName, // Note(sagar): it's hard to get newsletter name automatically, set this to correct value when the newsletter is verified
@@ -179,7 +179,7 @@ const populate = async (ctxt: Context, res: Response) => {
   const user = await getUser(userId);
 
   const client = Gmail.getClient({ refresh_token: user['refreshToken'] });
-  let emails = await Gmail.searchEmails(client, {
+  const emails = await Gmail.searchEmails(client, {
     q: 'substack.com',
     maxResults: 100,
   });

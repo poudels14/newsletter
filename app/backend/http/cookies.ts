@@ -14,7 +14,7 @@ const setUser = (res: Response, user: UserCookie) => {
 
 type GetUser = (req: Context) => Promise<any>;
 const getUser: GetUser = (req) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     // TODO(sagar): make sure the expired tokens are invalid
     jwt.verify(
       req.cookies['logged-user'],
@@ -38,9 +38,9 @@ type AuthorizedOnly = () => (
 ) => Promise<void>;
 const authorizedOnly: AuthorizedOnly = () => async (req, res, next) => {
   getUser(req)
-    .catch((err) => res.sendStatus(403))
+    .catch(() => res.sendStatus(403))
     .then((user) => {
-      if (!!user) {
+      if (user) {
         req.user = user;
         next();
       } else {

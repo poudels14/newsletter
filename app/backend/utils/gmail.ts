@@ -14,7 +14,8 @@ const oAuth2Client = () => {
   );
 };
 
-const getClient: (credentials: object) => any = (credentials) => {
+type GmailClient = (credentials: Record<string, unknown>) => any;
+const getClient: GmailClient = (credentials) => {
   const client = oAuth2Client();
   client.setCredentials(credentials);
   return client;
@@ -39,7 +40,8 @@ const hasRequiredScopes = (scopes: string[]) => {
 };
 
 // Get user info from the JWT id_token received from `oAuth2Client.getToken`
-const getUserInfo: (a: string) => object = async (idToken) => {
+type GetUserInfo = (a: string) => Promise<any>;
+const getUserInfo: GetUserInfo = async (idToken) => {
   const data = await oAuth2Client().verifyIdToken({
     idToken: idToken,
     audience: process.env.GMAIL_CLIENT_ID,

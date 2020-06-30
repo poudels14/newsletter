@@ -6,7 +6,15 @@ import { database } from 'Utils';
 
 import * as Gmail from 'Utils/gmail';
 
-const insertUserInfoToDb = ({ id, email, refreshtoken }: any) => {
+const insertUserInfoToDb = ({
+  id,
+  email,
+  refreshtoken,
+}: {
+  id: string;
+  email: string;
+  refreshtoken: string;
+}) => {
   return database.query(
     `INSERT INTO users(id, email, refreshToken) VALUES(?, ?, ?) 
      ON DUPLICATE KEY UPDATE refreshToken=?`,
@@ -17,12 +25,12 @@ const insertUserInfoToDb = ({ id, email, refreshtoken }: any) => {
 const setAuthorizationCode = async (ctxt: Context, res: Response) => {
   const { code } = ctxt.body;
 
-  if (!!code) {
+  if (code) {
     const token = await Gmail.getToken(code);
     const user = await Gmail.getUserInfo(token['id_token']);
 
     const id = uuid.v1();
-    const data = await insertUserInfoToDb({
+    await insertUserInfoToDb({
       id,
       email: user.email,
       refreshtoken: token['refresh_token'],

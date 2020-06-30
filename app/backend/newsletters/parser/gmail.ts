@@ -1,5 +1,5 @@
 import lo from 'lodash';
-const Base64 = require('js-base64').Base64;
+import Base64 from 'js-base64';
 import regex from 'xregexp';
 
 const emailAddressRegexp = regex(
@@ -11,7 +11,7 @@ const emailAddressRegexp = regex(
 
 const parseEmailAddress = (address: string) => {
   const match = regex.exec(address, emailAddressRegexp);
-  if (!!!match) {
+  if (!match) {
     console.error("Couldn't parse email address:", address);
     return {};
   }
