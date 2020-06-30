@@ -25,4 +25,4 @@ spec:
           volumeMounts:
             - name: config
               readOnly: true
-              mountPath: "/etc/envoy"
+              mountPath: /etc/envoy
