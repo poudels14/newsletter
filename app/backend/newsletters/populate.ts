@@ -7,7 +7,6 @@ import { Response } from 'Http/response';
 import { Cookies } from 'Http/cookies';
 import { database } from 'Utils';
 import * as Gmail from 'Utils/gmail';
-
 import { parser } from './parser';
 import { storage } from './storage';
 
@@ -89,14 +88,6 @@ const insertNewsletter = async (
   authorName: string,
   thirdpartyId: string
 ) => {
-  console.log(
-    'inserting newsletter =',
-    id,
-    name,
-    authorEmail,
-    authorName,
-    thirdpartyId
-  );
   const [rows] = await database.query(
     `INSERT INTO newsletters(id, name, authorEmail, authorName, thirdpartyId)
     VALUES(?, ?, ?, ?, ?)`,
@@ -124,7 +115,6 @@ const loadAndStoreGmail = async (
   const headers = parser.gmail.parseHeaders(gmailId, email.payload?.headers);
   const newsletter = parser.gmail.parseNewsletter(email.payload);
 
-  // console.log("base64 email length =", newsletter);
   const sha256 = forge.md.sha256.create();
   sha256.update(newsletter.base64);
   const contentHash = sha256.digest().toHex();
@@ -143,7 +133,6 @@ const loadAndStoreGmail = async (
     const dbNewsletter = await getNewsletter(senderEmail);
     const newsletterId = dbNewsletter?.id || uuid.v1();
     if (!!!dbNewsletter) {
-      console.log('Newsletter not found, adding a new one!');
       await insertNewsletter(
         newsletterId,
         senderName, // Note(sagar): it's hard to get newsletter name automatically, set this to correct value when the newsletter is verified
@@ -189,7 +178,7 @@ const populate = async (ctxt: Context, res: Response) => {
   const { id: userId } = await Cookies.getUser(ctxt);
   const user = await getUser(userId);
 
-  const client = Gmail.getClient({ refresh_token: user['refreshtoken'] });
+  const client = Gmail.getClient({ refresh_token: user['refreshToken'] });
   let emails = await Gmail.searchEmails(client, {
     q: 'substack.com',
     maxResults: 100,
