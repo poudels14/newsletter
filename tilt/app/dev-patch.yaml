@@ -14,11 +14,11 @@ spec:
                 secretKeyRef:
                   name: appserver-env-secrets
                   key: MYSQL_HOST
-            - name: MYSQL_USERNAME
+            - name: MYSQL_USER
               valueFrom:
                 secretKeyRef:
                   name: appserver-env-secrets
-                  key: MYSQL_USERNAME
+                  key: MYSQL_USER
             - name: MYSQL_PASSWORD
               valueFrom:
                 secretKeyRef:

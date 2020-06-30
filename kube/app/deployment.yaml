@@ -18,3 +18,6 @@ spec:
           ports:
             - containerPort: 8001
             - containerPort: 8002
+          envFrom:
+            - secretRef:
+                name: appserver-env-secrets

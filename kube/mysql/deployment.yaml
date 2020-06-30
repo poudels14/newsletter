@@ -24,24 +24,6 @@ spec:
           volumeMounts:
             - mountPath: /var/lib/mysql
               name: mysql-volume
-          env:
-            - name: MYSQL_ROOT_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: mysql-env-secrets
-                  key: MYSQL_ROOT_PASSWORD
-            - name: MYSQL_DATABASE
-              valueFrom:
-                secretKeyRef:
-                  name: mysql-env-secrets
-                  key: MYSQL_DATABASE
-            - name: MYSQL_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: mysql-env-secrets
-                  key: MYSQL_USERNAME
-            - name: MYSQL_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: mysql-env-secrets
-                  key: MYSQL_PASSWORD
+          envFrom:
+            - secretRef:
+                name: mysql-env-secrets

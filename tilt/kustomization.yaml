@@ -11,16 +11,23 @@ patches:
 secretGenerator:
   - name: appserver-env-secrets
     files:
-      - open-secrets/MYSQL_HOST
-      - open-secrets/MYSQL_DATABASE
-      - open-secrets/MYSQL_USERNAME
-      - open-secrets/MYSQL_PASSWORD
+      - secrets/MYSQL_HOST
+      - secrets/MYSQL_USER
+      - secrets/MYSQL_PASSWORD
+
+      - secrets/GMAIL_CLIENT_ID
+      - secrets/GMAIL_CLIENT_SECRET
+      - secrets/GMAIL_API_KEY
+      - secrets/GMAIL_REDIRECT_URL
+
+      - secrets/LOGIN_COOKIE_SIGNING_KEY
+      - secrets/NEWSLETTERS_STATIC_SERVER
   - name: mysql-env-secrets
     files:
-      - open-secrets/MYSQL_ROOT_PASSWORD
-      - open-secrets/MYSQL_DATABASE
-      - open-secrets/MYSQL_USERNAME
-      - open-secrets/MYSQL_PASSWORD
+      - secrets/MYSQL_ROOT_PASSWORD
+      - secrets/MYSQL_DATABASE
+      - secrets/MYSQL_USER
+      - secrets/MYSQL_PASSWORD
 images:
   - name: envoy-container
     newName: envoyproxy/envoy

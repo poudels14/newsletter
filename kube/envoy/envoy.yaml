@@ -30,17 +30,21 @@ static_resources:
                         - "*"
                       routes:
                         - match:
+                            prefix: "/nl/"
+                          route:
+                            cluster: newsletters_server
+                            prefix_rewrite: "/"
+                        - match:
                             prefix: "/api/"
                           route:
                             cluster: api_service
-                            prefix_rewrite: "/"
                         - match:
                             prefix: "/"
                           route:
                             cluster: static_files
   clusters:
     - name: api_service
-      connect_timeout: 10s
+      connect_timeout: 60s
       type: strict_dns
       lb_policy: round_robin
       load_assignment:
@@ -50,10 +54,10 @@ static_resources:
               - endpoint:
                   address:
                     socket_address:
-                      address: appserver
+                      address: tilt-appserver
                       port_value: 8001
     - name: static_files
-      connect_timeout: 10s
+      connect_timeout: 60s
       type: strict_dns
       lb_policy: round_robin
       load_assignment:
@@ -63,5 +67,18 @@ static_resources:
               endpoint:
                 address:
                   socket_address:
-                    address: appserver
+                    address: tilt-appserver
                     port_value: 8002
+    - name: newsletters_server
+      connect_timeout: 60s
+      type: strict_dns
+      lb_policy: round_robin
+      load_assignment:
+        cluster_name: newsletters_server_1
+        endpoints:
+          - lb_endpoints:
+              endpoint:
+                address:
+                  socket_address:
+                    address: tilt-staticserver
+                    port_value: 8003
