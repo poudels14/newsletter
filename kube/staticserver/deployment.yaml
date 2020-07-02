@@ -12,6 +12,8 @@ spec:
       labels:
         app: staticserver
     spec:
+      imagePullSecrets:
+        - name: registry-journal
       volumes:
         - name: staticserver-volume
           persistentVolumeClaim:

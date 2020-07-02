@@ -1,23 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: appserver
+  name: frontend
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: appserver
+      app: frontend
   template:
     metadata:
       labels:
-        app: appserver
+        app: frontend
     spec:
+      imagePullSecrets:
+        - name: registry-journal
       containers:
-        - name: appserver
-          image: app-container
+        - name: frontend
+          image: frontend-container
           ports:
-            - containerPort: 8001
             - containerPort: 8002
           envFrom:
             - secretRef:
-                name: appserver-env-secrets
+                name: frontend-env-secrets

@@ -8,7 +8,7 @@ RUN go get
 RUN GOOS=linux CGO_ENABLED=0 go build -o /server -a
 
 
-FROM scratch
+FROM busybox
 COPY --from=builder /server .
 
 CMD ["/server"]
