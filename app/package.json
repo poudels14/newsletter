@@ -22,6 +22,7 @@
   "dependencies": {
     "@emotion/core": "^10.0.28",
     "axios": "^0.19.2",
+    "bluebird": "^3.7.2",
     "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.5",
     "date-fns": "^2.14.0",
@@ -36,6 +37,7 @@
     "node-forge": "^0.9.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-modal": "^3.11.2",
     "react-redux": "^7.2.0",
     "react-router-dom": "^5.2.0",
     "redux": "^4.0.5",
