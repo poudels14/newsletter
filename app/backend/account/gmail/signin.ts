@@ -44,6 +44,7 @@ const signIn = async (ctxt: Context, res: Response) => {
           await Gmail.refreshAccessToken(dbUser['refreshToken']);
           res.json({ signedIn, hasRequiredAccess: true });
         } catch (err) {
+          console.error(err);
           res.json({ signedIn, hasRequiredAccess: false });
         }
       } else {
