@@ -1,6 +1,7 @@
 import forge from 'node-forge';
 import * as uuid from 'uuid';
 import * as datefns from 'date-fns';
+import { Promise } from 'bluebird';
 
 import { Context } from 'Http/request';
 import { Response } from 'Http/response';
@@ -9,6 +10,13 @@ import { database } from 'Utils';
 import * as Gmail from 'Utils/gmail';
 import { parser } from './parser';
 import { storage } from './storage';
+
+const KNOWN_NEWSLETTERS_FILTERS = [
+  'from:substack.com',
+  'from:stratechery.com',
+  'from: dailydigest@atom.finance',
+];
+// TODO(sagar): make sure the list is very specific before onboarding users
 
 const insertEmailHeaders = ({
   emailId,
@@ -56,7 +64,8 @@ const insertUserEmail = ({
 }: any) => {
   return database.query(
     `INSERT INTO user_emails(id, newsletter_id, user_id, is_newsletter, title, receiverEmail, receivedDate, gmailId, contentUrl)
-     VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+     VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)
+     ON DUPLICATE KEY UPDATE gmailId=?`,
     [
       id,
       newsletterId,
@@ -67,6 +76,7 @@ const insertUserEmail = ({
       receivedDate,
       gmailId,
       contentUrl,
+      gmailId,
     ]
   );
 };
@@ -90,8 +100,9 @@ const insertNewsletter = async (
 ) => {
   const [rows] = await database.query(
     `INSERT INTO newsletters(id, name, authorEmail, authorName, thirdpartyId)
-    VALUES(?, ?, ?, ?, ?)`,
-    [id, name, authorEmail, authorName, thirdpartyId]
+    VALUES(?, ?, ?, ?, ?)
+    ON DUPLICATE KEY UPDATE authorEmail=?`,
+    [id, name, authorEmail, authorName, thirdpartyId, authorEmail]
   );
   return rows[0];
 };
@@ -103,7 +114,21 @@ const getUser = async (userId: string) => {
   return rows[0];
 };
 
-const newsletterId = '333333';
+const uploadNewsletter = async (
+  userId: string,
+  newsletterId: string,
+  newsletterBase64: string,
+  html: string
+) => {
+  const sha256 = forge.md.sha256.create();
+  sha256.update(newsletterBase64);
+  const contentHash = sha256.digest().toHex();
+  const digestUri = await storage.store(
+    `${userId}/${newsletterId}/${contentHash}.html`,
+    html
+  );
+  return digestUri;
+};
 
 const loadAndStoreGmail = async (
   client: any,
@@ -115,20 +140,13 @@ const loadAndStoreGmail = async (
   const headers = parser.gmail.parseHeaders(gmailId, email.payload?.headers);
   const newsletter = parser.gmail.parseNewsletter(email.payload);
 
-  const sha256 = forge.md.sha256.create();
-  sha256.update(newsletter.base64);
-  const contentHash = sha256.digest().toHex();
-  const digestUri = await storage.store(
-    `${userId}/${newsletterId}/${contentHash}.html`,
-    newsletter.html
-  );
-
   try {
     const emailId = uuid.v1();
+    const sender = headers.sender || headers.from; //? headers.sender : headers.from; // TODO(sagar): maybe we shouldn't parse from?
     const {
       name: senderName,
       email: senderEmail,
-    } = parser.gmail.parseEmailAddress(headers.sender);
+    } = parser.gmail.parseEmailAddress(sender);
 
     const dbNewsletter = await getNewsletter(senderEmail);
     const newsletterId = dbNewsletter?.id || uuid.v1();
@@ -145,6 +163,12 @@ const loadAndStoreGmail = async (
       });
     }
 
+    const digestUri = await uploadNewsletter(
+      userId,
+      newsletterId,
+      newsletter.base64,
+      newsletter.html
+    );
     await insertUserEmail({
       id: emailId,
       newsletterId,
@@ -169,31 +193,69 @@ const loadAndStoreGmail = async (
       listId: headers.listId,
       base64Headers: headers.base64Headers,
     });
+
+    return email.id;
   } catch (err) {
     console.error(err);
+    return email.id;
   }
+};
+
+const loadAndStoreGmails = async (
+  client: string,
+  userId: string,
+  gmailIds: string[]
+) => {
+  if (!gmailIds) {
+    return;
+  }
+  const allloaders = gmailIds.map(async (emailId: any) => {
+    return await loadAndStoreGmail(client, userId, emailId);
+  });
+  await Promise.all(allloaders).catch((err: any) => console.log(err));
 };
 
 const populate = async (ctxt: Context, res: Response) => {
   const { id: userId } = await Cookies.getUser(ctxt);
+  console.log('userId =', userId);
   const user = await getUser(userId);
+  console.log('user =', user);
 
   if (!user) {
     res.sendStatus(403);
+    return;
   }
 
   const client = Gmail.getClient({ refresh_token: user?.refreshToken });
-  const emails = await Gmail.searchEmails(client, {
-    q: 'substack.com',
-    maxResults: 100,
-  });
 
-  emails.messages.forEach((email: any) => {
-    loadAndStoreGmail(client, userId, email.id).catch((err) =>
-      console.error('Failed to load/store emails: ', err)
+  const allLoaders = KNOWN_NEWSLETTERS_FILTERS.map(async (filter) => {
+    console.log('Loading emails from filter:', filter);
+
+    let emails = await Gmail.searchEmails(client, {
+      // q=in:sent after:1388552400 before:1391230800
+      q: filter,
+      // maxResults: 100,
+    });
+
+    await loadAndStoreGmails(
+      client,
+      userId,
+      emails.messages?.map((e: any) => e.id)
     );
+    while (emails.next) {
+      console.log('emails.next = ', emails.next);
+      emails = await emails.next();
+      await loadAndStoreGmails(
+        client,
+        userId,
+        emails.messages?.map((e: any) => e.id)
+      );
+    }
   });
 
+  await Promise.all(allLoaders).catch((err: any) => console.log(err));
+
+  console.log('sending request');
   res.send('Populating newsletters...');
 };
 
