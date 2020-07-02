@@ -33,6 +33,7 @@ static_resources:
                             prefix: /newsletters/
                           route:
                             cluster: newsletters_server
+                            prefix_rewrite: /static/newsletters/
                         - match:
                             prefix: /api/
                           route:
