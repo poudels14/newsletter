@@ -45,7 +45,12 @@ module.exports = {
       },
       {
         test: /\.(png|svg|jpg|gif|woff(2)?|ttf|eot)$/,
-        use: ['file-loader'],
+        use: {
+          loader: 'file-loader',
+          options: {
+            name: '[name]-[contenthash].[ext]',
+          },
+        },
       },
     ],
   },
@@ -54,8 +59,8 @@ module.exports = {
       template: './frontend/index.html',
       showErrors: process.env.NODE_ENV !== 'production',
 
-      title: 'The Reading APp',
-      base: '/',
+      title: 'The Reading App',
+      base: './',
       libraries: {
         react:
           process.env.NODE_ENV !== 'production'
