@@ -32,10 +32,10 @@ images:
     newTag: "8.0"
   - name: apibackend-container
     newName: registry.digitalocean.com/journal/apiserver
-    newTag: v0.1
+    newTag: v0.1.1
   - name: frontend-container
     newName: registry.digitalocean.com/journal/frontend-builder
-    newTag: v0.1
+    newTag: v0.1.1
   - name: staticserver-container
     newName: registry.digitalocean.com/journal/staticserver
-    newTag: v0.1
+    newTag: v0.1.1
