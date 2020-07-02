@@ -1,0 +1,16 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: frontend
+spec:
+  template:
+    spec:
+      imagePullSecrets:
+        - name: registry-journal
+      containers:
+        - name: frontend
+          image: frontend-container
+          envFrom:
+            - secretRef:
+                name: frontend-builder-env-secrets
+      restartPolicy: Never

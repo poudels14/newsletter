@@ -30,18 +30,19 @@ static_resources:
                         - "*"
                       routes:
                         - match:
-                            prefix: "/nl/"
-                          route:
-                            cluster: newsletters_server
-                            prefix_rewrite: "/"
-                        - match:
-                            prefix: "/api/"
+                            prefix: /api/
                           route:
                             cluster: api_service
                         - match:
-                            prefix: "/"
+                            prefix: /newsletters/
                           route:
-                            cluster: static_files
+                            cluster: staticserver
+                            prefix_rewrite: /static/newsletters/
+                        - match:
+                            prefix: /
+                          route:
+                            cluster: staticserver
+                            prefix_rewrite: /static/public/
   clusters:
     - name: api_service
       connect_timeout: 60s
@@ -54,31 +55,18 @@ static_resources:
               - endpoint:
                   address:
                     socket_address:
-                      address: tilt-appserver
+                      address: prod-apibackend
                       port_value: 8001
-    - name: static_files
+    - name: staticserver
       connect_timeout: 60s
       type: strict_dns
       lb_policy: round_robin
       load_assignment:
-        cluster_name: static_files_1
+        cluster_name: staticserver_1
         endpoints:
           - lb_endpoints:
               endpoint:
                 address:
                   socket_address:
-                    address: tilt-appserver
-                    port_value: 8002
-    - name: newsletters_server
-      connect_timeout: 60s
-      type: strict_dns
-      lb_policy: round_robin
-      load_assignment:
-        cluster_name: newsletters_server_1
-        endpoints:
-          - lb_endpoints:
-              endpoint:
-                address:
-                  socket_address:
-                    address: tilt-staticserver
+                    address: prod-staticserver
                     port_value: 8003
