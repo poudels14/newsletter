@@ -1,5 +1,5 @@
 import lo from 'lodash';
-import Base64 from 'js-base64';
+import { Base64 } from 'js-base64';
 import regex from 'xregexp';
 
 const emailAddressRegexp = regex(

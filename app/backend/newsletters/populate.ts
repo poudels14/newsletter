@@ -178,14 +178,20 @@ const populate = async (ctxt: Context, res: Response) => {
   const { id: userId } = await Cookies.getUser(ctxt);
   const user = await getUser(userId);
 
-  const client = Gmail.getClient({ refresh_token: user['refreshToken'] });
+  if (!user) {
+    res.sendStatus(403);
+  }
+
+  const client = Gmail.getClient({ refresh_token: user?.refreshToken });
   const emails = await Gmail.searchEmails(client, {
     q: 'substack.com',
     maxResults: 100,
   });
 
   emails.messages.forEach((email: any) => {
-    loadAndStoreGmail(client, userId, email.id);
+    loadAndStoreGmail(client, userId, email.id).catch((err) =>
+      console.error('Failed to load/store emails: ', err)
+    );
   });
 
   res.send('Populating newsletters...');
