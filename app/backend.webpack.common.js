@@ -25,7 +25,7 @@ module.exports = {
         use: {
           loader: 'eslint-loader',
           options: {
-            emitError: process.env.NODE_ENV === 'production',
+            // emitError: process.env.NODE_ENV === 'production',
             emitWarning: true,
             failOnError: process.env.NODE_ENV === 'production',
           },
