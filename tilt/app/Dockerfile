@@ -8,5 +8,3 @@ ADD ./app/package.json package.json
 RUN yarn install
 
 ADD ./app .
-
-ENTRYPOINT [ "yarn", "run", "dev" ]

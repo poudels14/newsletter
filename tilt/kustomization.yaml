@@ -2,7 +2,8 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namePrefix: tilt-
 bases:
-  - ../kube/app
+  - ../kube/apibackend
+  - ../kube/frontend
   - ../kube/envoy/
   - ../kube/mysql
   - ../kube/staticserver/
@@ -13,25 +14,15 @@ configMapGenerator:
     files:
       - envoy/envoy.yaml
 secretGenerator:
-  - name: appserver-env-secrets
-    files:
-      - secrets/MYSQL_HOST
-      - secrets/MYSQL_USER
-      - secrets/MYSQL_PASSWORD
-
-      - secrets/GMAIL_CLIENT_ID
-      - secrets/GMAIL_CLIENT_SECRET
-      - secrets/GMAIL_API_KEY
-      - secrets/GMAIL_REDIRECT_URL
-
-      - secrets/LOGIN_COOKIE_SIGNING_KEY
-      - secrets/NEWSLETTERS_STATIC_SERVER
+  - name: apibackend-env-secrets
+    envs:
+      - secrets/apibackend.env
+  - name: frontend-env-secrets
+    envs:
+      - secrets/frontend.env
   - name: mysql-env-secrets
-    files:
-      - secrets/MYSQL_ROOT_PASSWORD
-      - secrets/MYSQL_DATABASE
-      - secrets/MYSQL_USER
-      - secrets/MYSQL_PASSWORD
+    envs:
+      - secrets/mysql.env
 images:
   - name: envoy-container
     newName: envoyproxy/envoy
@@ -39,7 +30,9 @@ images:
   - name: mysql-container
     newName: mysql
     newTag: "8.0"
-  - name: app-container
-    newName: tilt-app-container
+  - name: apibackend-container
+    newName: tilt-apibackend-container
+  - name: frontend-container
+    newName: tilt-frontend-container
   - name: staticserver-container
     newName: tilt-staticserver-container
