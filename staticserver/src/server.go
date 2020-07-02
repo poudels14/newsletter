@@ -106,7 +106,7 @@ func main() {
 	app.Static("/", "/data/", fiber.Static{
 		Compress:  true,
 		ByteRange: true,
-		Browse:    true,
+		// Browse:    true,
 	})
 
 	app.Listen(*host)
