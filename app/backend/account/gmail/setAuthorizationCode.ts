@@ -25,11 +25,15 @@ const insertUserInfoToDb = ({
 const setAuthorizationCode = async (ctxt: Context, res: Response) => {
   const { code } = ctxt.body;
 
+  // Note(sagar): even if the use is not in our system, calling the method
+  //              will auto sign-up the user
   if (code) {
     const token = await Gmail.getToken(code);
     const user = await Gmail.getUserInfo(token['id_token']);
 
-    const id = uuid.v1();
+    const { id: userId } = await Cookies.getUser(ctxt);
+
+    const id = userId || uuid.v1();
     await insertUserInfoToDb({
       id,
       email: user.email,

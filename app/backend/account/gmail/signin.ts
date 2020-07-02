@@ -29,29 +29,31 @@ const signIn = async (ctxt: Context, res: Response) => {
       const user = await Gmail.getUserInfo(authenticationCode);
       const dbUser = await getUser(user.email);
 
+      const userId = dbUser?.id || uuid.v1();
+      let response = {};
+
       if (dbUser) {
-        Cookies.setUser(res, { id: dbUser.id, exp: user.exp });
-        const signedIn = true;
-
         if (!Gmail.hasRequiredScopes(scope)) {
-          res.json({ signedIn, hasRequiredAccess: false });
-          return;
-        }
-
-        // This is to make sure the refreshToken in the db is still valid
-        // TODO(sagar): there might be better way to check this
-        try {
-          await Gmail.refreshAccessToken(dbUser['refreshToken']);
-          res.json({ signedIn, hasRequiredAccess: true });
-        } catch (err) {
-          console.error(err);
-          res.json({ signedIn, hasRequiredAccess: false });
+          response = { hasRequiredAccess: false };
+        } else {
+          // This is to make sure the refreshToken in the db is still valid
+          // TODO(sagar): there might be better way to check this
+          try {
+            await Gmail.refreshAccessToken(dbUser['refreshToken']);
+            response = { hasRequiredAccess: true };
+          } catch (err) {
+            console.error('Error: ', err);
+            response = { hasRequiredAccess: false };
+          }
         }
       } else {
         // add user info to db if it's a new user
-        await addUser({ id: uuid.v1(), email: user.email });
-        res.json({ signedIn: true });
+        await addUser({ id: userId, email: user.email });
       }
+
+      // set login cookie and send response
+      Cookies.setUser(res, { id: userId, exp: user.exp });
+      res.json({ ...response, signedIn: true });
     } catch (err) {
       console.error('Error: ', err);
       res.sendStatus(503);
