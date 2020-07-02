@@ -31,9 +31,7 @@ const DigestList = () => {
                           key={digest.id}
                           css={css({ padding: '10px 30px' })}
                         >
-                          <a href={`/nl/${digest.contentUrl}`}>
-                            {digest.title}
-                          </a>
+                          <a href={digest.contentUrl}>{digest.title}</a>
                         </div>
                       );
                     })}
