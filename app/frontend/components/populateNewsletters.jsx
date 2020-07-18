@@ -30,7 +30,7 @@ const Dialog = (props) => {
   );
 };
 Dialog.propTypes = {
-  visible: PropTypes.bool.isRequire,
+  visible: PropTypes.bool.isRequired,
 };
 
 export const PopulateNewsletters = {

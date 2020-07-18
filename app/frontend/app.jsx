@@ -1,26 +1,31 @@
+import 'semantic-ui-css/semantic.min.css';
+import 'antd/dist/antd.css';
+
 import React, { useMemo } from 'react';
 import {
-  BrowserRouter as Router,
-  Route,
-  Switch,
   Redirect,
+  Route,
+  BrowserRouter as Router,
+  Switch,
 } from 'react-router-dom';
-import { Provider } from 'react-redux';
-import { createStore, combineReducers } from 'redux';
-import { composeWithDevTools } from 'redux-devtools-extension';
-import 'semantic-ui-css/semantic.min.css';
-
-import { SplashScreen } from './splashscreen';
-
+import { applyMiddleware, combineReducers, createStore } from 'redux';
 import {
-  reducer as gmailReducer,
-  initAuthentication,
   connect as connectGmail,
-} from './authenticate/gmail';
+  reducer as gmailReducer,
+} from './controllers/gmail';
+import {
+  reducer as newslettersReducer,
+  sagas as newslettersSagas,
+} from './controllers/newsletters';
 
 import { Homepage } from './pages/homepage';
-import { Signin } from './pages/signin';
+import { Provider } from 'react-redux';
 import { RequestGmailAccess } from './pages/requestgmailaccess';
+import { Signin } from './pages/signin';
+import { SplashScreen } from './splashscreen';
+import { composeWithDevTools } from 'redux-devtools-extension';
+import createSagaMiddleware from 'redux-saga';
+import { initAuthentication } from './authenticate/gmail';
 
 const init = (props) => {
   initAuthentication().then(async (user) => {
@@ -48,17 +53,23 @@ const App = (props) => {
     return (
       <Router>
         <Switch>
+          <Route path="/" exact render={() => <Redirect to="/nl/" />} />
           <Route
-            path="/"
-            exact
+            path="/nl/:newsletterId?"
             render={(p) => {
+              const { newsletterId } = p.match?.params;
               if (!loggedIn) {
                 return <Redirect to="/signin" />;
               }
               if (!hasRequiredAccess) {
                 return <Redirect to="/grantaccess" />;
               }
-              return <Homepage history={p.history} />;
+              return (
+                <Homepage
+                  history={p.history}
+                  selectedPublisher={newsletterId}
+                />
+              );
             }}
           />
           <Route
@@ -101,11 +112,15 @@ export { ReduxApp as App };
 /** Redux */
 
 const composeEnhancers = composeWithDevTools({ trace: true });
+const sagaMiddleware = createSagaMiddleware();
 const buildStore = () => {
-  return createStore(
+  const store = createStore(
     combineReducers({
       gmail: gmailReducer,
+      newsletters: newslettersReducer,
     }),
-    composeEnhancers()
+    composeEnhancers(applyMiddleware(sagaMiddleware))
   );
+  sagaMiddleware.run(newslettersSagas);
+  return store;
 };
