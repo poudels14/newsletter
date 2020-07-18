@@ -1,3 +1,3 @@
-import { database } from './mysql';
+import { database, knex } from './mysql';
 
-export { database };
+export { database, knex };

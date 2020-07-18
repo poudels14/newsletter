@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const testStorage = () => async (req: any) => {
+const staticServerStorage = () => async (req: any) => {
   const { data } = await axios
     .post(`${process.env.NEWSLETTERS_STATIC_SERVER}/newsletters/upload`, {
       relativePath: req.relativePath,
@@ -12,7 +12,7 @@ const testStorage = () => async (req: any) => {
 
 type Store = (relativePath: string, content: string) => Promise<string>;
 const store: Store = async (relativePath, content) => {
-  return await testStorage()({
+  return await staticServerStorage()({
     relativePath,
     content,
   });

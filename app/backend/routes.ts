@@ -15,6 +15,11 @@ routes.get(
   newsletters.populate
 );
 routes.get(
+  '/newsletters/listNewsletters',
+  Cookies.authorizedOnly(),
+  newsletters.listNewsletters
+);
+routes.get(
   '/newsletters/listDigests',
   Cookies.authorizedOnly(),
   newsletters.listDigests

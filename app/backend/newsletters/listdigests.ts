@@ -1,17 +1,20 @@
-import lo from 'lodash';
+import { database, knex } from 'Utils';
 
 import { Context } from 'Http/request';
-import { Response } from 'Http/response';
-import { database } from 'Utils';
 import { Cookies } from 'Http/cookies';
+import { Response } from 'Http/response';
+import lo from 'lodash';
 
-const queryDigests = async ({ userId }: any) => {
-  const [
-    rows,
-  ] = await database.query(`SELECT * FROM user_emails WHERE user_id = ?`, [
-    userId,
-  ]);
-  return rows;
+const queryDigests = async ({ userId, newsletterId }: any) => {
+  const filter = lo.omitBy(
+    {
+      user_id: userId,
+      newsletter_id: newsletterId,
+    },
+    lo.isUndefined
+  );
+
+  return knex('user_emails').select('*').where(filter);
 };
 
 const queryNewsletters = async ({ newsletterIds }: any) => {
@@ -27,10 +30,15 @@ const queryNewsletters = async ({ newsletterIds }: any) => {
 };
 
 const listDigests = async (ctxt: Context, res: Response) => {
-  // const { code } = ctxt.body;
   const { id: userId } = await Cookies.getUser(ctxt);
+  const filters = JSON.parse(ctxt.query.filters);
 
-  const digests = (await queryDigests({ userId })).map((d: any) => {
+  const digests = (
+    await queryDigests({
+      userId,
+      newsletterId: filters.newsletterId,
+    })
+  ).map((d: any) => {
     return {
       id: d.id,
       newsletterId: d['newsletter_id'],

@@ -1,13 +1,14 @@
-import forge from 'node-forge';
-import * as uuid from 'uuid';
+import * as Gmail from 'Utils/gmail';
 import * as datefns from 'date-fns';
-import { Promise } from 'bluebird';
+import * as uuid from 'uuid';
 
 import { Context } from 'Http/request';
-import { Response } from 'Http/response';
 import { Cookies } from 'Http/cookies';
+import { Promise } from 'bluebird';
+import { Response } from 'Http/response';
 import { database } from 'Utils';
-import * as Gmail from 'Utils/gmail';
+import forge from 'node-forge';
+import hash from '@emotion/hash';
 import { parser } from './parser';
 import { storage } from './storage';
 
@@ -149,7 +150,7 @@ const loadAndStoreGmail = async (
     } = parser.gmail.parseEmailAddress(sender);
 
     const dbNewsletter = await getNewsletter(senderEmail);
-    const newsletterId = dbNewsletter?.id || uuid.v1();
+    const newsletterId = dbNewsletter?.id || hash(uuid.v1());
     if (!dbNewsletter) {
       await insertNewsletter(
         newsletterId,
@@ -217,10 +218,7 @@ const loadAndStoreGmails = async (
 
 const populate = async (ctxt: Context, res: Response) => {
   const { id: userId } = await Cookies.getUser(ctxt);
-  console.log('userId =', userId);
   const user = await getUser(userId);
-  console.log('user =', user);
-
   if (!user) {
     res.sendStatus(403);
     return;

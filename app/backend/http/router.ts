@@ -44,7 +44,7 @@ class Router {
     }
     this.express.post(
       path,
-      (req: express.Request, res: express.Response, next: () => void) => {
+      async (req: express.Request, res: express.Response, next: () => void) => {
         handler(this.buildContext(req), res).catch(next);
       }
     );
