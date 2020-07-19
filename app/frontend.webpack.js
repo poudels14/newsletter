@@ -1,7 +1,8 @@
 const path = require('path');
+const merge = require('webpack-merge');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 
-module.exports = {
+const commonConfig = {
   entry: './frontend/index.jsx',
   target: 'web',
   output: {
@@ -78,3 +79,23 @@ module.exports = {
     }),
   ],
 };
+
+const developmentConfig = {
+  mode: 'development',
+  devtool: 'inline-source-map',
+  devServer: {
+    host: '0.0.0.0',
+    port: 8002,
+    historyApiFallback: true,
+  },
+};
+
+const productionConfig = {
+  mode: 'production',
+  devtool: 'source-map',
+};
+
+module.exports = merge(
+  commonConfig,
+  process.env.NODE_ENV === 'production' ? productionConfig : developmentConfig
+);

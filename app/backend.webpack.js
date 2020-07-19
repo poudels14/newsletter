@@ -1,7 +1,8 @@
 const path = require('path');
+const merge = require('webpack-merge');
 const nodeExternals = require('webpack-node-externals');
 
-module.exports = {
+const commonConfig = {
   entry: './backend/server.ts',
   target: 'node',
   externals: [nodeExternals()],
@@ -45,3 +46,16 @@ module.exports = {
     ],
   },
 };
+
+const productionConfig = {
+  mode: 'production',
+};
+
+const developmentConfig = {
+  mode: 'development',
+};
+
+module.exports = merge(
+  commonConfig,
+  process.env.NODE_ENV === 'production' ? productionConfig : developmentConfig
+);
