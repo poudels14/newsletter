@@ -38,6 +38,10 @@ const init = (props) => {
   });
 };
 
+const NoMatch = () => {
+  return <div>404 Not found</div>;
+};
+
 const App = (props) => {
   useMemo(() => {
     init(props);
@@ -53,25 +57,6 @@ const App = (props) => {
     return (
       <Router>
         <Switch>
-          <Route path="/" exact render={() => <Redirect to="/nl/" />} />
-          <Route
-            path="/nl/:newsletterId?"
-            render={(p) => {
-              const { newsletterId } = p.match?.params;
-              if (!loggedIn) {
-                return <Redirect to="/signin" />;
-              }
-              if (!hasRequiredAccess) {
-                return <Redirect to="/grantaccess" />;
-              }
-              return (
-                <Homepage
-                  history={p.history}
-                  selectedPublisher={newsletterId}
-                />
-              );
-            }}
-          />
           <Route
             path="/signin"
             render={() => {
@@ -92,6 +77,31 @@ const App = (props) => {
               );
             }}
           />
+          <Route
+            path={['/nl/:newsletterId?', '/']}
+            exact
+            render={(props) => {
+              const { newsletterId } = props.match?.params;
+              const query = new URLSearchParams(props.location.search);
+
+              if (!loggedIn) {
+                return <Redirect to="/signin" />;
+              }
+              if (!hasRequiredAccess) {
+                return <Redirect to="/grantaccess" />;
+              }
+              return (
+                <Homepage
+                  history={props.history}
+                  publisher={newsletterId}
+                  digest={query.get('digest')}
+                />
+              );
+            }}
+          />
+          <Route path="*">
+            <NoMatch />
+          </Route>
         </Switch>
       </Router>
     );

@@ -1,21 +1,28 @@
 import { Divider, Layout } from 'antd';
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 
 import { Actions } from '../controllers/newsletters';
 import { DigestList } from './components/digestlist';
+import Modal from 'react-modal';
 import { NavigationHeader } from './components/navigationheader';
 import { NewslettersSidebar } from './components/newsletterssidebar';
 import PropTypes from 'prop-types';
 import { Sidebar } from './components/sidebar';
+import { ViewDigest } from './components/viewdigest';
 import { connect } from 'react-redux';
+import { css } from '@emotion/core';
 
 const Homepage = (props) => {
+  console.log('rendering homepage');
   useEffect(() => {
     props.loadPublishers();
   }, []);
   useEffect(() => {
-    props.selectPublisher(props.selectedPublisher);
-  }, [props.selectedPublisher]);
+    props.selectPublisher(props.publisher);
+  }, [props.publisher]);
+  const closeDialog = useCallback(() => {
+    props.history.push(props.history.location.pathname);
+  }, [props.history.push]);
 
   return (
     <div>
@@ -28,11 +35,33 @@ const Homepage = (props) => {
         </Layout.Content>
         <Sidebar width="300px" />
       </Layout>
+      <Modal
+        isOpen={props.digest !== null}
+        onRequestClose={closeDialog}
+        contentLabel="Digest Modal"
+        css={css(`
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            right: 40px;
+            bottom: 40px;
+            border: 1px solid rgb(204, 204, 204);
+            background: rgb(255, 255, 255);
+            overflow: hidden;
+            border-radius: 4px;
+            outline: none;
+            padding: 20px;
+          `)}
+      >
+        {props.digest && <ViewDigest url={props.digest} />}
+      </Modal>
     </div>
   );
 };
 Homepage.propTypes = {
-  selectedPublisher: PropTypes.string,
+  history: PropTypes.object,
+  publisher: PropTypes.string,
+  digest: PropTypes.string,
   /** Redux props */
   loadPublishers: PropTypes.func.isRequired,
   selectPublisher: PropTypes.func.isRequired,

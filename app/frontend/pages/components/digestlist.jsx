@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { PopulateNewsletters } from '../../components/populateNewsletters';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -29,7 +30,9 @@ const DigestList = (props) => {
                           key={digest.id}
                           css={css({ padding: '10px 30px' })}
                         >
-                          <a href={`/${digest.contentUrl}`}>{digest.title}</a>
+                          <Link to={`?digest=/${digest.contentUrl}`}>
+                            {digest.title}
+                          </Link>
                         </div>
                       );
                     })}
