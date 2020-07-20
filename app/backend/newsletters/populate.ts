@@ -7,10 +7,8 @@ import { Cookies } from 'Http/cookies';
 import { Promise } from 'bluebird';
 import { Response } from 'Http/response';
 import { database } from 'Utils';
-import forge from 'node-forge';
 import hash from '@emotion/hash';
 import { parser } from './parser';
-import { storage } from './storage';
 
 const KNOWN_NEWSLETTERS_FILTERS = [
   'from:substack.com',
@@ -61,10 +59,10 @@ const insertUserEmail = ({
   receiverEmail,
   receivedDate,
   gmailId,
-  contentUrl,
+  content,
 }: any) => {
   return database.query(
-    `INSERT INTO user_emails(id, newsletter_id, user_id, is_newsletter, title, receiverEmail, receivedDate, gmailId, contentUrl)
+    `INSERT INTO user_emails(id, newsletter_id, user_id, is_newsletter, title, receiverEmail, receivedDate, gmailId, content)
      VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)
      ON DUPLICATE KEY UPDATE gmailId=?`,
     [
@@ -76,7 +74,7 @@ const insertUserEmail = ({
       receiverEmail,
       receivedDate,
       gmailId,
-      contentUrl,
+      content,
       gmailId,
     ]
   );
@@ -115,22 +113,6 @@ const getUser = async (userId: string) => {
   return rows[0];
 };
 
-const uploadNewsletter = async (
-  userId: string,
-  newsletterId: string,
-  newsletterBase64: string,
-  html: string
-) => {
-  const sha256 = forge.md.sha256.create();
-  sha256.update(newsletterBase64);
-  const contentHash = sha256.digest().toHex();
-  const digestUri = await storage.store(
-    `${userId}/${newsletterId}/${contentHash}.html`,
-    html
-  );
-  return digestUri;
-};
-
 const loadAndStoreGmail = async (
   client: any,
   userId: string,
@@ -164,12 +146,6 @@ const loadAndStoreGmail = async (
       });
     }
 
-    const digestUri = await uploadNewsletter(
-      userId,
-      newsletterId,
-      newsletter.base64,
-      newsletter.html
-    );
     await insertUserEmail({
       id: emailId,
       newsletterId,
@@ -179,7 +155,7 @@ const loadAndStoreGmail = async (
       receiverEmail: headers.to,
       receivedDate: datefns.formatISO9075(new Date(headers.date)),
       gmailId: `gmail_${gmailId}`,
-      contentUrl: digestUri,
+      content: newsletter.base64,
     });
     await insertEmailHeaders({
       emailId,
@@ -219,6 +195,7 @@ const loadAndStoreGmails = async (
 const populate = async (ctxt: Context, res: Response) => {
   const { id: userId } = await Cookies.getUser(ctxt);
   const user = await getUser(userId);
+
   if (!user) {
     res.sendStatus(403);
     return;

@@ -39,12 +39,14 @@ const listDigests = async (ctxt: Context, res: Response) => {
       newsletterId: filters.newsletterId,
     })
   ).map((d: any) => {
+    const { id } = d;
+    const newsletterId = d['newsletter_id'];
     return {
-      id: d.id,
-      newsletterId: d['newsletter_id'],
+      id,
+      newsletterId,
       title: d.title,
       receivedDate: d.receivedDate,
-      contentUrl: d.contentUrl,
+      contentUrl: `/api/newsletters/view/${newsletterId}/${id}`,
     };
   });
   const groupedDigests = lo.groupBy(

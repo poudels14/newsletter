@@ -1,6 +1,5 @@
-import { Router } from 'Http/router';
 import { Cookies } from 'Http/cookies';
-
+import { Router } from 'Http/router';
 import { account } from './account';
 import { newsletters } from './newsletters';
 
@@ -23,6 +22,11 @@ routes.get(
   '/newsletters/listDigests',
   Cookies.authorizedOnly(),
   newsletters.listDigests
+);
+routes.get(
+  '/newsletters/view/:newsletterId/:digestId',
+  Cookies.authorizedOnly(),
+  newsletters.viewNewsletter
 );
 
 export { routes };

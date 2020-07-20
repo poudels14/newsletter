@@ -10,7 +10,7 @@ CREATE TABLE user_emails
 	receivedDate timestamp,
 	gmailId VARCHAR(255),
 
-	contentUrl VARCHAR(1024),
+	content LONGTEXT,
 
 	UNIQUE KEY (gmailId),
 	INDEX `is_newsletter_idx_1` (`is_newsletter`)
