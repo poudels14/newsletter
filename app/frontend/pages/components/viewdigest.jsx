@@ -10,20 +10,25 @@ import { css } from '@emotion/core';
 
 const HightlightTray = (props) => {
   const highlightSelection = useCallback(() => {
-    props.focusNode.splitText(props.focusOffset);
-    props.anchorNode.splitText(props.anchorOffset);
-    const startNode = props.anchorNode.nextSibling;
-    let endNode = props.focusNode;
+    // TODO(sagar): start and end containers maynot always be text node; in that case, splitting won't work
+    props.endContainer.splitText(props.endOffset);
+    props.startContainer.splitText(props.startOffset);
+    const startNode = props.startContainer.nextSibling;
+    let endNode = props.endContainer;
 
-    if (props.anchorNode.isEqualNode(props.focusNode)) {
-      // If anchorNode and focusNode are same, endNode will be same as startNode
+    if (props.startContainer.isEqualNode(props.endContainer)) {
+      // If startContainer and endContainer are same, endNode will be same as startNode
       // this reassignment is necessssary only when they are same
       endNode = startNode;
     }
 
     highlight(startNode, endNode);
     props.setHightlightTray({});
-  }, [props.anchorNode.nextSibling, props.anchorNode, props.focusNode]);
+  }, [
+    props.startContainer.nextSibling,
+    props.startContainer,
+    props.endContainer,
+  ]);
 
   const Tray = useCallback(() => {
     return (
@@ -56,10 +61,10 @@ HightlightTray.propTypes = {
   container: PropTypes.object,
   top: PropTypes.number,
   left: PropTypes.number,
-  anchorNode: PropTypes.object,
-  anchorOffset: PropTypes.number,
-  focusNode: PropTypes.object,
-  focusOffset: PropTypes.number,
+  startContainer: PropTypes.object,
+  startOffset: PropTypes.number,
+  endContainer: PropTypes.object,
+  endOffset: PropTypes.number,
   setHightlightTray: PropTypes.func.isRequired,
 };
 
@@ -109,14 +114,14 @@ const highlight = (startNode, endNode) => {
 const showHighlightButton = (e, shadowDom, domEle, setHightlightTray) => {
   const selection = shadowDom.getSelection();
 
-  const { anchorNode, anchorOffset, focusNode, focusOffset } = selection;
-  const textSelected = !(
-    anchorNode.isEqualNode(focusNode) && anchorOffset == focusOffset
-  );
-
   const range = selection.getRangeAt(0);
+  const { startContainer, startOffset, endContainer, endOffset } = range;
   const boundingRect = range.getBoundingClientRect();
   const { top, left, width } = boundingRect;
+
+  const textSelected = !(
+    startContainer.isEqualNode(endContainer) && startOffset == endOffset
+  );
 
   setHightlightTray({
     textSelected: textSelected,
@@ -124,10 +129,10 @@ const showHighlightButton = (e, shadowDom, domEle, setHightlightTray) => {
       Math.round(top) + domEle.scrollTop - domEle.getBoundingClientRect().top,
     left: Math.round(left + width / 2),
     range,
-    anchorNode,
-    anchorOffset,
-    focusNode,
-    focusOffset,
+    startContainer: startContainer,
+    startOffset: startOffset,
+    endContainer: endContainer,
+    endOffset: endOffset,
   });
 };
 

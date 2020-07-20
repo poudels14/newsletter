@@ -10,6 +10,7 @@ const listDigest = async () => {
 /** Redux */
 
 const Actions = {
+  POPULATE: '/newsletters/populate',
   LOAD_PUBLISHERS: '/newsletters/publishers/load',
   SET_PUBLISHERS: '/newsletters/publishers/set',
   SELECT_PUBLISHER: '/newsletters/publishers/select',
@@ -49,6 +50,12 @@ const reducer = (state = {}, action) => {
   }
 };
 
+function* populateListener() {
+  yield takeEvery(Actions.POPULATE, function* () {
+    yield axios.get('/api/newsletters/populate');
+  });
+}
+
 function* loadPublishersListener() {
   yield takeEvery(Actions.LOAD_PUBLISHERS, function* () {
     const { data } = yield axios.get('/api/newsletters/listNewsletters');
@@ -66,7 +73,11 @@ function* selectPublisherListener() {
 }
 
 function* sagas() {
-  yield all([loadPublishersListener(), selectPublisherListener()]);
+  yield all([
+    populateListener(),
+    loadPublishersListener(),
+    selectPublisherListener(),
+  ]);
 }
 
 export { listDigest, Actions, reducer, sagas };

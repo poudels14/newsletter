@@ -15,6 +15,7 @@ import { css } from '@emotion/core';
 const Homepage = (props) => {
   console.log('rendering homepage');
   useEffect(() => {
+    props.populate();
     props.loadPublishers();
   }, []);
   useEffect(() => {
@@ -71,6 +72,7 @@ Homepage.propTypes = {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    populate: () => dispatch({ type: Actions.POPULATE }),
     loadPublishers: () => dispatch({ type: Actions.LOAD_PUBLISHERS }),
     selectPublisher: (publisher) =>
       dispatch({ type: Actions.SELECT_PUBLISHER, publisher }),
