@@ -1,8 +1,8 @@
-import express from 'express';
 import * as uuid from 'uuid';
 
 import { Context } from './request';
 import { Response } from './response';
+import express from 'express';
 
 type Handler = (ctxt: Context, res: Response) => Promise<any>;
 
@@ -17,6 +17,7 @@ class Router {
     return {
       id: uuid.v4(),
       user: req.user,
+      params: req.params,
       query: req.query,
       body: req.body,
       cookies: req.cookies,
