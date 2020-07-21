@@ -1,0 +1,8 @@
+{
+  "name": "highlighter",
+  "version": "1.0.0",
+  "description": "Highlight selected text in webpage",
+  "main": "index.js",
+  "author": "Sagar Poudel",
+  "license": "MIT"
+}

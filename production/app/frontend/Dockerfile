@@ -14,6 +14,8 @@ FROM alpine:3.11 AS FRONTEND_COMPILER
 
 RUN apk add --no-cache nodejs yarn tree
 
+# TODO(sagar): dont have to do this once highlighter is added to npm
+COPY ./highlighter /highlighter
 WORKDIR /app
 ADD ./app/package.json .
 RUN yarn install

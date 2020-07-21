@@ -196,11 +196,6 @@ const populate = async (ctxt: Context, res: Response): Promise<void> => {
   const { id: userId } = await Cookies.getUser(ctxt);
   const user = await getUser(userId);
 
-  if (user) {
-    res.json('TODDO(sagar): short circut');
-    return;
-  }
-
   if (!user) {
     res.sendStatus(403);
     return;

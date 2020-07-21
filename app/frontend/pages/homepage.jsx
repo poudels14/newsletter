@@ -37,7 +37,7 @@ const Homepage = (props) => {
         <Sidebar width="300px" />
       </Layout>
       <Modal
-        isOpen={props.digest !== null}
+        isOpen={props.digestId !== null}
         onRequestClose={closeDialog}
         contentLabel="Digest Modal"
         css={css(`
@@ -54,7 +54,12 @@ const Homepage = (props) => {
             padding: 20px;
           `)}
       >
-        {props.digest && <ViewDigest url={props.digest} />}
+        {props.digestId && (
+          <ViewDigest
+            newsletterId={props.publisher}
+            digestId={props.digestId}
+          />
+        )}
       </Modal>
     </div>
   );
@@ -62,7 +67,7 @@ const Homepage = (props) => {
 Homepage.propTypes = {
   history: PropTypes.object,
   publisher: PropTypes.string,
-  digest: PropTypes.string,
+  digestId: PropTypes.string,
   /** Redux props */
   loadPublishers: PropTypes.func.isRequired,
   selectPublisher: PropTypes.func.isRequired,

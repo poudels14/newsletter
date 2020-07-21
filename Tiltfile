@@ -10,7 +10,7 @@ k8s_resource('tilt-frontend', port_forwards=["8002:8002"])
 
 docker_build('tilt-apibackend-container', '.',
     dockerfile='./tilt/app/Dockerfile',
-    only=['./app'],
+    only=['./app', './highlighter'],
     ignore=['./app/node_modules', './app/frontend'],
     entrypoint='yarn run backend:dev',
     live_update=[
@@ -20,7 +20,7 @@ docker_build('tilt-apibackend-container', '.',
 
 docker_build('tilt-frontend-container', '.',
     dockerfile='./tilt/app/Dockerfile',
-    only=['./app'],
+    only=['./app', './highlighter'],
     ignore=['./app/node_modules', './app/backend'],
     entrypoint='yarn run frontend:dev',
     live_update=[

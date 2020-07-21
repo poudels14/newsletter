@@ -94,7 +94,7 @@ const App = (props) => {
                 <Homepage
                   history={props.history}
                   publisher={newsletterId}
-                  digest={query.get('digest')}
+                  digestId={query.get('digestId')}
                 />
               );
             }}

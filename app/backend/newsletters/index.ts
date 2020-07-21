@@ -1,3 +1,4 @@
+import highlight from './highlight';
 import listDigests from './listdigests';
 import listNewsletters from './listnewsletters';
 import populate from './populate';
@@ -8,6 +9,7 @@ const newsletters = {
   listNewsletters,
   listDigests,
   viewNewsletter,
+  highlight,
 };
 
 export { newsletters };
