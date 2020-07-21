@@ -5,7 +5,11 @@ import { Response } from 'Http/response';
 import { knex } from 'Utils';
 import lo from 'lodash';
 
-const queryDigestContent = async ({ userId, newsletterId, id }: any) => {
+const queryDigestContent = async ({
+  userId,
+  newsletterId,
+  id,
+}: Record<string, unknown>): Promise<unknown> => {
   const filter = lo.omitBy(
     {
       id,
@@ -19,7 +23,7 @@ const queryDigestContent = async ({ userId, newsletterId, id }: any) => {
   return Base64.decode(rows[0].content);
 };
 
-const viewNewsletter = async (ctxt: Context, res: Response) => {
+const viewNewsletter = async (ctxt: Context, res: Response): Promise<void> => {
   const { id: userId } = await Cookies.getUser(ctxt);
   const { params } = ctxt;
 

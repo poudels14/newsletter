@@ -4,7 +4,8 @@ import { Context } from './request';
 import { Response } from './response';
 import express from 'express';
 
-type Handler = (ctxt: Context, res: Response) => Promise<any>;
+type Middleware = (req: unknown, res: unknown, next: () => void) => void;
+type Handler = (ctxt: Context, res: Response) => Promise<void>;
 
 class Router {
   express: express.Application;
@@ -24,10 +25,10 @@ class Router {
     };
   }
 
-  get(path: string, middleware: any, handler: Handler): void {
+  get(path: string, middleware: Middleware, handler: Handler): void {
     if (!handler) {
-      handler = middleware;
-      middleware = (req: any, res: any, next: any) => next();
+      handler = middleware as Handler;
+      middleware = (req, res, next) => next();
     }
     this.express.get(
       path,
@@ -38,10 +39,10 @@ class Router {
     );
   }
 
-  post(path: string, middleware: any, handler: Handler): void {
+  post(path: string, middleware: Middleware, handler: Handler): void {
     if (!handler) {
-      handler = middleware;
-      middleware = (req: any, res: any, next: any) => next();
+      handler = middleware as Handler;
+      middleware = (req, res, next) => next();
     }
     this.express.post(
       path,

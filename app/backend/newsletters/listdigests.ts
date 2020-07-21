@@ -5,7 +5,10 @@ import { Cookies } from 'Http/cookies';
 import { Response } from 'Http/response';
 import lo from 'lodash';
 
-const queryDigests = async ({ userId, newsletterId }: any) => {
+const queryDigests = async ({
+  userId,
+  newsletterId,
+}: Record<string, string>) => {
   const filter = lo.omitBy(
     {
       user_id: userId,
@@ -17,7 +20,7 @@ const queryDigests = async ({ userId, newsletterId }: any) => {
   return knex('user_emails').select('*').where(filter);
 };
 
-const queryNewsletters = async ({ newsletterIds }: any) => {
+const queryNewsletters = async ({ newsletterIds }: Record<string, unknown>) => {
   if (newsletterIds.length === 0) {
     return [];
   }
@@ -29,7 +32,7 @@ const queryNewsletters = async ({ newsletterIds }: any) => {
   return rows;
 };
 
-const listDigests = async (ctxt: Context, res: Response) => {
+const listDigests = async (ctxt: Context, res: Response): Promise<void> => {
   const { id: userId } = await Cookies.getUser(ctxt);
   const filters = JSON.parse(ctxt.query.filters);
 
@@ -38,7 +41,7 @@ const listDigests = async (ctxt: Context, res: Response) => {
       userId,
       newsletterId: filters.newsletterId,
     })
-  ).map((d: any) => {
+  ).map((d: Record<string, unknown>) => {
     const { id } = d;
     const newsletterId = d['newsletter_id'];
     return {
@@ -51,7 +54,7 @@ const listDigests = async (ctxt: Context, res: Response) => {
   });
   const groupedDigests = lo.groupBy(
     digests,
-    (digest: any) => digest.newsletterId
+    (digest: Record<string, unknown>) => digest.newsletterId
   );
 
   const newsletters = await queryNewsletters({
@@ -71,8 +74,11 @@ const listDigests = async (ctxt: Context, res: Response) => {
   });
 
   const groupedNewsletterDigests = lo.mapValues(
-    lo.groupBy(newsletterDigests, (digest: any) => digest['id']),
-    (v: any) => {
+    lo.groupBy(
+      newsletterDigests,
+      (digest: Record<string, string>) => digest['id']
+    ),
+    (v: Record<string, string>) => {
       const { name, authorEmail, authorName, digests } = v[0];
       return {
         name,

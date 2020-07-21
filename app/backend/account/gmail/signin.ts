@@ -1,10 +1,10 @@
-import * as uuid from 'uuid';
-import { Context } from 'Http/request';
-import { Response } from 'Http/response';
-import { Cookies } from 'Http/cookies';
-import { database } from 'Utils';
-
 import * as Gmail from 'Utils/gmail';
+import * as uuid from 'uuid';
+
+import { Context } from 'Http/request';
+import { Cookies } from 'Http/cookies';
+import { Response } from 'Http/response';
+import { database } from 'Utils';
 
 const getUser = async (email: string) => {
   const [rows] = await database.query(`SELECT * FROM users WHERE email = ?`, [
@@ -21,7 +21,7 @@ const addUser = async ({ id, email }: { id: string; email: string }) => {
   );
 };
 
-const signIn = async (ctxt: Context, res: Response) => {
+const signIn = async (ctxt: Context, res: Response): Promise<void> => {
   const { authenticationCode, scope } = ctxt.body;
 
   if (authenticationCode) {

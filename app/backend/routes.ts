@@ -28,5 +28,10 @@ routes.get(
   Cookies.authorizedOnly(),
   newsletters.viewNewsletter
 );
+routes.post(
+  '/newsletters/highlight',
+  Cookies.authorizedOnly(),
+  newsletters.highlight
+);
 
 export { routes };

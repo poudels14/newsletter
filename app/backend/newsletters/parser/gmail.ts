@@ -1,5 +1,5 @@
-import lo from 'lodash';
 import { Base64 } from 'js-base64';
+import lo from 'lodash';
 import regex from 'xregexp';
 
 const emailAddressRegexp = regex(
@@ -9,7 +9,7 @@ const emailAddressRegexp = regex(
   'giuyx'
 );
 
-const parseEmailAddress = (address: string) => {
+const parseEmailAddress = (address: string): Record<string, string> => {
   const match = regex.exec(address, emailAddressRegexp);
   if (!match) {
     console.error("Couldn't parse email address:", address);
@@ -39,7 +39,9 @@ function camelize(str: string) {
     .replace(/\s+/g, '');
 }
 
-const parseNewsletter = (payload: any) => {
+const parseNewsletter = (
+  payload: Record<string, unknown>
+): Record<string, string> => {
   // Note(sagar): check if the parsed email has body
   //              it won't have body if the content is in parts
   let data = payload?.body?.data;
@@ -53,15 +55,18 @@ const parseNewsletter = (payload: any) => {
   };
 };
 
-const parseHeaders = (gmailId: string, headers: any) => {
-  const keyValuesList = headers.map((h: any) => {
+const parseHeaders = (
+  gmailId: string,
+  headers: Record<string, string>[]
+): Record<string, string> => {
+  const keyValuesList = headers.map((h: Record<string, string>) => {
     const key = camelize(h.name.replace('-', ''));
     return { [key]: h.value };
   });
 
   const mergedObject = lo.reduce(
     keyValuesList,
-    (collection: any, n: any) => {
+    (collection: Record<string, string>[], n: Record<string, string>) => {
       return lo.merge(collection, n);
     },
     {}

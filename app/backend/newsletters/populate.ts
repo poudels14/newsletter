@@ -29,7 +29,7 @@ const insertEmailHeaders = ({
   replyTo,
   listId,
   base64Headers,
-}: any) => {
+}: Record<string, unknown>) => {
   return database.query(
     `INSERT INTO email_headers(email_id, sender, deliveredTo, toAddress, fromAddress, listUrl, listOwner, listPost, replyTo, listId, base64Headers)
      VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -60,7 +60,7 @@ const insertUserEmail = ({
   receivedDate,
   gmailId,
   content,
-}: any) => {
+}: Record<string, unknown>) => {
   return database.query(
     `INSERT INTO user_emails(id, newsletter_id, user_id, is_newsletter, title, receiverEmail, receivedDate, gmailId, content)
      VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -114,7 +114,7 @@ const getUser = async (userId: string) => {
 };
 
 const loadAndStoreGmail = async (
-  client: any,
+  client: google.OAuthClient,
   userId: string,
   gmailId: string
 ) => {
@@ -186,15 +186,20 @@ const loadAndStoreGmails = async (
   if (!gmailIds) {
     return;
   }
-  const allloaders = gmailIds.map(async (emailId: any) => {
+  const allloaders = gmailIds.map(async (emailId: string) => {
     return await loadAndStoreGmail(client, userId, emailId);
   });
-  await Promise.all(allloaders).catch((err: any) => console.log(err));
+  await Promise.all(allloaders).catch((err: Error) => console.log(err));
 };
 
-const populate = async (ctxt: Context, res: Response) => {
+const populate = async (ctxt: Context, res: Response): Promise<void> => {
   const { id: userId } = await Cookies.getUser(ctxt);
   const user = await getUser(userId);
+
+  if (user) {
+    res.json('TODDO(sagar): short circut');
+    return;
+  }
 
   if (!user) {
     res.sendStatus(403);
@@ -215,7 +220,7 @@ const populate = async (ctxt: Context, res: Response) => {
     await loadAndStoreGmails(
       client,
       userId,
-      emails.messages?.map((e: any) => e.id)
+      emails.messages?.map((e: Record<string, string>) => e.id)
     );
     while (emails.next) {
       console.log('emails.next = ', emails.next);
@@ -223,12 +228,12 @@ const populate = async (ctxt: Context, res: Response) => {
       await loadAndStoreGmails(
         client,
         userId,
-        emails.messages?.map((e: any) => e.id)
+        emails.messages?.map((e: Record<string, string>) => e.id)
       );
     }
   });
 
-  await Promise.all(allLoaders).catch((err: any) => console.log(err));
+  await Promise.all(allLoaders).catch((err: Error) => console.log(err));
 
   console.log('sending request');
   res.send('Populating newsletters...');

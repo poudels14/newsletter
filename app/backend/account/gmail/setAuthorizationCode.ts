@@ -1,10 +1,10 @@
+import * as Gmail from 'Utils/gmail';
 import * as uuid from 'uuid';
+
 import { Context } from 'Http/request';
 import { Cookies } from 'Http/cookies';
 import { Response } from 'Http/response';
 import { database } from 'Utils';
-
-import * as Gmail from 'Utils/gmail';
 
 const insertUserInfoToDb = ({
   id,
@@ -22,7 +22,10 @@ const insertUserInfoToDb = ({
   );
 };
 
-const setAuthorizationCode = async (ctxt: Context, res: Response) => {
+const setAuthorizationCode = async (
+  ctxt: Context,
+  res: Response
+): Promise<void> => {
   const { code } = ctxt.body;
 
   // Note(sagar): even if the use is not in our system, calling the method

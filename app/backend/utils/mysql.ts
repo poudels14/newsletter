@@ -1,5 +1,5 @@
-import { createPool } from 'mysql2';
 import Knex from 'knex';
+import { createPool } from 'mysql2';
 
 console.log('Creating db pool...');
 
@@ -13,7 +13,7 @@ const pool = createPool({
   queueLimit: 0,
 });
 
-const query = async (query: string, values: any) => {
+const query = async (query: string, values: unknown): Promise<unknown> => {
   const data = await pool.promise().query(query, values);
   return data;
 };

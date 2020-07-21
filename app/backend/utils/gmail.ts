@@ -1,6 +1,8 @@
-import { google } from 'googleapis';
-import lo from 'lodash';
+import { GoogleApis, google } from 'googleapis';
+
 import dotenv from 'dotenv';
+import lo from 'lodash';
+
 dotenv.config();
 
 const REQUIRED_SCOPES =
@@ -14,20 +16,20 @@ const oAuth2Client = () => {
   );
 };
 
-type GmailClient = (credentials: Record<string, unknown>) => any;
+type GmailClient = (credentials: unknown) => GoogleApis.OAuthClient;
 const getClient: GmailClient = (credentials) => {
   const client = oAuth2Client();
   client.setCredentials(credentials);
   return client;
 };
 
-const getToken = async (code: string) => {
+const getToken = async (code: string): Promise<unknown> => {
   return await oAuth2Client()
     .getToken(code)
     .then((res) => res.tokens);
 };
 
-const refreshAccessToken = async (refreshToken: string) => {
+const refreshAccessToken = async (refreshToken: string): Promise<unknown> => {
   const client = getClient({
     refresh_token: refreshToken,
     include_granted_scopes: true,
@@ -35,12 +37,12 @@ const refreshAccessToken = async (refreshToken: string) => {
   return await client.getAccessToken();
 };
 
-const hasRequiredScopes = (scopes: string[]) => {
+const hasRequiredScopes = (scopes: string[]): boolean => {
   return lo.difference(REQUIRED_SCOPES, scopes).length === 0;
 };
 
 // Get user info from the JWT id_token received from `oAuth2Client.getToken`
-type GetUserInfo = (a: string) => Promise<any>;
+type GetUserInfo = (a: string) => Promise<unknown>;
 const getUserInfo: GetUserInfo = async (idToken) => {
   const data = await oAuth2Client().verifyIdToken({
     idToken: idToken,
@@ -54,10 +56,10 @@ interface SearchOptions {
   maxResults?: number;
 }
 const searchEmails: (
-  client: any,
+  client: google.OAuthClient,
   options: SearchOptions,
   pageToken?: string
-) => any = async (client, options, pageToken) => {
+) => unknown = async (client, options, pageToken) => {
   const gmail = google.gmail({ version: 'v1', auth: client });
   const { data: emails } = await gmail.users.messages.list({
     userId: 'me',
@@ -76,7 +78,10 @@ const searchEmails: (
   };
 };
 
-const getEmail = async (client: any, emailId: string) => {
+const getEmail = async (
+  client: google.OAuthClient,
+  emailId: string
+): Promise<unknown> => {
   const gmail = google.gmail({ version: 'v1', auth: client });
   const { data } = await gmail.users.messages.get({
     userId: 'me',

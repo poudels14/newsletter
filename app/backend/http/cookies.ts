@@ -7,19 +7,19 @@ interface UserCookie {
   exp: string;
 }
 
-const setUser = (res: Response, user: UserCookie) => {
+const setUser = (res: Response, user: UserCookie): void => {
   const token = jwt.sign(user, process.env.LOGIN_COOKIE_SIGNING_KEY);
   res.cookie('logged-user', token, { maxAge: 604800, httpOnly: true });
 };
 
-type GetUser = (req: Context) => Promise<any>;
+type GetUser = (req: Context) => Promise<unknown>;
 const getUser: GetUser = (req) => {
   return new Promise((resolve) => {
     // TODO(sagar): make sure the expired tokens are invalid
     jwt.verify(
       req.cookies['logged-user'],
       process.env.LOGIN_COOKIE_SIGNING_KEY,
-      (err: any, user: any) => {
+      (err: Error, user: Record<string, unknown>) => {
         if (err) {
           console.error(err);
           resolve(null);
@@ -34,7 +34,7 @@ const getUser: GetUser = (req) => {
 type AuthorizedOnly = () => (
   req: Context,
   res: Response,
-  next: any
+  next: () => void
 ) => Promise<void>;
 const authorizedOnly: AuthorizedOnly = () => async (req, res, next) => {
   getUser(req)

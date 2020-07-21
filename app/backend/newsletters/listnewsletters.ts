@@ -1,11 +1,9 @@
-import lo from 'lodash';
-
 import { Context } from 'Http/request';
-import { Response } from 'Http/response';
-import { database, knex } from 'Utils';
 import { Cookies } from 'Http/cookies';
+import { Response } from 'Http/response';
+import { database } from 'Utils';
 
-const queryNewsletters = async ({ userId }: any) => {
+const queryNewsletters = async ({ userId }: Record<string, string>) => {
   const [
     rows,
   ] = await database.query(
@@ -15,7 +13,7 @@ const queryNewsletters = async ({ userId }: any) => {
   return rows;
 };
 
-const listNewsletters = async (ctxt: Context, res: Response) => {
+const listNewsletters = async (ctxt: Context, res: Response): Promise<void> => {
   const { id: userId } = await Cookies.getUser(ctxt);
 
   const newsletters = await queryNewsletters({ userId });
