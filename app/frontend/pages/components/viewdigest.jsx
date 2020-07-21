@@ -3,6 +3,7 @@ import 'antd/dist/antd.css';
 import { Divider, Popover } from 'antd';
 import { Edit3, MessageSquare } from 'react-feather';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { highlight, isTextSelected, serializeRange } from 'highlighter';
 
 import PropTypes from 'prop-types';
 import axios from 'axios';
@@ -10,25 +11,16 @@ import { css } from '@emotion/core';
 
 const HightlightTray = (props) => {
   const highlightSelection = useCallback(() => {
-    // TODO(sagar): start and end containers maynot always be text node; in that case, splitting won't work
-    props.endContainer.splitText(props.endOffset);
-    props.startContainer.splitText(props.startOffset);
-    const startNode = props.startContainer.nextSibling;
-    let endNode = props.endContainer;
+    const serialized = serializeRange(props.range, props.shadowDom);
+    highlight(props.range);
 
-    if (props.startContainer.isEqualNode(props.endContainer)) {
-      // If startContainer and endContainer are same, endNode will be same as startNode
-      // this reassignment is necessssary only when they are same
-      endNode = startNode;
-    }
-
-    highlight(startNode, endNode);
+    axios.post('/api/newsletters/highlight', {
+      newsletterId: props.newsletterId,
+      digestId: props.digestId,
+      range: serialized,
+    });
     props.setHightlightTray({});
-  }, [
-    props.startContainer.nextSibling,
-    props.startContainer,
-    props.endContainer,
-  ]);
+  }, [props.range]);
 
   const Tray = useCallback(() => {
     return (
@@ -68,81 +60,36 @@ HightlightTray.propTypes = {
   setHightlightTray: PropTypes.func.isRequired,
 };
 
-const dfsHighlight = (node, endNode) => {
-  const childNodes = Array.from(node.childNodes);
-  if (childNodes.length === 0) {
-    // leaf node
-    if (node.nodeType === 3) {
-      const span = document.createElement('span');
-      span.textContent = node.textContent;
-      span.classList.add('newsletter-highlight');
-      node.parentNode.replaceChild(span, node);
-    } else {
-      node.classList.add('newsletter-highlight');
-    }
-  }
-  if (node.isEqualNode(endNode)) {
-    return true; // endReached
-  }
-  for (let i = 0; i < childNodes.length; i++) {
-    const endReached = dfsHighlight(childNodes[i], endNode);
-    if (endReached) {
-      return true;
-    }
-  }
-  return false;
-};
-
-const highlight = (startNode, endNode) => {
-  const parentNode = startNode.parentNode;
-  let endReached = false;
-  let currentNode = startNode;
-  while (currentNode) {
-    const nextSibling = currentNode.nextSibling;
-    endReached = dfsHighlight(currentNode, endNode);
-    if (endReached) {
-      return;
-    }
-    currentNode = nextSibling;
-  }
-
-  if (!endReached) {
-    highlight(parentNode.nextSibling, endNode);
-  }
-};
-
-const showHighlightButton = (e, shadowDom, domEle, setHightlightTray) => {
+const showHighlightButton = (
+  e,
+  shadowDom,
+  shadowHostContainer,
+  setHightlightTray
+) => {
   const selection = shadowDom.getSelection();
 
   const range = selection.getRangeAt(0);
-  const { startContainer, startOffset, endContainer, endOffset } = range;
   const boundingRect = range.getBoundingClientRect();
   const { top, left, width } = boundingRect;
 
-  const textSelected = !(
-    startContainer.isEqualNode(endContainer) && startOffset == endOffset
-  );
-
   setHightlightTray({
-    textSelected: textSelected,
     top:
-      Math.round(top) + domEle.scrollTop - domEle.getBoundingClientRect().top,
+      Math.round(top) +
+      shadowHostContainer.scrollTop -
+      shadowHostContainer.getBoundingClientRect().top,
     left: Math.round(left + width / 2),
+    isTextSelected: isTextSelected(range),
     range,
-    startContainer: startContainer,
-    startOffset: startOffset,
-    endContainer: endContainer,
-    endOffset: endOffset,
   });
 };
 
 const ViewDigest = (props) => {
-  const domEle = useRef(null);
+  const shadowHostContainer = useRef(null);
   const shadowHost = useRef(null);
   const shadowDom = useRef(null);
   useEffect(() => {
     axios
-      .get(props.url)
+      .get(`/api/newsletters/view/${props.newsletterId}/${props.digestId}`)
       .then((respose) => respose.data)
       .then((data) => {
         const shadow = shadowHost.current.attachShadow({ mode: 'open' });
@@ -159,7 +106,7 @@ const ViewDigest = (props) => {
 
         shadowDom.current = shadow;
       });
-  }, [props.url, shadowHost]);
+  }, [props.digestId, shadowHost]);
 
   const [hightlight, setHightlightTray] = useState();
 
@@ -168,16 +115,16 @@ const ViewDigest = (props) => {
       showHighlightButton(
         e,
         shadowDom?.current,
-        domEle?.current,
+        shadowHostContainer?.current,
         setHightlightTray
       );
     },
-    [domEle?.current, shadowDom?.current]
+    [shadowHostContainer.current, shadowDom.current]
   );
 
   return (
     <div
-      ref={domEle}
+      ref={shadowHostContainer}
       css={css({
         position: 'relative',
         width: '100%',
@@ -197,18 +144,21 @@ const ViewDigest = (props) => {
       <div css={css({ flex: '0 0 200px', height: '100px', background: 'red' })}>
         {/* {selection} */}
       </div>
-      {hightlight?.textSelected && (
+      {hightlight?.isTextSelected && (
         <HightlightTray
           {...hightlight}
           setHightlightTray={setHightlightTray}
-          container={domEle.current}
+          container={shadowHostContainer.current}
+          shadowDom={shadowDom.current}
+          newsletterId={props.newsletterId}
+          digestId={props.digestId}
         />
       )}
     </div>
   );
 };
 ViewDigest.propTypes = {
-  url: PropTypes.string.isRequired,
+  digestId: PropTypes.string.isRequired,
 };
 
 export { ViewDigest };

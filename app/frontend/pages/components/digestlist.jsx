@@ -30,7 +30,7 @@ const DigestList = (props) => {
                           key={digest.id}
                           css={css({ padding: '10px 30px' })}
                         >
-                          <Link to={`?digest=${digest.contentUrl}`}>
+                          <Link to={`?digestId=${digest.id}`}>
                             {digest.title}
                           </Link>
                         </div>
