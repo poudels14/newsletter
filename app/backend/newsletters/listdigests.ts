@@ -8,6 +8,7 @@ import { Response } from 'Http/response';
 import lo from 'lodash';
 
 /** This will replace multiple consecutive spaces with just one space */
+/*eslint no-irregular-whitespace: ["error", { "skipRegExps": true }]*/
 const sinceWhiteSpacing = (str: string) => {
   return str.replace(
     /[\u00A0\u1680​\u180e\u2000-\u2009\u200a​\u200b​\u202f\u205f​\u3000]/g,

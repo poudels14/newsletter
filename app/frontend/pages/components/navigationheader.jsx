@@ -1,20 +1,19 @@
+import { Layout } from 'antd';
 import React from 'react';
 import { css } from '@emotion/core';
-
-import { Layout, Menu } from 'antd';
 
 const { Header } = Layout;
 
 const DARK_INDIGO = '#4F4E79';
-const MEDIUM_INDIGO = '#595885';
+// const MEDIUM_INDIGO = '#595885';
 
 // const Header = () => (
 //   <div style={{ height: '50px', backgroundColor: DARK_INDIGO }}></div>
 // );
 
-const SubHeader = () => (
-  <div style={{ height: '40px', backgroundColor: MEDIUM_INDIGO }}></div>
-);
+// const SubHeader = () => (
+//   <div style={{ height: '40px', backgroundColor: MEDIUM_INDIGO }}></div>
+// );
 
 export const NavigationHeader = () => {
   return (

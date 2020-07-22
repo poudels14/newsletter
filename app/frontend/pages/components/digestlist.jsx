@@ -14,8 +14,8 @@ const DigestList = (props) => {
       {props.digests &&
         Object.keys(props.digests).map((newsletterId) => {
           const newsletter = props.digests[newsletterId];
-          const { name: newsletterName, authorName, authorEmail } = newsletter;
-          const author = newsletterName || authorName || authorEmail;
+          // const { name: newsletterName, authorName, authorEmail } = newsletter;
+          // const author = newsletterName || authorName || authorEmail;
           return (
             <div key={newsletterId}>
               {newsletter.digests &&
