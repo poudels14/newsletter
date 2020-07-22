@@ -1,9 +1,19 @@
 import { database, knex } from 'Utils';
 
+import { Base64 } from 'js-base64';
 import { Context } from 'Http/request';
 import { Cookies } from 'Http/cookies';
+import { JSDOM } from 'jsdom';
 import { Response } from 'Http/response';
 import lo from 'lodash';
+
+/** This will replace multiple consecutive spaces with just one space */
+const sinceWhiteSpacing = (str: string) => {
+  return str.replace(
+    /[\u00A0\u1680​\u180e\u2000-\u2009\u200a​\u200b​\u202f\u205f​\u3000]/g,
+    ''
+  );
+};
 
 const queryDigests = async ({
   userId,
@@ -17,7 +27,11 @@ const queryDigests = async ({
     lo.isUndefined
   );
 
-  return knex('user_emails').select('*').where(filter);
+  return knex('user_emails')
+    .select('*')
+    .where(filter)
+    .orderBy('receivedDate', 'desc')
+    .limit(10);
 };
 
 const queryNewsletters = async ({ newsletterIds }: Record<string, unknown>) => {
@@ -44,12 +58,24 @@ const listDigests = async (ctxt: Context, res: Response): Promise<void> => {
   ).map((d: Record<string, unknown>) => {
     const { id } = d;
     const newsletterId = d['newsletter_id'];
+    const html = Base64.decode(d.content);
+
+    const dom = new JSDOM(html);
+    const images = Array.from(
+      dom.window.document.getElementsByTagName('img')
+    ).filter((img) => img.width > 200);
+    const previewImage = lo.nth(images, images.length / 2)?.src;
     return {
       id,
       newsletterId,
       title: d.title,
       receivedDate: d.receivedDate,
       contentUrl: `/api/newsletters/view/${newsletterId}/${id}`,
+      previewImage,
+      previewContent: sinceWhiteSpacing(
+        dom.window.document.body.textContent
+      ).substr(0, 250),
+      read: !d.unread,
     };
   });
   const groupedDigests = lo.groupBy(

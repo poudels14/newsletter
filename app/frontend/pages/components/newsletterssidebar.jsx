@@ -11,7 +11,10 @@ import { css } from '@emotion/core';
 
 const Button = ({ classNames, id, name }) => {
   return (
-    <Link to={`/nl/${id}`}>
+    <Link
+      to={`/nl/${id}`}
+      css={css({ color: 'inherit', fontSize: '18', fontWeight: '600' })}
+    >
       <div
         className={classNames}
         css={css(`
@@ -43,9 +46,7 @@ const NewslettersSidebar = (props) => {
       width={props.width}
       css={css({ background: 'white', color: '' })}
     >
-      <Divider orientation="left" plain>
-        All
-      </Divider>
+      <Divider orientation="left" plain />
       <Button id="" name="All" classNames={''} />
       {props.publishers &&
         props.publishers.map((publisher, i) => {

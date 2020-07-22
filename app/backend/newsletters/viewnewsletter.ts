@@ -23,6 +23,10 @@ const queryDigestContent = async ({
   return Base64.decode(rows[0].content);
 };
 
+const markAsRead = async (id: string) => {
+  await knex('user_emails').where({ id }).update({ unread: 0 });
+};
+
 const viewNewsletter = async (ctxt: Context, res: Response): Promise<void> => {
   const { id: userId } = await Cookies.getUser(ctxt);
   const { params } = ctxt;
@@ -32,6 +36,8 @@ const viewNewsletter = async (ctxt: Context, res: Response): Promise<void> => {
     id: params.digestId,
     newsletterId: params.newsletterId,
   });
+
+  markAsRead(params.digestId);
 
   res.send(digest);
 };

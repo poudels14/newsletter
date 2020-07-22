@@ -1,8 +1,4 @@
-import {
-  deserializeRange,
-  highlight as domHighlighter,
-  serializeRange,
-} from 'highlighter';
+import { deserializeRange, highlight as domHighlighter } from 'highlighter';
 
 import { Base64 } from 'js-base64';
 import { Context } from 'Http/request';

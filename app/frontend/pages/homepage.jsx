@@ -31,10 +31,12 @@ const Homepage = (props) => {
       <Layout className="site-layout2" style={{ background: 'white' }}>
         <NewslettersSidebar width="250px" />
         <Divider type="vertical" style={{ height: '100%' }} />
-        <Layout.Content style={{ margin: '0 16px' }}>
-          <DigestList />
+        <Layout.Content>
+          <DigestList
+            style={{ padding: '0px 20px', maxWidth: '800px', margin: '0 auto' }}
+          />
         </Layout.Content>
-        <Sidebar width="300px" />
+        {/* <Sidebar width="300px" /> */}
       </Layout>
       <Modal
         isOpen={props.digestId !== null}
