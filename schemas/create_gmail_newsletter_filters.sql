@@ -1,0 +1,5 @@
+CREATE TABLE gmail_newsletter_filters
+(
+	id INT PRIMARY KEY AUTO_INCREMENT,
+	filter VARCHAR(700) UNIQUE KEY
+);

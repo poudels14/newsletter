@@ -2,13 +2,18 @@ import * as Gmail from 'Utils/gmail';
 import * as datefns from 'date-fns';
 import * as uuid from 'uuid';
 
+import { database, knex } from 'Utils';
+
 import { Context } from 'Http/request';
 import { Cookies } from 'Http/cookies';
 import { Promise } from 'bluebird';
 import { Response } from 'Http/response';
-import { database } from 'Utils';
 import hash from '@emotion/hash';
 import { parser } from './parser';
+
+const listFilters = () => {
+  return knex('gmail_newsletter_filters').select('*');
+};
 
 const KNOWN_NEWSLETTERS_FILTERS = [
   'from:substack.com',
@@ -203,30 +208,32 @@ const populate = async (ctxt: Context, res: Response): Promise<void> => {
 
   const client = Gmail.getClient({ refresh_token: user?.refreshToken });
 
-  const allLoaders = KNOWN_NEWSLETTERS_FILTERS.map(async (filter) => {
-    console.log('Loading emails from filter:', filter);
+  const allLoaders = (await listFilters()).map(
+    async ({ filter }: Record<string, unknown>) => {
+      console.log('Loading emails from filter:', filter);
 
-    let emails = await Gmail.searchEmails(client, {
-      // q=in:sent after:1388552400 before:1391230800
-      q: filter,
-      // maxResults: 100,
-    });
+      let emails = await Gmail.searchEmails(client, {
+        // q=in:sent after:1388552400 before:1391230800
+        q: filter,
+        // maxResults: 100,
+      });
 
-    await loadAndStoreGmails(
-      client,
-      userId,
-      emails.messages?.map((e: Record<string, string>) => e.id)
-    );
-    while (emails.next) {
-      console.log('emails.next = ', emails.next);
-      emails = await emails.next();
       await loadAndStoreGmails(
         client,
         userId,
         emails.messages?.map((e: Record<string, string>) => e.id)
       );
+      while (emails.next) {
+        console.log('emails.next = ', emails.next);
+        emails = await emails.next();
+        await loadAndStoreGmails(
+          client,
+          userId,
+          emails.messages?.map((e: Record<string, string>) => e.id)
+        );
+      }
     }
-  });
+  );
 
   await Promise.all(allLoaders).catch((err: Error) => console.log(err));
 
