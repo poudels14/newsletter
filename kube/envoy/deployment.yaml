@@ -1,24 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: envoy-proxy
+  name: envoyproxy
 spec:
   replicas: 1
-  selector:
-    matchLabels:
-      app: envoy-proxy
   template:
-    metadata:
-      labels:
-        app: envoy-proxy
     spec:
       volumes:
         - name: config
           configMap:
             name: envoy-config
       containers:
-        - name: envoy-proxy
-          image: envoy-container
+        - name: envoyproxy
+          image: envoyproxy
           ports:
             - containerPort: 8000
             - containerPort: 5000

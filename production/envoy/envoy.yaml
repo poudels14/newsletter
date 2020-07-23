@@ -25,31 +25,26 @@ static_resources:
                 route_config:
                   name: local_route
                   virtual_hosts:
-                    - name: react
+                    - name: prod-newsletter
                       domains:
                         - "*"
                       routes:
                         - match:
                             prefix: /api/
                           route:
-                            cluster: api_service
-                        - match:
-                            prefix: /newsletters/
-                          route:
-                            cluster: staticserver
-                            prefix_rewrite: /static/newsletters/
+                            cluster: apibackend
                         - match:
                             prefix: /
                           route:
                             cluster: staticserver
                             prefix_rewrite: /static/public/
   clusters:
-    - name: api_service
+    - name: apibackend
       connect_timeout: 60s
       type: strict_dns
       lb_policy: round_robin
       load_assignment:
-        cluster_name: api_service_1
+        cluster_name: apibackend_1
         endpoints:
           - lb_endpoints:
               - endpoint:

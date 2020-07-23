@@ -3,8 +3,6 @@ kind: Service
 metadata:
   name: staticserver
 spec:
-  selector:
-    app: staticserver
   ports:
     - name: static
       port: 8003

@@ -4,4 +4,4 @@ resources:
   - service.yaml
   - deployment.yaml
 commonLabels:
-  version: "0.1"
+  app: envoyproxy

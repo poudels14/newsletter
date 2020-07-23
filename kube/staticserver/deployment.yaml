@@ -4,13 +4,7 @@ metadata:
   name: staticserver
 spec:
   replicas: 1
-  selector:
-    matchLabels:
-      app: staticserver
   template:
-    metadata:
-      labels:
-        app: staticserver
     spec:
       imagePullSecrets:
         - name: registry-journal
@@ -20,9 +14,9 @@ spec:
             claimName: staticserver-pvc
       containers:
         - name: staticserver
-          image: staticserver-container
+          image: staticserver
           ports:
             - containerPort: 8003
           volumeMounts:
-            - mountPath: "/data/"
+            - mountPath: /data/
               name: staticserver-volume

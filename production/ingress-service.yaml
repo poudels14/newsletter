@@ -7,10 +7,10 @@ metadata:
     kubernetes.io/ingress.class: nginx
 spec:
   rules:
-    - host: newsletters.poudels.com
-      http:
+    # - host: newsletters.poudels.com
+    - http:
         paths:
           - path: /
             backend:
-              serviceName: prod-envoy-proxy
+              serviceName: prod-envoyproxy
               servicePort: 8000

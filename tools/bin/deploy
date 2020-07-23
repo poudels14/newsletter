@@ -1,0 +1,48 @@
+#!/bin/sh
+set -e
+
+. production/secrets/frontend.env
+. production/secrets/apibackend.env
+. production/secrets/mysql.env
+
+echo "GMAIL_CLIENT_ID = $GMAIL_CLIENT_ID"
+
+if [[ $# < 1 ]]; then
+  echo "Error: service name misssing"
+  exit -1
+fi
+echo "Deploying $1"
+COMMIT_HASH=$(git rev-parse HEAD)
+echo "Deploying commit $COMMIT_HASH"
+
+if [[ "$1" == "apibackend" ]] || [[ "$1" == "frontend" ]]; then
+  echo "Building apibackend docker container"
+  docker build \
+    --build-arg GMAIL_API_KEY=$GMAIL_API_KEY \
+    --build-arg=GMAIL_CLIENT_ID=$GMAIL_CLIENT_ID \
+    -t registry.digitalocean.com/journal/newsletter/$1:$COMMIT_HASH \
+    -f production/app/$1/Dockerfile .
+
+  echo "Pushing container to registry"
+  docker push registry.digitalocean.com/journal/newsletter/$1:$COMMIT_HASH
+fi
+if [[ "$1" == "staticserver" ]]; then
+  echo "Building staticserver docker container"
+  docker build \
+    -t registry.digitalocean.com/journal/newsletter/staticserver:$COMMIT_HASH \
+    -f kube/staticserver/Dockerfile .
+
+  echo "Pushing container to registry"
+  docker push registry.digitalocean.com/journal/newsletter/staticserver:$COMMIT_HASH
+fi
+
+# echo "Deploying ..."
+# kubectl set image deployment/prod-$1 $1=registry.digitalocean.com/journal/newsletter/$1:$COMMIT_HASH --record
+
+echo "Deploying ..."
+kustomize build production | \
+COMMIT_HASH=${COMMIT_HASH} APP=$1 envsubst | \
+kubectl apply -l app=$1 -f -
+
+kustomize build production | \
+COMMIT_HASH=${COMMIT_HASH}  envsubst > final_config.yaml

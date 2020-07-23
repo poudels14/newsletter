@@ -9,7 +9,7 @@ spec:
         - name: registry-journal
       containers:
         - name: frontend
-          image: frontend-container
+          image: frontend
           envFrom:
             - secretRef:
                 name: frontend-builder-env-secrets

@@ -3,8 +3,6 @@ kind: Service
 metadata:
   name: apibackend
 spec:
-  selector:
-    app: apibackend
   ports:
     - name: api
       port: 8001

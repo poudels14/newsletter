@@ -3,7 +3,7 @@ kind: Kustomization
 namePrefix: tilt-
 bases:
   - ../kube/apibackend
-  - ../kube/frontend
+  - app/frontend
   - ../kube/envoy/
   - ../kube/mysql
   - ../kube/staticserver/
@@ -24,15 +24,15 @@ secretGenerator:
     envs:
       - secrets/mysql.env
 images:
-  - name: envoy-container
+  - name: envoyproxy
     newName: envoyproxy/envoy
     newTag: v1.14.2
-  - name: mysql-container
+  - name: mysql
     newName: mysql
     newTag: "8.0"
-  - name: apibackend-container
-    newName: tilt-apibackend-container
-  - name: frontend-container
-    newName: tilt-frontend-container
-  - name: staticserver-container
-    newName: tilt-staticserver-container
+  - name: apibackend
+    newName: tilt-apibackend
+  - name: frontend
+    newName: tilt-frontend
+  - name: staticserver
+    newName: tilt-staticserver

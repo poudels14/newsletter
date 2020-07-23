@@ -3,4 +3,4 @@ kind: Kustomization
 resources:
   - job.yaml
 commonLabels:
-  version: "0.1"
+  app: frontend

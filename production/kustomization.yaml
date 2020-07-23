@@ -1,7 +1,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namePrefix: prod-
-# namespace: newsletters
 bases:
   - ../kube/apibackend
   - ../kube/envoy/
@@ -23,19 +22,22 @@ secretGenerator:
   - name: frontend-builder-env-secrets
     envs:
       - secrets/frontend.env
+generatorOptions:
+  labels:
+    app: ${APP}
 images:
-  - name: envoy-container
+  - name: envoyproxy
     newName: envoyproxy/envoy
     newTag: v1.14.2
-  - name: mysql-container
+  - name: mysql
     newName: mysql
     newTag: "8.0"
-  - name: apibackend-container
-    newName: registry.digitalocean.com/journal/apiserver
-    newTag: v0.1.1
-  - name: frontend-container
-    newName: registry.digitalocean.com/journal/frontend-builder
-    newTag: v0.1.1
-  - name: staticserver-container
-    newName: registry.digitalocean.com/journal/staticserver
-    newTag: v0.1.1
+  - name: apibackend
+    newName: registry.digitalocean.com/journal/newsletter/apibackend
+    newTag: ${COMMIT_HASH}
+  - name: frontend
+    newName: registry.digitalocean.com/journal/newsletter/frontend
+    newTag: ${COMMIT_HASH}
+  - name: staticserver
+    newName: registry.digitalocean.com/journal/newsletter/staticserver
+    newTag: ${COMMIT_HASH}

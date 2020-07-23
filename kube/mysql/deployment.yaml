@@ -4,13 +4,7 @@ metadata:
   name: mysql
 spec:
   replicas: 1
-  selector:
-    matchLabels:
-      app: mysql
   template:
-    metadata:
-      labels:
-        app: mysql
     spec:
       volumes:
         - name: mysql-volume
@@ -18,7 +12,7 @@ spec:
             claimName: mysql-pvc
       containers:
         - name: mysql
-          image: mysql-container
+          image: mysql
           ports:
             - containerPort: 3306
           volumeMounts:

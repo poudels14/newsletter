@@ -30,11 +30,6 @@ static_resources:
                         - "*"
                       routes:
                         - match:
-                            prefix: /newsletters/
-                          route:
-                            cluster: newsletters_server
-                            prefix_rewrite: /static/newsletters/
-                        - match:
                             prefix: /api/
                           route:
                             cluster: api_service
@@ -74,16 +69,3 @@ static_resources:
                   socket_address:
                     address: tilt-frontend
                     port_value: 8002
-    - name: newsletters_server
-      connect_timeout: 60s
-      type: strict_dns
-      lb_policy: round_robin
-      load_assignment:
-        cluster_name: newsletters_server_1
-        endpoints:
-          - lb_endpoints:
-              endpoint:
-                address:
-                  socket_address:
-                    address: tilt-staticserver
-                    port_value: 8003
