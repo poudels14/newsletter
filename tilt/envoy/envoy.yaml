@@ -37,7 +37,12 @@ static_resources:
                             prefix: /nl/
                           route:
                             cluster: frontend
-                            prefix_rewrite: /
+                            regex_rewrite:
+                              pattern:
+                                google_re2:
+                                  max_program_size: 100
+                                regex: (.*)$
+                              substitution: /
                         - match:
                             prefix: /
                           route:

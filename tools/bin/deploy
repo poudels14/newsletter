@@ -37,12 +37,9 @@ if [[ "$1" == "staticserver" ]]; then
 fi
 
 # echo "Deploying ..."
-# kubectl set image deployment/prod-$1 $1=registry.digitalocean.com/journal/newsletter/$1:$COMMIT_HASH --record
+# kubectl set image jobs/prod-$1 $1=registry.digitalocean.com/journal/newsletter/$1:$COMMIT_HASH --record
 
 echo "Deploying ..."
 kustomize build production | \
 COMMIT_HASH=${COMMIT_HASH} APP=$1 envsubst | \
 kubectl apply -l app=$1 -f -
-
-kustomize build production | \
-COMMIT_HASH=${COMMIT_HASH}  envsubst > final_config.yaml

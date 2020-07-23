@@ -61,7 +61,7 @@ const commonConfig = {
       showErrors: process.env.NODE_ENV !== 'production',
 
       title: 'The Reading App',
-      base: './',
+      base: '/',
       libraries: {
         react:
           process.env.NODE_ENV !== 'production'
@@ -86,7 +86,12 @@ const developmentConfig = {
   devServer: {
     host: '0.0.0.0',
     port: 8002,
-    historyApiFallback: true,
+    before: function (app, server, compiler) {
+      app.get('*', function (req, res, next) {
+        console.log('path = ', req.path);
+        next();
+      });
+    },
   },
 };
 

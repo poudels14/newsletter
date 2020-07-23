@@ -34,6 +34,16 @@ static_resources:
                           route:
                             cluster: apibackend
                         - match:
+                            prefix: /nl/
+                          route:
+                            cluster: staticserver
+                            regex_rewrite:
+                              pattern:
+                                google_re2:
+                                  max_program_size: 100
+                                regex: (.*)$
+                              substitution: /static/public/
+                        - match:
                             prefix: /
                           route:
                             cluster: staticserver

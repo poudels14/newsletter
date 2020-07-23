@@ -147,9 +147,9 @@ const ViewDigest = (props) => {
         >
           <div>Loading...</div>
         </div>
-        <div css={css({ flex: '0 0 250px', background: 'red' })}>
-          {/* {selection} */}
-        </div>
+        {/* <div css={css({ flex: '0 0 250px', background: 'red' })}>
+          {selection}
+        </div> */}
       </div>
       {hightlight?.isTextSelected && (
         <HightlightTray

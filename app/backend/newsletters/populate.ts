@@ -15,13 +15,6 @@ const listFilters = () => {
   return knex('gmail_newsletter_filters').select('*');
 };
 
-const KNOWN_NEWSLETTERS_FILTERS = [
-  'from:substack.com',
-  'from:stratechery.com',
-  'from: dailydigest@atom.finance',
-];
-// TODO(sagar): make sure the list is very specific before onboarding users
-
 const insertEmailHeaders = ({
   emailId,
   sender,

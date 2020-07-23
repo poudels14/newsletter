@@ -35,7 +35,6 @@ RUN yarn run frontend:build
 FROM busybox
 COPY --from=UPLOADER_BUILDER /uploader /uploader
 COPY --from=FRONTEND_COMPILER /app/build  /public
-RUN cat /public/static/index.html
 
 ENTRYPOINT [ "/uploader" ]
 
