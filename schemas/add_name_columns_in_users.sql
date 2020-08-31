@@ -1,0 +1,3 @@
+ALTER TABLE users
+ADD COLUMN firstName VARCHAR(100) AFTER id,
+ADD COLUMN lastName VARCHAR(100) AFTER firstName;
