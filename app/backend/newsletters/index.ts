@@ -1,3 +1,4 @@
+import getPopulatingStatus from './getpopulatingstatus';
 import highlight from './highlight';
 import listDigests from './listdigests';
 import listNewsletters from './listnewsletters';
@@ -10,6 +11,7 @@ const newsletters = {
   listDigests,
   viewNewsletter,
   highlight,
+  getPopulatingStatus,
 };
 
 export { newsletters };

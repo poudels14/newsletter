@@ -19,7 +19,10 @@ export const NavigationHeader = () => {
   return (
     <Header
       className="nav-header"
-      css={css({ background: DARK_INDIGO, padding: 0 })}
+      css={css(`
+        background: linear-gradient(to right, rgba(54, 52, 105, 1), rgba(81, 76, 115, 0.9));
+        padding: 0
+      `)}
     />
     // <div style={{ width: '100%' }}>
     /* <Navbar style={{ backgroundColor: DARK_INDIGO, color: 'white', }}>

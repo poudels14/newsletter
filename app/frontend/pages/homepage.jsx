@@ -6,6 +6,7 @@ import { DigestList } from './components/digestlist';
 import Modal from 'react-modal';
 import { NavigationHeader } from './components/navigationheader';
 import { NewslettersSidebar } from './components/newsletterssidebar';
+import { PopulateNewslettersStatusBar } from './components/populateNewslettersStatusbar';
 import PropTypes from 'prop-types';
 // import { Sidebar } from './components/sidebar';
 import { ViewDigest } from './components/viewdigest';
@@ -13,7 +14,6 @@ import { connect } from 'react-redux';
 import { css } from '@emotion/core';
 
 const Homepage = (props) => {
-  console.log('rendering homepage');
   useEffect(() => {
     props.populate();
     props.loadPublishers();
@@ -26,35 +26,47 @@ const Homepage = (props) => {
   }, [props.history.push]);
 
   return (
-    <div>
-      <NavigationHeader />
-      <Layout className="site-layout2" style={{ background: 'white' }}>
+    <div css={css(`height: 100%;`)}>
+      <Layout
+        className="site-layout2"
+        css={css(`background: white; min-height: 100%;`)}
+      >
         <NewslettersSidebar width="250px" />
-        <Divider type="vertical" style={{ height: '100%' }} />
         <Layout.Content>
+          <PopulateNewslettersStatusBar />
           <DigestList
-            style={{ padding: '0px 20px', maxWidth: '800px', margin: '0 auto' }}
+            css={css(`
+              padding: 50px 20px;
+              max-width: 800px;
+              margin: 0 auto;
+            `)}
           />
         </Layout.Content>
-        {/* <Sidebar width="300px" /> */}
       </Layout>
       <Modal
         isOpen={props.digestId !== null}
         onRequestClose={closeDialog}
         contentLabel="Digest Modal"
         css={css(`
-            position: absolute;
-            top: 40px;
-            left: 40px;
-            right: 40px;
-            bottom: 40px;
-            border: 1px solid rgb(204, 204, 204);
-            background: rgb(255, 255, 255);
-            overflow: hidden;
-            border-radius: 4px;
-            outline: none;
-            padding: 20px;
-          `)}
+          position: absolute;
+          top: 40px;
+          left: 40px;
+          right: 40px;
+          bottom: 40px;
+          padding: 20px;
+          @media (max-width: 425px) {
+            top: 20px;
+            left: 0px;
+            right: 0px;
+            bottom: 0px;
+            padding: 0px;
+          }
+          border: 1px solid rgb(204, 204, 204);
+          background: rgb(255, 255, 255);
+          overflow: hidden;
+          border-radius: 4px;
+          outline: none;
+        `)}
       >
         {props.digestId && (
           <ViewDigest

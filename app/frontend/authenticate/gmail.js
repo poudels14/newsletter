@@ -27,11 +27,25 @@ const initClient = async () => {
   });
 };
 
-const initAuthentication = async () => {
-  await loadAuth2();
-  await initClient();
+const initGmailApi = (function () {
+  let initialized = false;
 
-  const auth2 = gapi.auth2.getAuthInstance();
+  return async () => {
+    if (!initialized) {
+      await loadAuth2();
+      await initClient();
+      initialized = true;
+    }
+  };
+})();
+
+const getAuthInstance = async () => {
+  await initGmailApi();
+  return gapi.auth2.getAuthInstance();
+};
+
+const initAuthentication = async () => {
+  const auth2 = await getAuthInstance();
   const loggedIntoGoogle = auth2.isSignedIn.get();
   const user = auth2.currentUser.get();
 
@@ -44,7 +58,7 @@ const initAuthentication = async () => {
 };
 
 const signIn = async () => {
-  const auth2 = gapi.auth2.getAuthInstance();
+  const auth2 = await getAuthInstance();
   const user = await auth2.signIn();
   return await setCookies(user);
 };
@@ -78,10 +92,8 @@ const getUserProfile = (user) => {
 };
 
 const hasRequiredAccess = async () => {
-  const authResponse = gapi.auth2
-    .getAuthInstance()
-    .currentUser.get()
-    .getAuthResponse(true);
+  const auth2 = await getAuthInstance();
+  const authResponse = auth2.currentUser.get().getAuthResponse(true);
 
   const { id_token: authenticationCode, scope } = authResponse;
   const { data } = await axios.post('/api/account/gmail/signin', {
@@ -92,8 +104,8 @@ const hasRequiredAccess = async () => {
 };
 
 const requestOfflineAccess = async () => {
-  await gapi.auth2
-    .getAuthInstance()
+  const auth2 = await getAuthInstance();
+  await auth2
     .grantOfflineAccess({
       client_id: gmailConfig.clientId,
       access_type: 'offline',
@@ -107,4 +119,10 @@ const requestOfflineAccess = async () => {
   return getUserProfile(gapi.auth2.getAuthInstance().currentUser.get());
 };
 
-export { initAuthentication, signIn, hasRequiredAccess, requestOfflineAccess };
+export {
+  initGmailApi,
+  initAuthentication,
+  signIn,
+  hasRequiredAccess,
+  requestOfflineAccess,
+};

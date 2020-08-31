@@ -4,10 +4,12 @@ import { Response } from 'Http/response';
 import { database } from 'Utils';
 
 const queryNewsletters = async ({ userId }: Record<string, string>) => {
-  const [
-    rows,
-  ] = await database.query(
-    `SELECT DISTINCT n.id, n.name, n.authorName, n.authorEmail FROM newsletters n LEFT JOIN user_emails ue ON ue.newsletter_id = n.id WHERE ue.user_id IN (?)`,
+  const [rows] = await database.query(
+    `SELECT n.id, n.name, n.authorName, n.authorEmail, COUNT(ue.unread) as totalDigests, CAST(SUM(ue.unread) AS UNSIGNED) as totalUnread
+     FROM newsletters n
+     LEFT JOIN user_emails ue ON ue.newsletter_id = n.id
+     WHERE ue.user_id IN (?)
+     GROUP BY n.id`,
     [userId]
   );
   return rows;

@@ -9,7 +9,10 @@ interface UserCookie {
 
 const setUser = (res: Response, user: UserCookie): void => {
   const token = jwt.sign(user, process.env.LOGIN_COOKIE_SIGNING_KEY);
-  res.cookie('logged-user', token, { maxAge: 604800, httpOnly: true });
+  res.cookie('logged-user', token, {
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+    httpOnly: true,
+  });
 };
 
 type GetUser = (req: Context) => Promise<unknown>;
@@ -22,7 +25,7 @@ const getUser: GetUser = (req) => {
       (err: Error, user: Record<string, unknown>) => {
         if (err) {
           console.error(err);
-          resolve(null);
+          resolve({});
         } else {
           resolve({ id: user.id });
         }

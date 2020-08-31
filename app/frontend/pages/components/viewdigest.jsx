@@ -24,7 +24,7 @@ const HightlightTray = (props) => {
 
   const Tray = useCallback(() => {
     return (
-      <div css={css({ height: '20px' })}>
+      <div css={css(` height: 20px`)}>
         <Edit3 size={20} onClick={highlightSelection} />
         <Divider type="vertical" />
         <MessageSquare size={20} />
@@ -40,11 +40,11 @@ const HightlightTray = (props) => {
       visible={props} // Note(sagar): This is to rerender Popover when props is changed
     >
       <div
-        css={css({
-          position: 'absolute',
-          top: `${props.top}px`,
-          left: props.left,
-        })}
+        css={css(`
+          position: absolute;
+          top: ${props.top}px;
+          left: ${props.left}px;
+        `)}
       ></div>
     </Popover>
   );
@@ -125,25 +125,27 @@ const ViewDigest = (props) => {
   return (
     <div
       ref={shadowHostContainer}
-      css={css({
-        position: 'relative',
-        width: '100%',
-        height: '100%',
-        overflowY: 'scroll',
-      })}
+      css={css(`
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow-y: scroll;
+      `)}
     >
       <div
         ref={shadowHostContainer}
-        css={css({
-          position: 'relative',
-          display: 'flex',
-          flexDirection: 'row',
-        })}
+        css={css(`
+          position: relative;
+          display: flex;
+          flex-direction: row;
+        `)}
       >
         <div
           ref={shadowHost}
           onMouseUp={showHighlightButtonCallback}
-          css={css({ flex: '1 0 400px' })}
+          css={css(`
+            flex: 1 0 400px;
+          `)}
         >
           <div>Loading...</div>
         </div>

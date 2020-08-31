@@ -1,34 +1,32 @@
-import { all, put, takeEvery } from 'redux-saga/effects';
+import { all, delay, put, takeEvery } from 'redux-saga/effects';
 
 import axios from 'axios';
 
-const listDigest = async () => {
-  const { data } = await axios.get('/api/newsletters/listDigests');
+const listDigests = async (options) => {
+  const { data } = await axios.get('/api/newsletters/listDigests', options);
   return data;
 };
 
-/** Redux */
-
 const Actions = {
   POPULATE: '/newsletters/populate',
+  POLL_POPULATE_STATUS: '/newsletters/populate/status/poll',
+  SET_POPULATE_STATUS: '/newsletters/populate/status/set',
+
   LOAD_PUBLISHERS: '/newsletters/publishers/load',
   SET_PUBLISHERS: '/newsletters/publishers/set',
   SELECT_PUBLISHER: '/newsletters/publishers/select',
-  SET_DIGESTS: '/newsletters/digests/set',
+
+  APPEND_DIGESTS: '/newsletters/digests/append',
+  LOAD_MORE_DIGESTS: '/newsletters/digests/loadmore',
 };
 
 const reducer = (state = {}, action) => {
   switch (action.type) {
-    case Actions.LOAD: {
+    case Actions.SET_POPULATE_STATUS: {
+      const { status } = action;
       return {
         ...state,
-        filters: action.filters,
-      };
-    }
-    case Actions.SELECT_PUBLISHER: {
-      return {
-        ...state,
-        selectedPublisher: action.publisher,
+        populateStatus: status,
       };
     }
     case Actions.SET_PUBLISHERS: {
@@ -38,11 +36,18 @@ const reducer = (state = {}, action) => {
         publishers,
       };
     }
-    case Actions.SET_DIGESTS: {
+    case Actions.SELECT_PUBLISHER: {
+      return {
+        ...state,
+        selectedPublisher: action.publisher,
+        digests: [],
+      };
+    }
+    case Actions.APPEND_DIGESTS: {
       const { digests } = action;
       return {
         ...state,
-        digests,
+        digests: state.digests.concat(digests),
       };
     }
     default:
@@ -52,7 +57,21 @@ const reducer = (state = {}, action) => {
 
 function* populateListener() {
   yield takeEvery(Actions.POPULATE, function* () {
-    yield axios.get('/api/newsletters/populate');
+    const { data } = yield axios.get('/api/newsletters/populate');
+    yield put({ type: Actions.SET_POPULATE_STATUS, status: data });
+
+    while (true) {
+      const { data } = yield axios.get('/api/newsletters/populate/status');
+      if (data.inProgress === 0) {
+        yield put({ type: Actions.SET_POPULATE_STATUS, status: data });
+
+        // update newsletters after populating is completed
+        yield put({ type: Actions.LOAD_PUBLISHERS });
+        // TODO(sagar): maybe update the digest list as well?
+        break;
+      }
+      yield delay(2000);
+    }
   });
 }
 
@@ -65,10 +84,19 @@ function* loadPublishersListener() {
 
 function* selectPublisherListener() {
   yield takeEvery(Actions.SELECT_PUBLISHER, function* ({ publisher }) {
-    const { data } = yield axios.get('/api/newsletters/listDigests', {
+    const digests = yield listDigests({
       params: { filters: { newsletterId: publisher } },
     });
-    yield put({ type: Actions.SET_DIGESTS, digests: data });
+    yield put({ type: Actions.APPEND_DIGESTS, digests });
+  });
+}
+
+function* loadMoreDigestsListener() {
+  yield takeEvery(Actions.LOAD_MORE_DIGESTS, function* ({ publisher, offset }) {
+    const digests = yield listDigests({
+      params: { filters: { newsletterId: publisher }, offset },
+    });
+    yield put({ type: Actions.APPEND_DIGESTS, digests });
   });
 }
 
@@ -77,7 +105,8 @@ function* sagas() {
     populateListener(),
     loadPublishersListener(),
     selectPublisherListener(),
+    loadMoreDigestsListener(),
   ]);
 }
 
-export { listDigest, Actions, reducer, sagas };
+export { Actions, reducer, sagas };

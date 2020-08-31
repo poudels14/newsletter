@@ -13,11 +13,21 @@ const getUser = async (email: string) => {
   return rows[0];
 };
 
-const addUser = async ({ id, email }: { id: string; email: string }) => {
+const addUser = async ({
+  id,
+  email,
+  firstName,
+  lastName,
+}: {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+}) => {
   await database.query(
-    `INSERT INTO users(id, email) VALUES(?, ?) 
+    `INSERT INTO users(id, email, firstName, lastName) VALUES(?, ?, ?, ?) 
      ON DUPLICATE KEY UPDATE email=email`,
-    [id, email]
+    [id, email, firstName, lastName]
   );
 };
 
@@ -48,11 +58,16 @@ const signIn = async (ctxt: Context, res: Response): Promise<void> => {
         }
       } else {
         // add user info to db if it's a new user
-        await addUser({ id: userId, email: user.email });
+        await addUser({
+          id: userId,
+          email: user.email,
+          firstName: user['given_name'] || '',
+          lastName: user['family_name'] || '',
+        });
       }
 
       // set login cookie and send response
-      Cookies.setUser(res, { id: userId, exp: user.exp });
+      Cookies.setUser(res, { id: userId });
       res.json({ ...response, signedIn: true });
     } catch (err) {
       console.error('Error: ', err);

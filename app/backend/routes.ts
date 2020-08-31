@@ -7,12 +7,20 @@ const routes = new Router();
 
 routes.post('/account/gmail/authorize', account.gmail.setAuthorizationCode);
 routes.post('/account/gmail/signin', account.gmail.gmailSign);
+routes.get('/account/profile', account.getProfile);
 
 routes.get(
   '/newsletters/populate',
   Cookies.authorizedOnly(),
   newsletters.populate
 );
+
+routes.get(
+  '/newsletters/populate/status',
+  Cookies.authorizedOnly(),
+  newsletters.getPopulatingStatus
+);
+
 routes.get(
   '/newsletters/listNewsletters',
   Cookies.authorizedOnly(),

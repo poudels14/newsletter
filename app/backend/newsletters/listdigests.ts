@@ -19,7 +19,8 @@ const sinceWhiteSpacing = (str: string) => {
 const queryDigests = async ({
   userId,
   newsletterId,
-}: Record<string, string>) => {
+  offset = 0,
+}: Record<string, unknown>) => {
   const filter = lo.omitBy(
     {
       user_id: userId,
@@ -31,6 +32,7 @@ const queryDigests = async ({
   return knex('user_emails')
     .select('*')
     .where(filter)
+    .offset(offset)
     .orderBy('receivedDate', 'desc')
     .limit(10);
 };
@@ -50,11 +52,13 @@ const queryNewsletters = async ({ newsletterIds }: Record<string, unknown>) => {
 const listDigests = async (ctxt: Context, res: Response): Promise<void> => {
   const { id: userId } = await Cookies.getUser(ctxt);
   const filters = JSON.parse(ctxt.query.filters);
+  const offset = ctxt.query.offset;
 
   const digests = (
     await queryDigests({
       userId,
       newsletterId: filters.newsletterId,
+      offset,
     })
   ).map((d: Record<string, unknown>) => {
     const { id } = d;
@@ -79,43 +83,7 @@ const listDigests = async (ctxt: Context, res: Response): Promise<void> => {
       read: !d.unread,
     };
   });
-  const groupedDigests = lo.groupBy(
-    digests,
-    (digest: Record<string, unknown>) => digest.newsletterId
-  );
-
-  const newsletters = await queryNewsletters({
-    newsletterIds: Object.keys(groupedDigests),
-  });
-  const newslettersById = lo.keyBy(newsletters, 'id');
-
-  const newsletterDigests = Object.keys(newslettersById).map((newsletterId) => {
-    const newsletter = newslettersById[newsletterId];
-    return {
-      id: newsletterId,
-      name: newsletter.name,
-      authorEmail: newsletter.authorEmail,
-      authorName: newsletter.authorName,
-      digests: groupedDigests[newsletterId],
-    };
-  });
-
-  const groupedNewsletterDigests = lo.mapValues(
-    lo.groupBy(
-      newsletterDigests,
-      (digest: Record<string, string>) => digest['id']
-    ),
-    (v: Record<string, string>) => {
-      const { name, authorEmail, authorName, digests } = v[0];
-      return {
-        name,
-        authorEmail,
-        authorName,
-        digests,
-      };
-    }
-  );
-  res.json(groupedNewsletterDigests);
+  res.json(digests);
 };
 
 export default listDigests;

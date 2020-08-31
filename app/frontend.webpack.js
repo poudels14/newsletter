@@ -69,7 +69,7 @@ const commonConfig = {
             : 'https://cdnjs.cloudflare.com/ajax/libs/react/16.13.1/umd/react.production.min.js',
         reactDom:
           process.env.NODE_ENV !== 'production'
-            ? 'https://cdnjs.cloudflare.com/ajax/libs/react-dom/16.13.1/umd/react-dom.development.min.js'
+            ? 'https://cdnjs.cloudflare.com/ajax/libs/react-dom/16.13.1/umd/react-dom.development.js'
             : 'https://cdnjs.cloudflare.com/ajax/libs/react-dom/16.13.1/umd/react-dom.production.min.js',
       },
       gmailConfig: JSON.stringify({
