@@ -1,10 +1,9 @@
-import { database, knex } from 'Utils';
-
 import { Base64 } from 'js-base64';
 import { Context } from 'Http/request';
 import { Cookies } from 'Http/cookies';
 import { JSDOM } from 'jsdom';
 import { Response } from 'Http/response';
+import { knex } from 'Utils';
 import lo from 'lodash';
 
 /** This will replace multiple consecutive spaces with just one space */
@@ -35,18 +34,6 @@ const queryDigests = async ({
     .offset(offset)
     .orderBy('receivedDate', 'desc')
     .limit(10);
-};
-
-const queryNewsletters = async ({ newsletterIds }: Record<string, unknown>) => {
-  if (newsletterIds.length === 0) {
-    return [];
-  }
-  const [
-    rows,
-  ] = await database.query(`SELECT * FROM newsletters WHERE id IN (?)`, [
-    newsletterIds,
-  ]);
-  return rows;
 };
 
 const listDigests = async (ctxt: Context, res: Response): Promise<void> => {

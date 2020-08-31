@@ -13,7 +13,7 @@ import { parser } from './parser';
 
 const listFilters = async () => {
   return (await knex('gmail_newsletter_filters').select('filter')).map(
-    (r: any) => r.filter
+    (r: { filter: string }) => r.filter
   );
 };
 
@@ -118,7 +118,7 @@ const updateLastQueryDate = async ({
   date,
 }: {
   userId: string;
-  date: any;
+  date: Date;
 }) => {
   return await knex('users')
     .where({ id: userId })
@@ -200,7 +200,7 @@ const loadAndStoreGmail = async (
 };
 
 const loadAndStoreGmails = (
-  client: string,
+  client: google.OAuthClient,
   userId: string,
   gmailIds: string[],
   filters?: string[]
@@ -214,7 +214,10 @@ const loadAndStoreGmails = (
   });
 };
 
-const populateUsingFilters = async (client: any, userId: string) => {
+const populateUsingFilters = async (
+  client: google.OAuthClient,
+  userId: string
+) => {
   console.log(
     `populating newsletters using filters: ${JSON.stringify({ userId })}`
   );
@@ -239,7 +242,7 @@ const populateUsingFilters = async (client: any, userId: string) => {
 };
 
 const populateEmailsAfterLastDate = async (
-  client: any,
+  client: google.OAuthClient,
   userId: string,
   lastQueryDate: number
 ) => {

@@ -1,7 +1,6 @@
 import 'antd/dist/antd.css';
 
-import { Divider, Layout } from 'antd';
-
+import { Layout } from 'antd';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import React from 'react';

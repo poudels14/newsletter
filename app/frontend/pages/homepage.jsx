@@ -1,14 +1,12 @@
-import { Divider, Layout } from 'antd';
 import React, { useCallback, useEffect } from 'react';
 
 import { Actions } from '../controllers/newsletters';
 import { DigestList } from './components/digestlist';
+import { Layout } from 'antd';
 import Modal from 'react-modal';
-import { NavigationHeader } from './components/navigationheader';
 import { NewslettersSidebar } from './components/newsletterssidebar';
 import { PopulateNewslettersStatusBar } from './components/populateNewslettersStatusbar';
 import PropTypes from 'prop-types';
-// import { Sidebar } from './components/sidebar';
 import { ViewDigest } from './components/viewdigest';
 import { connect } from 'react-redux';
 import { css } from '@emotion/core';

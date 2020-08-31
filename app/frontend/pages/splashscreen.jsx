@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 
 import { Actions as AccountActions } from '../controllers/account';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 const SplashScreen = (props) => {
@@ -13,6 +14,9 @@ const SplashScreen = (props) => {
       <div>Loading app</div>
     </>
   );
+};
+SplashScreen.propTypes = {
+  loadAccount: PropTypes.func,
 };
 
 const mapStateToProps = () => {

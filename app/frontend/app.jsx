@@ -7,6 +7,7 @@ import {
 import { connect as appConnect, store } from './controllers/app';
 
 import { Homepage } from './pages/homepage';
+import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
 import React from 'react';
 import { RequestGmailAccess } from './pages/requestgmailaccess';
@@ -19,6 +20,10 @@ const NoMatch = () => {
 };
 
 const PrivateApp = (props) => {
+  const { newsletterId: publisher } = props.match?.params;
+  const query = new URLSearchParams(props.location.search);
+  const digestId = query.get('digestId');
+
   if (props.user != undefined && !props.user?.email) {
     return <Redirect to="/signin" />;
   }
@@ -28,7 +33,20 @@ const PrivateApp = (props) => {
   if (!props.user) {
     return <SplashScreen />;
   }
-  return <Homepage {...props} />;
+  return (
+    <Homepage
+      user={props.user}
+      publisher={publisher}
+      digestId={digestId}
+      history={history}
+    />
+  );
+};
+PrivateApp.propTypes = {
+  user: PropTypes.object,
+  history: PropTypes.object,
+  match: PropTypes.object,
+  location: PropTypes.object,
 };
 const mapStateToProps = (state) => {
   const { account } = state;
@@ -38,7 +56,7 @@ const mapStateToProps = (state) => {
 };
 const ConnectedPrivateApp = connect(mapStateToProps)(PrivateApp);
 
-const App = (props) => {
+const App = () => {
   return (
     <Router>
       <Switch>
@@ -58,15 +76,7 @@ const App = (props) => {
           path={['/nl/:newsletterId?', '/']}
           exact
           render={(props) => {
-            const { newsletterId } = props.match?.params;
-            const query = new URLSearchParams(props.location.search);
-            return (
-              <ConnectedPrivateApp
-                history={props.history}
-                publisher={newsletterId}
-                digestId={query.get('digestId')}
-              />
-            );
+            return <ConnectedPrivateApp {...props} />;
           }}
         />
         <Route path="*">

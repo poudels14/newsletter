@@ -15,12 +15,14 @@ const getUser = async (id: string) => {
   return rows[0];
 };
 
-const hasValidRefreshToken = async (user: any) => {
+const hasValidRefreshToken = async (user: Record<string, string>) => {
   if (user['refreshToken']) {
     try {
       await Gmail.refreshAccessToken(user['refreshToken']);
       return true;
-    } catch (err) {}
+    } catch (err) {
+      console.error(err);
+    }
   }
   return false;
 };

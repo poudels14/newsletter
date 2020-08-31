@@ -110,7 +110,7 @@ const DigestList = (props) => {
   );
 };
 DigestList.propTypes = {
-  style: PropTypes.object,
+  className: PropTypes.string,
   /** Redux */
   newsletters: PropTypes.array,
   selectedNewsletterId: PropTypes.string,
