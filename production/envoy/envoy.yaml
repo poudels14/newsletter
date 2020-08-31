@@ -44,6 +44,11 @@ static_resources:
                                 regex: (.*)$
                               substitution: /static/public/
                         - match:
+                            prefix: /signin
+                          route:
+                            cluster: staticserver
+                            prefix_rewrite: /static/public/
+                        - match:
                             prefix: /
                           route:
                             cluster: staticserver
