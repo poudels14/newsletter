@@ -2,13 +2,14 @@ import * as Gmail from 'Utils/gmail';
 import * as datefns from 'date-fns';
 import * as uuid from 'uuid';
 
-import { crypto, database, knex } from 'Utils';
+import { database, knex } from 'Utils';
 
 import { Context } from 'Http/request';
 import { Cookies } from 'Http/cookies';
 import { Promise } from 'bluebird';
 import { Response } from 'Http/response';
 import { User } from 'Repos';
+import { differenceInMinutes } from 'date-fns';
 import hash from '@emotion/hash';
 import { parser } from './parser';
 
@@ -276,9 +277,19 @@ const populate = async (ctxt: Context, res: Response): Promise<void> => {
     res.sendStatus(403);
     return;
   } else {
+    const { gmailQueryInProgress, lastGmailQueryDate } = user;
+    // kick off populating process only if it's not already in progress and it's been atleast 2 minutes since last populate
+    const shouldPopulate =
+      !gmailQueryInProgress &&
+      differenceInMinutes(new Date(), lastGmailQueryDate) >= 2;
     // Populating takes time, so return response before fetching emails from Gmail
-    res.json({ lastPopulated: user.lastGmailQueryDate, inProgress: true });
-    // return;
+    res.json({
+      lastPopulated: lastGmailQueryDate,
+      inProgress: gmailQueryInProgress || shouldPopulate,
+    });
+    if (!shouldPopulate) {
+      return;
+    }
   }
 
   await User.update(userId, { gmailQueryInProgress: 1 });

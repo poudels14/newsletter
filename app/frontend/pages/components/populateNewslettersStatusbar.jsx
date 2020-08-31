@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { css } from '@emotion/core';
 
 const PopulateNewslettersStatusBar = (props) => {
-  if (props.status?.inProgress === 0) {
+  if (props.status?.inProgress !== true) {
     return <></>;
   }
   return (
