@@ -38,7 +38,7 @@ const PrivateApp = (props) => {
       user={props.user}
       publisher={publisher}
       digestId={digestId}
-      history={history}
+      history={props.history}
     />
   );
 };
