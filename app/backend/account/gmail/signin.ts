@@ -1,10 +1,11 @@
 import * as Gmail from 'Utils/gmail';
 import * as uuid from 'uuid';
 
+import { database, knex } from 'Utils';
+
 import { Context } from 'Http/request';
 import { Cookies } from 'Http/cookies';
 import { Response } from 'Http/response';
-import { database } from 'Utils';
 
 const getUser = async (email: string) => {
   const [rows] = await database.query(`SELECT * FROM users WHERE email = ?`, [
@@ -31,6 +32,18 @@ const addUser = async ({
   );
 };
 
+const updateName = async ({
+  id,
+  firstName,
+  lastName,
+}: {
+  id: string;
+  firstName: string;
+  lastName: string;
+}) => {
+  await knex('users').where({ id }).update({ firstName, lastName });
+};
+
 const signIn = async (ctxt: Context, res: Response): Promise<void> => {
   const { authenticationCode, scope } = ctxt.body;
 
@@ -43,6 +56,13 @@ const signIn = async (ctxt: Context, res: Response): Promise<void> => {
       let response = {};
 
       if (dbUser) {
+        // Note(sagar): update user's name in each signin
+        updateName({
+          id: dbUser.id,
+          firstName: user['given_name'] || dbUser.firstName,
+          lastName: user['family_name'] || dbUser.lastName,
+        });
+
         if (!Gmail.hasRequiredScopes(scope)) {
           response = { hasRequiredAccess: false };
         } else {
