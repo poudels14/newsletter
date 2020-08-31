@@ -2,12 +2,13 @@ import * as Gmail from 'Utils/gmail';
 import * as datefns from 'date-fns';
 import * as uuid from 'uuid';
 
-import { database, knex } from 'Utils';
+import { crypto, database, knex } from 'Utils';
 
 import { Context } from 'Http/request';
 import { Cookies } from 'Http/cookies';
 import { Promise } from 'bluebird';
 import { Response } from 'Http/response';
+import { User } from 'Repos';
 import hash from '@emotion/hash';
 import { parser } from './parser';
 
@@ -106,23 +107,17 @@ const insertNewsletter = async (
   return rows[0];
 };
 
-const getUser = async (userId: string) => {
-  const [rows] = await database.query(`SELECT * FROM users WHERE id = ?`, [
-    userId,
-  ]);
-  return rows[0];
-};
-
-const updateLastQueryDate = async ({
+const updateLastQueryDate = ({
   userId,
   date,
 }: {
   userId: string;
   date: Date;
 }) => {
-  return await knex('users')
-    .where({ id: userId })
-    .update({ gmailQueryInProgress: 0, lastGmailQueryDate: date });
+  return User.update(userId, {
+    gmailQueryInProgress: 0,
+    lastGmailQueryDate: date,
+  });
 };
 
 const loadAndStoreGmail = async (
@@ -275,7 +270,7 @@ const populateEmailsAfterLastDate = async (
 
 const populate = async (ctxt: Context, res: Response): Promise<void> => {
   const { id: userId } = await Cookies.getUser(ctxt);
-  const user = await getUser(userId);
+  const user = await User.getById(userId);
 
   if (!user) {
     res.sendStatus(403);
@@ -286,9 +281,9 @@ const populate = async (ctxt: Context, res: Response): Promise<void> => {
     // return;
   }
 
-  await knex('users').where({ id: userId }).update({ gmailQueryInProgress: 1 });
+  await User.update(userId, { gmailQueryInProgress: 1 });
   const populatedDate = new Date(); // next time, the emails will be loaded after this timestamp for the user
-  const client = Gmail.getClient({ refresh_token: user?.refreshToken });
+  const client = Gmail.getClient({ refresh_token: user.refreshToken });
 
   if (user.lastGmailQueryDate) {
     // if the user isn't new, fetch all emails from the last popupated date

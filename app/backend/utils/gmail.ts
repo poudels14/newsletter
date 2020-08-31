@@ -1,6 +1,5 @@
-import { GoogleApis, google } from 'googleapis';
-
 import dotenv from 'dotenv';
+import { google } from 'googleapis';
 import lo from 'lodash';
 
 dotenv.config();
@@ -16,7 +15,7 @@ const oAuth2Client = () => {
   );
 };
 
-type GmailClient = (credentials: unknown) => GoogleApis.OAuthClient;
+type GmailClient = (credentials: unknown) => google.OAuthClient;
 const getClient: GmailClient = (credentials) => {
   const client = oAuth2Client();
   client.setCredentials(credentials);

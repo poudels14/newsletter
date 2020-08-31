@@ -14,6 +14,7 @@ const commonConfig = {
     alias: {
       Http: path.resolve(__dirname, 'backend/http'),
       Utils: path.resolve(__dirname, 'backend/utils'),
+      Repos: path.resolve(__dirname, 'backend/repos'),
     },
     extensions: ['.ts', '.js', '.json'],
   },

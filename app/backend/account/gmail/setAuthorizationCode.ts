@@ -1,10 +1,11 @@
 import * as Gmail from 'Utils/gmail';
 import * as uuid from 'uuid';
 
+import { crypto, database } from 'Utils';
+
 import { Context } from 'Http/request';
 import { Cookies } from 'Http/cookies';
 import { Response } from 'Http/response';
-import { database } from 'Utils';
 
 const insertUserInfoToDb = ({
   id,
@@ -40,7 +41,10 @@ const setAuthorizationCode = async (
     await insertUserInfoToDb({
       id,
       email: user.email,
-      refreshtoken: token['refresh_token'],
+      refreshtoken: crypto.encrypt(
+        token['refresh_token'],
+        process.env.GMAIL_REFRESH_TOKEN_ENCRYPTION_KEY
+      ),
     });
 
     Cookies.setUser(res, { id, exp: user.exp });

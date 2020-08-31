@@ -1,3 +1,5 @@
 import { database, knex } from './mysql';
 
-export { database, knex };
+import { crypto } from './crypto';
+
+export { database, knex, crypto };
