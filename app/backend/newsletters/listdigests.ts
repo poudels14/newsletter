@@ -18,18 +18,27 @@ const sinceWhiteSpacing = (str: string) => {
 const queryDigests = async ({
   userId,
   newsletterId,
+  isNewsletter,
   offset = 0,
 }: Record<string, unknown>) => {
   const filter = lo.omitBy(
     {
       user_id: userId,
       newsletter_id: newsletterId,
+      is_newsletter: isNewsletter,
     },
     lo.isUndefined
   );
 
-  return knex('user_emails')
-    .select('*')
+  return knex('user_emails AS ue')
+    .select('ue.id')
+    .select('ue.newsletter_id')
+    .select('ue.receivedDate')
+    .select('ue.title')
+    .select('ue.content')
+    .select('ue.unread')
+    .leftJoin('newsletters AS n', 'n.id', 'ue.newsletter_id')
+    .where('n.visible', 1)
     .where(filter)
     .offset(offset)
     .orderBy('receivedDate', 'desc')
@@ -45,6 +54,7 @@ const listDigests = async (ctxt: Context, res: Response): Promise<void> => {
     await queryDigests({
       userId,
       newsletterId: filters.newsletterId,
+      isNewsletter: true,
       offset,
     })
   ).map((d: Record<string, unknown>) => {
