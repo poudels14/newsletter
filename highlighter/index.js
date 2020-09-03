@@ -74,24 +74,36 @@ const deserializeRange = (serializedRange, rootNode, doc) => {
   return range;
 };
 
-const dfsHighlight = (node, endNode, doc) => {
+const dfsHighlight = (node, endNode, doc, classNames, data) => {
   const childNodes = Array.from(node.childNodes);
   if (childNodes.length === 0) {
     // leaf node
     if (node.nodeType === 3) {
       const span = (doc || window.document).createElement("span");
+      if (data) {
+        Object.entries(data).forEach(
+          ([key, value]) => (span.dataset[key] = value)
+        );
+      }
       span.textContent = node.textContent;
-      span.classList.add("newsletter-highlight");
+      classNames.forEach((className) => span.classList.add(className));
       node.parentNode.replaceChild(span, node);
-    } else {
-      node.classList.add("newsletter-highlight");
     }
+    //  else {
+    //   node.classList.add("newsletter-highlight");
+    // }
   }
   if (node.isEqualNode(endNode)) {
     return true; // endReached
   }
   for (let i = 0; i < childNodes.length; i++) {
-    const endReached = dfsHighlight(childNodes[i], endNode, doc);
+    const endReached = dfsHighlight(
+      childNodes[i],
+      endNode,
+      doc,
+      classNames,
+      data
+    );
     if (endReached) {
       return true;
     }
@@ -99,13 +111,13 @@ const dfsHighlight = (node, endNode, doc) => {
   return false;
 };
 
-const highlightBetween = (startNode, endNode, doc) => {
+const highlightBetween = (startNode, endNode, doc, classNames, data) => {
   const parentNode = startNode.parentNode;
   let endReached = false;
   let currentNode = startNode;
   while (currentNode) {
     const nextSibling = currentNode.nextSibling;
-    endReached = dfsHighlight(currentNode, endNode, doc);
+    endReached = dfsHighlight(currentNode, endNode, doc, classNames, data);
     if (endReached) {
       return;
     }
@@ -113,7 +125,7 @@ const highlightBetween = (startNode, endNode, doc) => {
   }
 
   if (!endReached) {
-    highlightBetween(parentNode.nextSibling, endNode, doc);
+    highlightBetween(parentNode.nextSibling, endNode, doc, classNames, data);
   }
 };
 
@@ -124,7 +136,11 @@ const isTextSelected = (range) => {
   );
 };
 
-const highlight = (range, doc) => {
+const highlight = (range, doc, data) => {
+  const uniqueId = `highlight-${
+    new Date().getTime() * 100 + Math.floor(Math.random() * 100).toString(16)
+  }`;
+  const classNames = ["newsletter-highlight", uniqueId];
   const { startContainer, startOffset, endContainer, endOffset } = range;
   // TODO(sagar): start and end containers maynot always be text node; in that case, splitting won't work
   endContainer.splitText(endOffset);
@@ -137,7 +153,17 @@ const highlight = (range, doc) => {
     // this reassignment is necessssary only when they are same
     endNode = startNode;
   }
-  highlightBetween(startNode, endNode, doc);
+  highlightBetween(startNode, endNode, doc, classNames, data);
+  return uniqueId;
+};
+
+const clearHighlight = (selector, doc) => {
+  doc.querySelectorAll(selector).forEach((node) => {
+    const parent = node.parentNode;
+    node.childNodes.forEach((child) => parent.insertBefore(child, node));
+    parent.removeChild(node);
+    parent.normalize();
+  });
 };
 
 module.exports = {
@@ -147,4 +173,5 @@ module.exports = {
   deserializePosition,
   serializeRange,
   deserializeRange,
+  clearHighlight,
 };
