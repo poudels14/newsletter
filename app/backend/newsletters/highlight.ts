@@ -1,4 +1,8 @@
-import { deserializeRange, highlight as domHighlighter } from 'highlighter';
+import {
+  clearHighlight,
+  deserializeRange,
+  highlight as domHighlighter,
+} from 'highlighter';
 
 import { Base64 } from 'js-base64';
 import { Context } from 'Http/request';
@@ -36,7 +40,14 @@ const saveDigestContent = async ({
 const highlight = async (ctxt: Context, res: Response): Promise<void> => {
   const { id: userId } = await Cookies.getUser(ctxt);
 
-  const { newsletterId, digestId, range: serializedRange } = ctxt.body;
+  const {
+    action,
+    newsletterId,
+    digestId,
+    range: serializedRange,
+    highlightId,
+    dataset,
+  } = ctxt.body;
   const digestHtml = await queryDigestContent({
     userId,
     id: digestId,
@@ -58,8 +69,16 @@ const highlight = async (ctxt: Context, res: Response): Promise<void> => {
   const shadow = shadowHost.attachShadow({ mode: 'open' });
   shadow.innerHTML = digestHtml;
 
-  const range = deserializeRange(serializedRange, shadow, dom.window.document);
-  domHighlighter(range, dom.window.document);
+  if (action === 'highlight') {
+    const range = deserializeRange(
+      serializedRange,
+      shadow,
+      dom.window.document
+    );
+    domHighlighter(range, dom.window.document, dataset);
+  } else if (action === 'clearHighlight') {
+    clearHighlight(`.${highlightId}`, shadow);
+  }
 
   saveDigestContent({ id: digestId, content: Base64.encode(shadow.innerHTML) });
 
