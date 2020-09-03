@@ -5,7 +5,7 @@ const ADMIN_EMAILS = ['poudels14@gmail.com'];
 const buildUser = (dbUser: Record<string, unknown>) => {
   let refreshToken = dbUser?.refreshToken;
 
-  let isAdmin = ADMIN_EMAILS.find((admin) => admin === dbUser?.email);
+  const isAdmin = ADMIN_EMAILS.find((admin) => admin === dbUser?.email);
   if (refreshToken) {
     refreshToken = crypto.decrypt(
       dbUser.refreshToken,
@@ -44,7 +44,11 @@ const listUsers: ListUsers = async ({ filter, limit }) => {
     .select('lastName')
     .select('email')
     .where(filter || {})
-    .limit(limit);
+    .modify((queryBuilder: unknown) => {
+      if (limit) {
+        queryBuilder.limit(limit);
+      }
+    });
   return rows.map(buildUser);
 };
 
