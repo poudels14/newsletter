@@ -49,6 +49,11 @@ static_resources:
                             cluster: staticserver
                             prefix_rewrite: /static/public/
                         - match:
+                            prefix: /admin
+                          route:
+                            cluster: staticserver
+                            prefix_rewrite: /static/public/
+                        - match:
                             prefix: /
                           route:
                             cluster: staticserver

@@ -1,9 +1,13 @@
 import { Cookies } from 'Http/cookies';
 import { Router } from 'Http/router';
 import { account } from './account';
+import { admin } from './admin';
 import { newsletters } from './newsletters';
 
 const routes = new Router();
+
+routes.get('/admin/listUsers', admin.listUsers);
+routes.get('/admin/listNewsletters', admin.listNewsletters);
 
 routes.post('/account/gmail/authorize', account.gmail.setAuthorizationCode);
 routes.post('/account/gmail/signin', account.gmail.gmailSign);

@@ -1,3 +1,4 @@
+import React, { Suspense, lazy } from 'react';
 import {
   Redirect,
   Route,
@@ -9,11 +10,12 @@ import { connect as appConnect, store } from './controllers/app';
 import { Homepage } from './pages/homepage';
 import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
-import React from 'react';
 import { RequestGmailAccess } from './pages/requestgmailaccess';
 import { Signin } from './pages/signin';
 import { SplashScreen } from './pages/splashscreen';
 import { connect } from 'react-redux';
+
+const AdminHomepage = lazy(() => import('./pages/admin/homepage'));
 
 const NoMatch = () => {
   return <div>404 Not found</div>;
@@ -58,32 +60,40 @@ const ConnectedPrivateApp = connect(mapStateToProps)(PrivateApp);
 
 const App = () => {
   return (
-    <Router>
-      <Switch>
-        <Route
-          path="/signin"
-          render={() => {
-            return <Signin />;
-          }}
-        />
-        <Route
-          path="/grantaccess"
-          render={() => {
-            return <RequestGmailAccess />;
-          }}
-        />
-        <Route
-          path={['/nl/:newsletterId?', '/']}
-          exact
-          render={(props) => {
-            return <ConnectedPrivateApp {...props} />;
-          }}
-        />
-        <Route path="*">
-          <NoMatch />
-        </Route>
-      </Switch>
-    </Router>
+    <Suspense fallback={<div>Loading...</div>}>
+      <Router>
+        <Switch>
+          <Route
+            path="/signin"
+            render={() => {
+              return <Signin />;
+            }}
+          />
+          <Route
+            path="/grantaccess"
+            render={() => {
+              return <RequestGmailAccess />;
+            }}
+          />
+          <Route
+            path={['/nl/:newsletterId?', '/']}
+            exact
+            render={(props) => {
+              return <ConnectedPrivateApp {...props} />;
+            }}
+          />
+          <Route
+            path="/admin"
+            render={() => {
+              return <AdminHomepage />;
+            }}
+          />
+          <Route path="*">
+            <NoMatch />
+          </Route>
+        </Switch>
+      </Router>
+    </Suspense>
   );
 };
 

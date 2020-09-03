@@ -8,6 +8,7 @@ const commonConfig = {
   output: {
     path: path.resolve(__dirname, 'build/static'),
     filename: '[name].[chunkhash].js',
+    chunkFilename: '[name].[chunkhash].js',
   },
   resolve: {
     alias: {},

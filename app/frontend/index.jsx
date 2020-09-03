@@ -1,4 +1,5 @@
 import 'regenerator-runtime/runtime';
+import 'antd/dist/antd.css';
 
 import { App } from './app';
 import Modal from 'react-modal';

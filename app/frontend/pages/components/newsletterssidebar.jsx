@@ -1,9 +1,8 @@
-import 'antd/dist/antd.css';
-
 import { Layout } from 'antd';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { SettingOutlined } from '@ant-design/icons';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
 import { css } from '@emotion/core';
@@ -61,9 +60,6 @@ Button.propTypes = {
 };
 
 const NewslettersSidebar = (props) => {
-  const allButtonClassNames = classnames({
-    active: props.selectedPublisher === undefined,
-  });
   return (
     <Layout.Sider
       width={props.width}
@@ -85,16 +81,45 @@ const NewslettersSidebar = (props) => {
           font-weight: 700;
         `)}
       >
-        {props.user?.firstName} {props.user?.lastName}
+        <span>
+          {props.user?.firstName} {props.user?.lastName}
+        </span>
+        {props.user?.isAdmin && (
+          <div
+            css={css(`
+              display: inline-block;
+              margin-left: 20px;
+            `)}
+          >
+            <Link
+              to={`/admin`}
+              css={css(`
+                color: inherit;
+              `)}
+            >
+              <SettingOutlined />
+            </Link>
+          </div>
+        )}
       </div>
-      {/* <Divider orientation="left" plain /> */}
-      <Button id="" name="All" classNames={allButtonClassNames} />
+      <Button
+        id=""
+        name="All"
+        classNames={classnames({
+          active: props.selectedPublisher === undefined,
+        })}
+      />
       {props.publishers &&
         props.publishers.map((publisher, i) => {
-          const classNames = classnames({
-            active: props.selectedPublisher === publisher.id,
-          });
-          return <Button {...publisher} key={i} classNames={classNames} />;
+          return (
+            <Button
+              {...publisher}
+              key={i}
+              classNames={classnames({
+                active: props.selectedPublisher === publisher.id,
+              })}
+            />
+          );
         })}
     </Layout.Sider>
   );

@@ -26,7 +26,7 @@ const Homepage = (props) => {
   return (
     <div css={css(`height: 100%;`)}>
       <Layout
-        className="site-layout2"
+        className="homepage"
         css={css(`background: white; min-height: 100%;`)}
       >
         <NewslettersSidebar width="250px" />

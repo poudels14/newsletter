@@ -19,18 +19,20 @@ const hasValidRefreshToken = async (user: Record<string, string>) => {
 
 const getProfile = async (ctxt: Context, res: Response): Promise<void> => {
   const { id: userId } = await Cookies.getUser(ctxt);
-  let user = {};
   if (userId) {
     const dbUser = await User.getById(userId);
-    user = {
-      ...user,
+
+    const user = {
       firstName: dbUser.firstName,
       lastName: dbUser.lastName,
       email: dbUser.email,
       hasRequiredAccess: await hasValidRefreshToken(dbUser),
+      isAdmin: dbUser.isAdmin,
     };
+    res.json(user);
+    return;
   }
-  res.json(user);
+  res.json({});
 };
 
 export default getProfile;
