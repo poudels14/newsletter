@@ -107,9 +107,13 @@ const SelectedTextActionPopover = ({ hidePopoverTimer, ...props }) => {
       const serialized = serializeRange(range, props.shadowDom);
       const dataset = { top, left };
 
-      const highlightId = highlight(range, null, dataset);
+      const uniqueId = `highlight-${
+        new Date().getTime() * 100 +
+        Math.floor(Math.random() * 100).toString(16)
+      }`;
+      highlight(range, null, uniqueId, dataset);
       const highlightedElements = props.shadowDom.querySelectorAll(
-        `.${highlightId}`
+        `.${uniqueId}`
       );
       highlightedElements.forEach((ele) => {
         ele.addEventListener('mouseenter', () => {
@@ -118,7 +122,7 @@ const SelectedTextActionPopover = ({ hidePopoverTimer, ...props }) => {
             hidePopoverTimer.current = null;
           }
           props.setPopoverOptions({
-            highlightId,
+            highlightId: uniqueId,
             ...props.popoverOptions,
           });
         });
@@ -130,13 +134,19 @@ const SelectedTextActionPopover = ({ hidePopoverTimer, ...props }) => {
         });
       });
 
+      const content = Array.from(highlightedElements)
+        .map((x) => x.innerText)
+        .join(' ');
+
       // TODO(sagar): show error if the request below fails
       axios.post('/api/newsletters/highlight', {
         action: 'highlight',
         newsletterId: props.newsletterId,
         digestId: props.digestId,
         range: serialized,
+        highlightId: uniqueId,
         dataset,
+        content,
       });
       props.setPopoverOptions({});
     }
@@ -212,7 +222,8 @@ const loadAndShowDigest = (
   newsletterId,
   digestId,
   hidePopoverTimer,
-  setPopoverOptions
+  setPopoverOptions,
+  scrollToHighlightId
 ) => {
   axios
     .get(`/api/newsletters/view/${newsletterId}/${digestId}`)
@@ -226,9 +237,7 @@ const loadAndShowDigest = (
           cursor: pointer;
           box-sizing: border-box;
           background-color: rgba(12, 242, 150, 0.5);
-          &:before, &:after {
-            box-sizing: inherit;
-          }
+          user-select: none;
         }
         .newsletter-highlight:hover {
           background-color: rgba(12, 242, 150, 0.9);
@@ -237,6 +246,14 @@ const loadAndShowDigest = (
       dom.appendChild(shadowStyle);
 
       bindHighlights({ dom, timerRef: hidePopoverTimer, setPopoverOptions });
+
+      if (scrollToHighlightId) {
+        dom.querySelector(`.${scrollToHighlightId}`).scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+          inline: 'nearest',
+        });
+      }
     });
 };
 
@@ -248,13 +265,17 @@ const ViewDigest = (props) => {
   const [popoverOptions, setPopoverOptions] = useState();
 
   useEffect(() => {
+    const scrollToHighlightId = window.location.hash?.startsWith('#highlight-')
+      ? window.location.hash.substr(1)
+      : null;
     shadowDom.current = shadowHost.current.attachShadow({ mode: 'open' });
     loadAndShowDigest(
       shadowDom.current,
       props.newsletterId,
       props.digestId,
       hidePopoverTimer,
-      setPopoverOptions
+      setPopoverOptions,
+      scrollToHighlightId
     );
   }, [props.newsletterId, props.digestId, shadowHost]);
 

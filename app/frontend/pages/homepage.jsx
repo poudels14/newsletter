@@ -2,6 +2,7 @@ import React, { useCallback, useEffect } from 'react';
 
 import { Actions } from '../controllers/newsletters';
 import { DigestList } from './components/digestlist';
+import { HighlightsSidebar } from './components/highlightssidebar';
 import { Layout } from 'antd';
 import Modal from 'react-modal';
 import { NewslettersSidebar } from './components/newsletterssidebar';
@@ -40,6 +41,7 @@ const Homepage = (props) => {
             `)}
           />
         </Layout.Content>
+        <HighlightsSidebar width="350px" />
       </Layout>
       <Modal
         isOpen={props.digestId !== null}

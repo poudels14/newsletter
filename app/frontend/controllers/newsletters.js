@@ -18,6 +18,9 @@ const Actions = {
 
   APPEND_DIGESTS: '/newsletters/digests/append',
   LOAD_MORE_DIGESTS: '/newsletters/digests/loadmore',
+
+  LOAD_HIGHLIGHTS: '/newsletters/highlights/load',
+  APPEND_HIGHLIGHTS: '/newsletters/highlights/append',
 };
 
 const reducer = (state = {}, action) => {
@@ -48,6 +51,15 @@ const reducer = (state = {}, action) => {
       return {
         ...state,
         digests: state.digests.concat(digests),
+      };
+    }
+    case Actions.APPEND_HIGHLIGHTS: {
+      const highlights = state.highlights
+        ? state.highlights.concat(action.highlights)
+        : action.highlights;
+      return {
+        ...state,
+        highlights: highlights,
       };
     }
     default:
@@ -100,12 +112,20 @@ function* loadMoreDigestsListener() {
   });
 }
 
+function* loadHighlightsListener() {
+  yield takeEvery(Actions.LOAD_HIGHLIGHTS, function* () {
+    const { data } = yield axios.get('/api/newsletters/listHighlights');
+    yield put({ type: Actions.APPEND_HIGHLIGHTS, highlights: data });
+  });
+}
+
 function* sagas() {
   yield all([
     populateListener(),
     loadPublishersListener(),
     selectPublisherListener(),
     loadMoreDigestsListener(),
+    loadHighlightsListener(),
   ]);
 }
 

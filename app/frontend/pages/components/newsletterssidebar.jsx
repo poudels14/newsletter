@@ -67,9 +67,8 @@ const NewslettersSidebar = (props) => {
     <Layout.Sider
       width={props.width}
       css={css(`
-        background: white;
-
         background: rgb(40, 40, 54); /* rgb(42, 40, 77); rgb(37, 35, 75); rgb(66, 63, 134); rgba(54, 52, 105, 1); */
+        background: #001529;
         color: white;
         font-size: 16px;
         @media (max-width: 425px) {
