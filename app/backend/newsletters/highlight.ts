@@ -37,6 +37,29 @@ const saveDigestContent = async ({
   await knex('user_emails').where({ id }).update({ content });
 };
 
+const saveHighlight = ({
+  id,
+  userId,
+  digestId,
+  content,
+}: {
+  id: string;
+  userId: string;
+  digestId: string;
+  content: string;
+}): Promise<void> => {
+  return knex('highlights').insert({
+    id,
+    user_id: userId,
+    digest_id: digestId,
+    content,
+  });
+};
+
+const deleteHighlight = (highlightId: string): Promise<void> => {
+  return knex('highlights').where({ id: highlightId }).delete();
+};
+
 const highlight = async (ctxt: Context, res: Response): Promise<void> => {
   const { id: userId } = await Cookies.getUser(ctxt);
 
@@ -47,6 +70,7 @@ const highlight = async (ctxt: Context, res: Response): Promise<void> => {
     range: serializedRange,
     highlightId,
     dataset,
+    content,
   } = ctxt.body;
   const digestHtml = await queryDigestContent({
     userId,
@@ -75,9 +99,11 @@ const highlight = async (ctxt: Context, res: Response): Promise<void> => {
       shadow,
       dom.window.document
     );
-    domHighlighter(range, dom.window.document, dataset);
+    domHighlighter(range, dom.window.document, highlightId, dataset);
+    await saveHighlight({ id: highlightId, userId, digestId, content });
   } else if (action === 'clearHighlight') {
     clearHighlight(`.${highlightId}`, shadow);
+    await deleteHighlight(highlightId);
   }
 
   saveDigestContent({ id: digestId, content: Base64.encode(shadow.innerHTML) });

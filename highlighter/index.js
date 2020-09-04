@@ -136,11 +136,8 @@ const isTextSelected = (range) => {
   );
 };
 
-const highlight = (range, doc, data) => {
-  const uniqueId = `highlight-${
-    new Date().getTime() * 100 + Math.floor(Math.random() * 100).toString(16)
-  }`;
-  const classNames = ["newsletter-highlight", uniqueId];
+const highlight = (range, doc, id, data) => {
+  const classNames = ["newsletter-highlight", id];
   const { startContainer, startOffset, endContainer, endOffset } = range;
   // TODO(sagar): start and end containers maynot always be text node; in that case, splitting won't work
   endContainer.splitText(endOffset);
@@ -154,7 +151,6 @@ const highlight = (range, doc, data) => {
     endNode = startNode;
   }
   highlightBetween(startNode, endNode, doc, classNames, data);
-  return uniqueId;
 };
 
 const clearHighlight = (selector, doc) => {

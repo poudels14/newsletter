@@ -6,8 +6,12 @@ import { newsletters } from './newsletters';
 
 const routes = new Router();
 
-routes.get('/admin/listUsers', admin.listUsers);
-routes.get('/admin/listNewsletters', admin.listNewsletters);
+routes.get('/admin/listUsers', Cookies.authorizedOnly(), admin.listUsers);
+routes.get(
+  '/admin/listNewsletters',
+  Cookies.authorizedOnly(),
+  admin.listNewsletters
+);
 
 routes.post('/account/gmail/authorize', account.gmail.setAuthorizationCode);
 routes.post('/account/gmail/signin', account.gmail.gmailSign);
@@ -44,6 +48,11 @@ routes.post(
   '/newsletters/highlight',
   Cookies.authorizedOnly(),
   newsletters.highlight
+);
+routes.get(
+  '/newsletters/listHighlights',
+  Cookies.authorizedOnly(),
+  newsletters.listHighlights
 );
 
 export { routes };
