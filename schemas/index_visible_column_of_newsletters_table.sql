@@ -1,0 +1,1 @@
+ALTER TABLE newsletters ADD INDEX newsletters_idx_1 (visible);
