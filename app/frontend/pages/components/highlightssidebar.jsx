@@ -1,18 +1,12 @@
-import React, { useEffect } from 'react';
-
-import { Actions } from '../../controllers/newsletters';
 import { Layout } from 'antd';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import React from 'react';
 import { connect } from 'react-redux';
 import { css } from '@emotion/core';
 import { format as formatDate } from 'date-fns';
 
 const HighlightsSidebar = ({ highlights, ...props }) => {
-  useEffect(() => {
-    props.loadHighlights();
-  }, []);
-
   return (
     <Layout.Sider
       width={props.width}
@@ -44,6 +38,13 @@ const HighlightsSidebar = ({ highlights, ...props }) => {
           background: white;
         `)}
       >
+        {(highlights === null || highlights?.length === 0) && (
+          <div
+            css={css(`padding: 10px 20px; width: 100%; text-align: center;`)}
+          >
+            {highlights === null ? 'Loading...' : 'No highlighted texts yet!'}
+          </div>
+        )}
         {highlights &&
           highlights.map((highlight, i) => {
             return (
@@ -92,10 +93,8 @@ const HighlightsSidebar = ({ highlights, ...props }) => {
 };
 HighlightsSidebar.propTypes = {
   width: PropTypes.string,
-
   /** Redux */
   highlights: PropTypes.array,
-  loadHighlights: PropTypes.func,
 };
 
 /** Redux */
@@ -107,15 +106,6 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    loadHighlights: () => dispatch({ type: Actions.LOAD_HIGHLIGHTS }),
-  };
-};
-
-const connectedHighlightsSidebar = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(HighlightsSidebar);
+const connectedHighlightsSidebar = connect(mapStateToProps)(HighlightsSidebar);
 
 export { connectedHighlightsSidebar as HighlightsSidebar };

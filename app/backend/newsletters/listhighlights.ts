@@ -2,8 +2,9 @@ import { Context } from 'Http/request';
 import { Cookies } from 'Http/cookies';
 import { Response } from 'Http/response';
 import { knex } from 'Utils';
+import lo from 'lodash';
 
-const queryHighlights = async ({ userId }: Record<string, unknown>) => {
+const queryHighlights = async (filters: Record<string, unknown>) => {
   return knex('highlights AS h')
     .select('h.id')
     .select('h.digest_id')
@@ -12,7 +13,7 @@ const queryHighlights = async ({ userId }: Record<string, unknown>) => {
     .select('ue.newsletter_id')
     .select('ue.title')
     .leftJoin('user_emails AS ue', 'ue.id', 'h.digest_id')
-    .where({ 'h.user_id': userId })
+    .where(filters)
     .orderBy('date', 'desc')
     .limit(50);
 };
@@ -20,7 +21,16 @@ const queryHighlights = async ({ userId }: Record<string, unknown>) => {
 const listHighlights = async (ctxt: Context, res: Response): Promise<void> => {
   const { id: userId } = await Cookies.getUser(ctxt);
 
-  const highlights = (await queryHighlights({ userId })).map(
+  const filters = JSON.parse(ctxt.query.filters);
+  const queryFilters = lo.omitBy(
+    {
+      'h.user_id': userId,
+      'ue.newsletter_id': filters?.newsletterId,
+    },
+    lo.isUndefined
+  );
+
+  const highlights = (await queryHighlights(queryFilters)).map(
     (highlight: Record<string, unknown>) => {
       const {
         id,

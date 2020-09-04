@@ -44,6 +44,7 @@ const reducer = (state = {}, action) => {
         ...state,
         selectedPublisher: action.publisher,
         digests: [],
+        highlights: null, // reset highlights when different publisher is selected
       };
     }
     case Actions.APPEND_DIGESTS: {
@@ -100,6 +101,11 @@ function* selectPublisherListener() {
       params: { filters: { newsletterId: publisher } },
     });
     yield put({ type: Actions.APPEND_DIGESTS, digests });
+
+    yield put({
+      type: Actions.LOAD_HIGHLIGHTS,
+      filters: { newsletterId: publisher },
+    });
   });
 }
 
@@ -113,8 +119,10 @@ function* loadMoreDigestsListener() {
 }
 
 function* loadHighlightsListener() {
-  yield takeEvery(Actions.LOAD_HIGHLIGHTS, function* () {
-    const { data } = yield axios.get('/api/newsletters/listHighlights');
+  yield takeEvery(Actions.LOAD_HIGHLIGHTS, function* ({ filters }) {
+    const { data } = yield axios.get('/api/newsletters/listHighlights', {
+      params: { filters },
+    });
     yield put({ type: Actions.APPEND_HIGHLIGHTS, highlights: data });
   });
 }

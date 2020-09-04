@@ -107,10 +107,10 @@ const SelectedTextActionPopover = ({ hidePopoverTimer, ...props }) => {
       const serialized = serializeRange(range, props.shadowDom);
       const dataset = { top, left };
 
-      const uniqueId = `highlight-${
+      const uniqueId = `highlight-${(
         new Date().getTime() * 100 +
-        Math.floor(Math.random() * 100).toString(16)
-      }`;
+        Math.floor(Math.random() * 100)
+      ).toString(16)}`;
       highlight(range, null, uniqueId, dataset);
       const highlightedElements = props.shadowDom.querySelectorAll(
         `.${uniqueId}`
@@ -249,7 +249,8 @@ const loadAndShowDigest = (
 
       if (scrollToHighlightId) {
         dom.querySelector(`.${scrollToHighlightId}`).scrollIntoView({
-          behavior: 'smooth',
+          // TODO(sagar): smooth scrolling didn't work sometimes, so using default 'auto' scrolling for now
+          //              try to make smooth scrolling
           block: 'start',
           inline: 'nearest',
         });
