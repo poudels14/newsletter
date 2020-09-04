@@ -15,6 +15,10 @@ const Button = ({ classNames, id, name, totalUnread }) => {
         color: inherit;
         font-size: 16px;
         font-weight: 500;
+
+        &:hover, &.active {
+          color: inherit;
+        }
       `)}
     >
       <div
@@ -23,7 +27,6 @@ const Button = ({ classNames, id, name, totalUnread }) => {
           padding: 5px 14px;
           border: 0 solid rgba(100, 100, 100, 0.2);
           border-bottom-width: 1px;
-
           &:hover, &.active {
             color: white;
             background: rgb(77, 75, 110); /* rgba(54, 52, 105, 1); */
@@ -95,6 +98,9 @@ const NewslettersSidebar = (props) => {
               to={`/admin`}
               css={css(`
                 color: inherit;
+                &:hover {
+                  color: inherit;
+                }
               `)}
             >
               <SettingOutlined />
