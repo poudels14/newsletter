@@ -23,6 +23,18 @@ const DigestList = (props) => {
     [props.updateDigestFilters]
   );
 
+  const shouldShowLoadMore = useMemo(() => {
+    const totalViewableDigest = props.digestFilters?.unreadOnly
+      ? selectedNewsletter?.totalUnread
+      : selectedNewsletter?.totalDigests;
+    return (
+      !selectedNewsletter ||
+      (props.digests &&
+      props.digests.length > 0 && // this is so that load more only appears after the initial digest list is loaded
+        props.digests.length < totalViewableDigest)
+    );
+  }, [props.digests, selectedNewsletter]);
+
   return (
     <>
       <div
@@ -116,7 +128,7 @@ const DigestList = (props) => {
                         'LLL dd, yyyy'
                       )}
                     </div>
-                    <div css={css(`font-size: 15;`)}>
+                    <div css={css(`font-size: 15px;`)}>
                       {digest.previewContent}
                     </div>
                   </div>
@@ -124,23 +136,21 @@ const DigestList = (props) => {
               </Link>
             );
           })}
-        {selectedNewsletter &&
-        props.digests &&
-        props.digests.length > 0 && // this is so that load more only appears after the initial digest list is loaded
-          props.digests.length < selectedNewsletter?.totalDigests && (
-            <div>
-              <button
-                onClick={() =>
-                  props.loadMoreDigests({
-                    offset: props.digests.length,
-                  })
-                }
-              >
-                Load More
-              </button>
-              {/* TODO(sagar): prevent clicking 'Load More' button before last load more action is completed */}
-            </div>
-          )}
+
+        {shouldShowLoadMore && (
+          <div>
+            <button
+              onClick={() =>
+                props.loadMoreDigests({
+                  offset: props.digests.length,
+                })
+              }
+            >
+              Load More
+            </button>
+            {/* TODO(sagar): prevent clicking 'Load More' button before last load more action is completed */}
+          </div>
+        )}
       </div>
     </>
   );
@@ -149,7 +159,6 @@ DigestList.propTypes = {
   className: PropTypes.string,
   /** Redux */
   newsletters: PropTypes.array,
-  selectedNewsletterId: PropTypes.string,
   digestFilters: PropTypes.object,
   digests: PropTypes.array,
   loadMoreDigests: PropTypes.func,
