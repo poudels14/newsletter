@@ -12,8 +12,14 @@ const PopulateNewslettersStatusBar = (props) => {
       css={css(`
         width: 100%;
         position: absolute;
-        top: 0;
         left: 0;
+        @media (min-width: 425px) {
+          top: 0;
+        }
+        @media (max-width: 425px) {
+          bottom: 0;
+          font-size: 12px;
+        }
       `)}
     >
       <div
@@ -30,6 +36,10 @@ const PopulateNewslettersStatusBar = (props) => {
             background: rgba(70, 176, 70, 0.7);
             color: #fefefe;
             border-radius: 0 0 3px 3px;
+            @media (max-width: 425px) {
+              padding: 2px 0;
+              border-radius: 2px 2px 0 0;
+            }
           `)}
         >
           Fetching newsletters from Gmail

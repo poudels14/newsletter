@@ -39,9 +39,10 @@ const DigestList = (props) => {
     <>
       <div
         css={css(`
-        margin: 50px auto 0 auto;
-        max-width: 800px;
-      `)}
+          padding: 10px 20px;
+          margin: 30px auto 0 auto;
+          max-width: 800px;
+        `)}
       >
         <Switch
           defaultChecked={props.digestFilters?.unreadOnly}
@@ -55,7 +56,7 @@ const DigestList = (props) => {
         css={css(`
           padding: 10px 10px;
           max-width: 800px;
-          margin: 20px auto;
+          margin: 10px auto;
         `)}
       >
         {props.digests?.length === 0 && <div>Loading digests</div>}
