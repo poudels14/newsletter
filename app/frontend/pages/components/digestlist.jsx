@@ -72,7 +72,7 @@ const DigestList = (props) => {
                     css={css(`
                       flex: 0 0 100px;
                       margin-top: 5px;
-                      height: 75px;
+                      height: 100px;
                       overflow: hidden;
                       @media (max-width: 425px) {
                         flex: 0 0 60px;
@@ -80,7 +80,9 @@ const DigestList = (props) => {
                       }
                     `)}
                     style={{
-                      background: `center / cover no-repeat url(${digest.previewImage})`,
+                      background: digest.previewImage
+                        ? `center / cover no-repeat url(${digest.previewImage})`
+                        : '#f6f6f6',
                     }}
                   ></div>
 
