@@ -92,7 +92,7 @@ const NewslettersDropdown = (props) => {
         `)}
       ></div>
       <Select
-        defaultValue={props.selectedNewsletterId || 'all'}
+        value={props.selectedNewsletterId || 'all'}
         size={'large'}
         bordered={false}
         showArrow
