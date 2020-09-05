@@ -18,6 +18,7 @@ const singleWhiteSpacing = (str: string) => {
 const queryDigests = async ({
   userId,
   newsletterId,
+  unread,
   isNewsletter,
   offset = 0,
 }: Record<string, unknown>) => {
@@ -26,6 +27,7 @@ const queryDigests = async ({
       user_id: userId,
       newsletter_id: newsletterId,
       is_newsletter: isNewsletter,
+      unread,
     },
     lo.isUndefined
   );
@@ -55,6 +57,7 @@ const listDigests = async (ctxt: Context, res: Response): Promise<void> => {
       userId,
       newsletterId: filters.newsletterId,
       isNewsletter: true,
+      unread: filters.unreadOnly ? true : undefined,
       offset,
     })
   ).map((d: Record<string, unknown>) => {

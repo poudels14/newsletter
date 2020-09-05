@@ -1,4 +1,4 @@
-import { all, delay, put, takeEvery } from 'redux-saga/effects';
+import { all, delay, put, select, takeEvery } from 'redux-saga/effects';
 
 import axios from 'axios';
 
@@ -14,8 +14,9 @@ const Actions = {
 
   LOAD_PUBLISHERS: '/newsletters/publishers/load',
   SET_PUBLISHERS: '/newsletters/publishers/set',
-  SELECT_PUBLISHER: '/newsletters/publishers/select',
 
+  SET_DIGEST_FILTERS: '/newsletters/digests/filters/set', // triggered after stored filters are loaded from server
+  UPDATE_DIGEST_FILTERS: '/newsletters/digests/filters/update',
   APPEND_DIGESTS: '/newsletters/digests/append',
   LOAD_MORE_DIGESTS: '/newsletters/digests/loadmore',
 
@@ -39,10 +40,20 @@ const reducer = (state = {}, action) => {
         publishers,
       };
     }
-    case Actions.SELECT_PUBLISHER: {
+    case Actions.SET_DIGEST_FILTERS: {
+      const { filters } = action;
       return {
         ...state,
-        selectedPublisher: action.publisher,
+        digestFilters: filters,
+      };
+    }
+    case Actions.UPDATE_DIGEST_FILTERS: {
+      const { filters } = action;
+      return {
+        ...state,
+        digestFilters: state.digestFilters
+          ? { ...state.digestFilters, ...filters }
+          : filters,
         digests: [],
         highlights: null, // reset highlights when different publisher is selected
       };
@@ -95,24 +106,48 @@ function* loadPublishersListener() {
   });
 }
 
-function* selectPublisherListener() {
-  yield takeEvery(Actions.SELECT_PUBLISHER, function* ({ publisher }) {
+function* updateDigestFiltersListener() {
+  yield takeEvery(Actions.UPDATE_DIGEST_FILTERS, function* ({
+    filters: newFilters,
+  }) {
+    const digestFilters = yield select(
+      (state) => state.newsletters?.digestFilters
+    );
     const digests = yield listDigests({
-      params: { filters: { newsletterId: publisher } },
+      params: { filters: digestFilters },
     });
     yield put({ type: Actions.APPEND_DIGESTS, digests });
 
-    yield put({
-      type: Actions.LOAD_HIGHLIGHTS,
-      filters: { newsletterId: publisher },
-    });
+    const newsletterIdChanged = Object.keys(newFilters).find(
+      (f) => f === 'newsletterId'
+    );
+    if (newsletterIdChanged) {
+      // only reload highlights if newsletter id is changed
+      yield put({
+        type: Actions.LOAD_HIGHLIGHTS,
+        filters: { newsletterId: digestFilters?.newsletterId },
+      });
+    }
+
+    // NOTE(sagar): update settings if filter other than newsletterId is changed
+    const persistantFiltersUpdated = Object.keys(newFilters).find(
+      (f) => f !== 'newsletterId'
+    );
+    if (persistantFiltersUpdated) {
+      yield axios.post('/api/account/updateSettings', {
+        settings: { digestFilters },
+      });
+    }
   });
 }
 
 function* loadMoreDigestsListener() {
-  yield takeEvery(Actions.LOAD_MORE_DIGESTS, function* ({ publisher, offset }) {
+  yield takeEvery(Actions.LOAD_MORE_DIGESTS, function* ({ offset }) {
+    const digestFilters = yield select(
+      (state) => state.newsletters?.digestFilters
+    );
     const digests = yield listDigests({
-      params: { filters: { newsletterId: publisher }, offset },
+      params: { filters: digestFilters, offset },
     });
     yield put({ type: Actions.APPEND_DIGESTS, digests });
   });
@@ -131,7 +166,7 @@ function* sagas() {
   yield all([
     populateListener(),
     loadPublishersListener(),
-    selectPublisherListener(),
+    updateDigestFiltersListener(),
     loadMoreDigestsListener(),
     loadHighlightsListener(),
   ]);

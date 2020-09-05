@@ -111,7 +111,7 @@ const NewslettersSidebar = (props) => {
         id=""
         name="All"
         classNames={classnames({
-          active: props.selectedPublisher === undefined,
+          active: props.selectedNewsletterId === undefined,
         })}
       />
       {props.publishers &&
@@ -121,7 +121,7 @@ const NewslettersSidebar = (props) => {
               {...publisher}
               key={i}
               classNames={classnames({
-                active: props.selectedPublisher === publisher.id,
+                active: props.selectedNewsletterId === publisher.id,
               })}
             />
           );
@@ -135,7 +135,7 @@ NewslettersSidebar.propTypes = {
 
   /** Redux */
   user: PropTypes.object,
-  selectedPublisher: PropTypes.string,
+  selectedNewsletterId: PropTypes.string,
   publishers: PropTypes.array,
 };
 
@@ -145,7 +145,7 @@ const mapStateToProps = (state) => {
   const { account, newsletters } = state;
   return {
     user: account?.user,
-    selectedPublisher: newsletters?.selectedPublisher,
+    selectedNewsletterId: newsletters?.digestFilters?.newsletterId,
     publishers: newsletters?.publishers,
   };
 };

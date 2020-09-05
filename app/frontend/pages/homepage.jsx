@@ -33,13 +33,7 @@ const Homepage = (props) => {
         <NewslettersSidebar width="250px" />
         <Layout.Content>
           <PopulateNewslettersStatusBar />
-          <DigestList
-            css={css(`
-              padding: 50px 20px;
-              max-width: 800px;
-              margin: 0 auto;
-            `)}
-          />
+          <DigestList />
         </Layout.Content>
         <HighlightsSidebar width="350px" />
       </Layout>
@@ -94,8 +88,11 @@ const mapDispatchToProps = (dispatch) => {
   return {
     populate: () => dispatch({ type: Actions.POPULATE }),
     loadPublishers: () => dispatch({ type: Actions.LOAD_PUBLISHERS }),
-    selectPublisher: (publisher) =>
-      dispatch({ type: Actions.SELECT_PUBLISHER, publisher }),
+    selectPublisher: (newsletterId) =>
+      dispatch({
+        type: Actions.UPDATE_DIGEST_FILTERS,
+        filters: { newsletterId },
+      }),
   };
 };
 

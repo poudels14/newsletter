@@ -1,5 +1,6 @@
 import { all, put, takeEvery } from 'redux-saga/effects';
 
+import { Actions as NewsletterActions } from './newsletters';
 import axios from 'axios';
 
 const Actions = {
@@ -24,6 +25,13 @@ const reducer = (prevState = {}, action) => {
 function* loadListener() {
   yield takeEvery(Actions.LOAD, function* () {
     const { data: user } = yield axios.get('/api/account/profile');
+
+    // Note(sagar): since user.settings contains digestFilters, update the newsletters filter after profile is loaded
+    yield put({
+      type: NewsletterActions.SET_DIGEST_FILTERS,
+      filters: user?.settings?.digestFilters,
+    });
+
     yield put({ type: Actions.SET_USER, user });
   });
 }
