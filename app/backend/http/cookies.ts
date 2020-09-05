@@ -24,7 +24,6 @@ const getUser: GetUser = (req) => {
       process.env.LOGIN_COOKIE_SIGNING_KEY,
       (err: Error, user: Record<string, unknown>) => {
         if (err) {
-          console.error(err);
           resolve({});
         } else {
           resolve({ id: user.id });
@@ -43,7 +42,7 @@ const authorizedOnly: AuthorizedOnly = () => async (req, res, next) => {
   getUser(req)
     .catch(() => res.sendStatus(403))
     .then((user) => {
-      if (user) {
+      if (user?.id) {
         req.user = user;
         next();
       } else {
