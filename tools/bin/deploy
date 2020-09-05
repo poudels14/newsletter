@@ -5,8 +5,6 @@ set -e
 . production/secrets/apibackend.env
 . production/secrets/mysql.env
 
-echo "GMAIL_CLIENT_ID = $GMAIL_CLIENT_ID"
-
 if [[ $# < 1 ]]; then
   echo "Error: service name misssing"
   exit -1

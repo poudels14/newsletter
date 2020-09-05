@@ -296,9 +296,7 @@ const ViewDigest = (props) => {
       `)}
     >
       <div
-        ref={shadowHostContainer}
         css={css(`
-          position: relative;
           display: flex;
           flex-direction: row;
         `)}

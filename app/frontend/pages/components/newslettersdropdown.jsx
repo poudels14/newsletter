@@ -64,7 +64,6 @@ const NewslettersDropdown = (props) => {
   return (
     <div
       css={css(`
-        // background: #001529;
         color: white;
         font-size: 16px;
         display: none;

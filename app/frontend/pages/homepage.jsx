@@ -48,7 +48,7 @@ const Homepage = (props) => {
           right: 20px;
           z-index: 9999;
           background: white;
-          border-radius: 20px;
+          border-radius: 22px;
           cursor: pointer;
           font-size: 40px;
           @media (max-width: 425px) {
@@ -71,8 +71,8 @@ const Homepage = (props) => {
           padding: 20px;
           @media (max-width: 425px) {
             top: 40px;
-            left: 0px;
-            right: 0px;
+            left: 5px;
+            right: 5px;
             bottom: 0px;
             padding: 0px;
           }
