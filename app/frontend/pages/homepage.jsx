@@ -34,8 +34,8 @@ const Homepage = (props) => {
       >
         <NewslettersSidebar width="250px" />
         <Layout.Content>
-          <NewslettersDropdown />{' '}
           {/* Note(sagar) This will only show in mobile devices */}
+          <NewslettersDropdown />
           <PopulateNewslettersStatusBar />
           <DigestList />
         </Layout.Content>

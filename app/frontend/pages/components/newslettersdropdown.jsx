@@ -1,6 +1,7 @@
+import React, { useRef, useState } from 'react';
+
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import React from 'react';
 import { Select } from 'antd';
 import { connect } from 'react-redux';
 import { css } from '@emotion/core';
@@ -35,14 +36,13 @@ const Button = ({ classNames, id, name, totalUnread }) => {
           <span
             css={css(`
               display: inline-block;
-              background: rgb(97, 97, 97);
-              padding: 0 10px;
-              line-height: 20px;
+              background: rgb(220, 220, 220);
+              padding: 0 7px;
+              line-height: 17px;
               border-radius: 2px;
               margin-left: 15px;
-              font-size: 12px;
-
-              text-align:center;
+              font-size: 11px;
+              color: rgba(75, 75, 75);
               vertical-align: middle;
             `)}
           >
@@ -61,23 +61,44 @@ Button.propTypes = {
 };
 
 const NewslettersDropdown = (props) => {
+  const [isDropdownVisible, setDropdownVisibility] = useState(false);
+  const dropdownContainerRef = useRef();
   return (
     <div
+      ref={dropdownContainerRef}
       css={css(`
-        color: white;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
         font-size: 16px;
         display: none;
         @media (max-width: 425px) {
           display: block;
+          z-index: 9999;
         }
       `)}
     >
+      <div
+        hidden={!isDropdownVisible}
+        css={css(`
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(240, 240, 240, 0.4);
+          backdrop-filter: blur(2px);
+        `)}
+      ></div>
       <Select
         defaultValue={props.selectedNewsletterId || 'all'}
         size={'large'}
         bordered={false}
+        showArrow
+        onDropdownVisibleChange={setDropdownVisibility}
+        getPopupContainer={() => dropdownContainerRef?.current}
         style={{ width: '100%', color: 'white', background: '#001529' }}
-        dropdownStyle={{ color: 'white' }}
       >
         <Select.Option value="all">
           <Button id="" name="All" />
