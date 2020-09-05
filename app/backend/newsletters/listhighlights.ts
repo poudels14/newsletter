@@ -26,6 +26,7 @@ const listHighlights = async (ctxt: Context, res: Response): Promise<void> => {
     {
       'h.user_id': userId,
       'ue.newsletter_id': filters?.newsletterId,
+      'ue.unread': filters.unreadOnly ? true : undefined,
     },
     lo.isUndefined
   );

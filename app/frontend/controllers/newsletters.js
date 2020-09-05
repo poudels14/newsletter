@@ -54,7 +54,7 @@ const reducer = (state = {}, action) => {
         digestFilters: state.digestFilters
           ? { ...state.digestFilters, ...filters }
           : filters,
-        digests: [],
+        digests: null,
         highlights: null, // reset highlights when different publisher is selected
       };
     }
@@ -62,7 +62,7 @@ const reducer = (state = {}, action) => {
       const { digests } = action;
       return {
         ...state,
-        digests: state.digests.concat(digests),
+        digests: state.digests ? state.digests.concat(digests) : digests,
       };
     }
     case Actions.APPEND_HIGHLIGHTS: {
@@ -118,16 +118,10 @@ function* updateDigestFiltersListener() {
     });
     yield put({ type: Actions.APPEND_DIGESTS, digests });
 
-    const newsletterIdChanged = Object.keys(newFilters).find(
-      (f) => f === 'newsletterId'
-    );
-    if (newsletterIdChanged) {
-      // only reload highlights if newsletter id is changed
-      yield put({
-        type: Actions.LOAD_HIGHLIGHTS,
-        filters: { newsletterId: digestFilters?.newsletterId },
-      });
-    }
+    yield put({
+      type: Actions.LOAD_HIGHLIGHTS,
+      filters: digestFilters,
+    });
 
     // NOTE(sagar): update settings if filter other than newsletterId is changed
     const persistantFiltersUpdated = Object.keys(newFilters).find(

@@ -36,12 +36,20 @@ const DigestList = (props) => {
   }, [props.digests, selectedNewsletter]);
 
   return (
-    <>
+    <div
+      css={css(`
+        max-width: 800px;
+        margin: 10px auto;
+      `)}
+    >
       <div
         css={css(`
           padding: 10px 20px;
-          margin: 30px auto 0 auto;
-          max-width: 800px;
+          margin-top: 30px;
+          @media (max-width: 425px) {
+            right: 10px;
+            margin-top: 50px;
+          }
         `)}
       >
         <Switch
@@ -55,11 +63,22 @@ const DigestList = (props) => {
       <div
         css={css(`
           padding: 10px 10px;
-          max-width: 800px;
-          margin: 10px auto;
+          margin-top: 10px;
         `)}
       >
-        {props.digests?.length === 0 && <div>Loading digests</div>}
+        <div
+          css={css(`
+            font-size: 18px;
+          `)}
+        >
+          {!props.digests && <div>Loading digests</div>}
+          {props.digests?.length === 0 && (
+            <div>
+              No newsletters found! Clear filter to see all newsletters.
+            </div>
+          )}
+        </div>
+
         {props.digests &&
           props.digests.length > 0 &&
           props.digests.map((digest) => {
@@ -153,7 +172,7 @@ const DigestList = (props) => {
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 };
 DigestList.propTypes = {
