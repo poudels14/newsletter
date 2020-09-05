@@ -9,7 +9,8 @@ const routes = new Router();
 routes.post('/account/gmail/authorize', account.gmail.setAuthorizationCode);
 routes.post('/account/gmail/signin', account.gmail.gmailSign);
 
-routes.get('/account/profile', Cookies.authorizedOnly(), account.getProfile);
+// Note(sagar): /account/profile should be a public url. it's used to determine if user is logged in
+routes.get('/account/profile', account.getProfile);
 routes.post(
   '/account/updateSettings',
   Cookies.authorizedOnly(),
