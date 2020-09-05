@@ -71,8 +71,8 @@ const Homepage = (props) => {
           padding: 20px;
           @media (max-width: 425px) {
             top: 40px;
-            left: 5px;
-            right: 5px;
+            left: 0px;
+            right: 0px;
             bottom: 0px;
             padding: 0px;
           }
