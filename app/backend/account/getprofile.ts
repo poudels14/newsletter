@@ -28,6 +28,7 @@ const getProfile = async (ctxt: Context, res: Response): Promise<void> => {
       email: dbUser.email,
       hasRequiredAccess: await hasValidRefreshToken(dbUser),
       isAdmin: dbUser.isAdmin,
+      settings: dbUser.settings,
     };
     res.json(user);
     return;

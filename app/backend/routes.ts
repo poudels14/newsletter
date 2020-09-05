@@ -8,7 +8,13 @@ const routes = new Router();
 
 routes.post('/account/gmail/authorize', account.gmail.setAuthorizationCode);
 routes.post('/account/gmail/signin', account.gmail.gmailSign);
-routes.get('/account/profile', account.getProfile);
+
+routes.get('/account/profile', Cookies.authorizedOnly(), account.getProfile);
+routes.post(
+  '/account/updateSettings',
+  Cookies.authorizedOnly(),
+  account.updateSettings
+);
 
 routes.get('/admin/listUsers', Cookies.authorizedOnly(), admin.listUsers);
 routes.get(
