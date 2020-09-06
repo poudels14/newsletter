@@ -42,7 +42,7 @@ const PopulateNewslettersStatusBar = (props) => {
             }
           `)}
         >
-          Fetching newsletters from Gmail
+          Importing newsletters from Gmail
         </div>
       </div>
     </div>

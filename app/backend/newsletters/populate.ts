@@ -97,13 +97,14 @@ const insertNewsletter = async (
   name: string,
   authorEmail: string,
   authorName: string,
-  thirdpartyId: string
+  thirdpartyId: string,
+  visible: boolean
 ) => {
   const [rows] = await database.query(
-    `INSERT INTO newsletters(id, name, authorEmail, authorName, thirdpartyId)
-    VALUES(?, ?, ?, ?, ?)
+    `INSERT INTO newsletters(id, name, authorEmail, authorName, thirdpartyId, visible)
+    VALUES(?, ?, ?, ?, ?, ?)
     ON DUPLICATE KEY UPDATE authorEmail=?`,
-    [id, name, authorEmail, authorName, thirdpartyId, authorEmail]
+    [id, name, authorEmail, authorName, thirdpartyId, visible, authorEmail]
   );
   return rows[0];
 };
@@ -150,13 +151,15 @@ const loadAndStoreGmail = async (
 
     const dbNewsletter = await getNewsletter(senderEmail);
     const newsletterId = dbNewsletter?.id || hash(uuid.v1());
+    const visible = !!senderName || !!senderEmail;
     if (!dbNewsletter) {
       await insertNewsletter(
         newsletterId,
         senderName, // Note(sagar): it's hard to get newsletter name automatically, set this to correct value when the newsletter is verified
         senderEmail,
         senderName,
-        parser.gmail.parseEmailAddress(headers.listId)?.email
+        parser.gmail.parseEmailAddress(headers.listId)?.email,
+        visible
       ).catch((err) => {
         console.error(err);
         throw err;
@@ -278,10 +281,12 @@ const populate = async (ctxt: Context, res: Response): Promise<void> => {
     return;
   } else {
     const { gmailQueryInProgress, lastGmailQueryDate } = user;
+
     // kick off populating process only if it's not already in progress and it's been atleast 2 minutes since last populate
     const shouldPopulate =
       !gmailQueryInProgress &&
-      differenceInMinutes(new Date(), lastGmailQueryDate) >= 2;
+      (!lastGmailQueryDate ||
+        differenceInMinutes(new Date(), lastGmailQueryDate) >= 2);
     // Populating takes time, so return response before fetching emails from Gmail
     res.json({
       lastPopulated: lastGmailQueryDate,
