@@ -3,6 +3,9 @@ import { crypto, knex } from 'Utils';
 const ADMIN_EMAILS = ['poudels14@gmail.com'];
 
 const buildUser = (dbUser: Record<string, unknown>) => {
+  if (!dbUser) {
+    return null;
+  }
   let refreshToken = dbUser?.refreshToken;
 
   const isAdmin = ADMIN_EMAILS.find((admin) => admin === dbUser?.email);
