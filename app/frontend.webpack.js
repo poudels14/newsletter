@@ -1,6 +1,8 @@
 const path = require('path');
 const merge = require('webpack-merge');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
+  .BundleAnalyzerPlugin;
 
 const commonConfig = {
   entry: './frontend/index.jsx',
@@ -99,6 +101,11 @@ const developmentConfig = {
 const productionConfig = {
   mode: 'production',
   devtool: 'source-map',
+  // plugins: [
+  //   new BundleAnalyzerPlugin({
+  //     generateStatsFile: true,
+  //   }),
+  // ]
 };
 
 module.exports = merge(

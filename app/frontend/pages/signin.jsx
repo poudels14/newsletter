@@ -120,4 +120,4 @@ const Signin = () => {
   );
 };
 
-export { Signin };
+export default Signin;

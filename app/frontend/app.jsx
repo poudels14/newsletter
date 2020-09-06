@@ -10,11 +10,11 @@ import { connect as appConnect, store } from './controllers/app';
 import { Homepage } from './pages/homepage';
 import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
-import { RequestGmailAccess } from './pages/requestgmailaccess';
-import { Signin } from './pages/signin';
 import { SplashScreen } from './pages/splashscreen';
 import { connect } from 'react-redux';
 
+const Signin = lazy(() => import('./pages/signin'));
+const RequestGmailAccess = lazy(() => import('./pages/requestgmailaccess'));
 const AdminHomepage = lazy(() => import('./pages/admin/homepage'));
 
 const NoMatch = () => {

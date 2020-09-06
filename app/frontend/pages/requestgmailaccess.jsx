@@ -123,7 +123,7 @@ const RequestGmailAccess = () => {
               text-align: center;
             `)}
           >
-            <InfoCircleOutlined /> Gmail access is required to fetch newsletters
+            <InfoCircleOutlined /> Gmail access is required to load newsletters
             from your email
           </div>
         </div>
@@ -132,4 +132,4 @@ const RequestGmailAccess = () => {
   );
 };
 
-export { RequestGmailAccess };
+export default RequestGmailAccess;

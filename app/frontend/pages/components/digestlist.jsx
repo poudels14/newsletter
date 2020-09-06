@@ -28,10 +28,9 @@ const DigestList = (props) => {
       ? selectedNewsletter?.totalUnread
       : selectedNewsletter?.totalDigests;
     return (
-      !selectedNewsletter ||
-      (props.digests &&
-      props.digests.length > 0 && // this is so that load more only appears after the initial digest list is loaded
-        props.digests.length < totalViewableDigest)
+      props.digests &&
+      props.digests.length > 0 &&
+      (!selectedNewsletter || props.digests.length < totalViewableDigest)
     );
   }, [props.digests, selectedNewsletter]);
 
@@ -74,7 +73,7 @@ const DigestList = (props) => {
           {!props.digests && <div>Loading digests</div>}
           {props.digests?.length === 0 && (
             <div>
-              No newsletters found! Clear filter to see all newsletters.
+              No newsletters found! Clear filters to see all newsletters.
             </div>
           )}
         </div>

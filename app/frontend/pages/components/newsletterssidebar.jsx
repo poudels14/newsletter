@@ -7,7 +7,7 @@ import classnames from 'classnames';
 import { connect } from 'react-redux';
 import { css } from '@emotion/core';
 
-const Button = ({ classNames, id, name, totalUnread }) => {
+const Button = ({ classNames, id, name, authorEmail, totalUnread }) => {
   return (
     <Link
       to={`/nl/${id}`}
@@ -33,7 +33,7 @@ const Button = ({ classNames, id, name, totalUnread }) => {
           }
         `)}
       >
-        <span>{name}</span>
+        <span>{name || authorEmail}</span>
         {totalUnread !== 0 && (
           <div
             css={css(`
@@ -58,6 +58,7 @@ const Button = ({ classNames, id, name, totalUnread }) => {
 Button.propTypes = {
   id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
+  authorEmail: PropTypes.string,
   totalUnread: PropTypes.number,
   classNames: PropTypes.string,
 };
