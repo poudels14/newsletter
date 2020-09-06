@@ -3,6 +3,7 @@ import * as uuid from 'uuid';
 import { Context } from './request';
 import { Response } from './response';
 import express from 'express';
+import helmet from 'helmet';
 
 type Middleware = (req: unknown, res: unknown, next: () => void) => void;
 type Handler = (ctxt: Context, res: Response) => Promise<void>;
@@ -12,6 +13,9 @@ class Router {
 
   constructor() {
     this.express = express();
+    this.express.use(helmet());
+    this.express.disable('etag');
+    this.express.disable('x-powered-by');
   }
 
   private buildContext(req: express.Request): Context {
