@@ -98,7 +98,7 @@ const NewslettersDropdown = (props) => {
         showArrow
         onDropdownVisibleChange={setDropdownVisibility}
         getPopupContainer={() => dropdownContainerRef?.current}
-        style={{ width: '100%', color: 'white', background: '#001529' }}
+        style={{ width: '100%', color: 'white', background: '#2c3a61' }}
       >
         <Select.Option value="all">
           <Button id="" name="All" />

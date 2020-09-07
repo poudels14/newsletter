@@ -55,7 +55,7 @@ const DigestList = (props) => {
           defaultChecked={props.digestFilters?.unreadOnly}
           checkedChildren="Unread Only"
           unCheckedChildren="All"
-          css={css(`background-color: #085fb0`)}
+          css={css(`background-color: #2c3a61`)}
           onChange={toggleUnreadOnly}
         />
       </div>
