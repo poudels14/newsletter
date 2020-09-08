@@ -5,5 +5,5 @@ CREATE TABLE highlights
   digest_id VARCHAR(36),
   date TIMESTAMP DEFAULT Now(),
   content VARCHAR(2400),
-  INDEX `user_id_idx_1` (`user_id`)
+  INDEX `highlights_idx_1` (`user_id`)
 );

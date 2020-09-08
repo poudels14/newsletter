@@ -15,5 +15,5 @@ CREATE TABLE user_emails
 	unread TINYINT(1) DEFAULT 1,
 
 	UNIQUE KEY (gmailId),
-	INDEX `is_newsletter_idx_1` (`is_newsletter`)
+	INDEX `user_emails_idx_1` (`is_newsletter`)
 );
