@@ -2,15 +2,15 @@
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: newsletters-ingress
+  name: alpine-ingress
   annotations:
     kubernetes.io/ingress.class: nginx
 spec:
   rules:
-    # - host: newsletters.poudels.com
+    - host: app.alpinereader.com
     - http:
         paths:
           - path: /
             backend:
-              serviceName: prod-envoyproxy
+              serviceName: alpine-envoyproxy
               servicePort: 8000

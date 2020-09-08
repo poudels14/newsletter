@@ -25,7 +25,7 @@ static_resources:
                 route_config:
                   name: local_route
                   virtual_hosts:
-                    - name: prod-newsletter
+                    - name: alpine
                       domains:
                         - "*"
                       routes:
@@ -75,7 +75,7 @@ static_resources:
               - endpoint:
                   address:
                     socket_address:
-                      address: prod-apibackend
+                      address: alpine-apibackend
                       port_value: 8001
     - name: staticserver
       connect_timeout: 60s
@@ -88,5 +88,5 @@ static_resources:
               endpoint:
                 address:
                   socket_address:
-                    address: prod-staticserver
+                    address: alpine-staticserver
                     port_value: 8003

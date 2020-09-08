@@ -1,6 +1,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namePrefix: prod-
+namePrefix: alpine-
 bases:
   - ../kube/apibackend
   - ../kube/envoy/
@@ -16,9 +16,6 @@ secretGenerator:
   - name: apibackend-env-secrets
     envs:
       - secrets/apibackend.env
-  - name: mysql-env-secrets
-    envs:
-      - secrets/mysql.env
   - name: frontend-builder-env-secrets
     envs:
       - secrets/frontend.env
@@ -29,15 +26,12 @@ images:
   - name: envoyproxy
     newName: envoyproxy/envoy
     newTag: v1.14.2
-  - name: mysql
-    newName: mysql
-    newTag: "8.0"
   - name: apibackend
-    newName: registry.digitalocean.com/journal/newsletter/apibackend
+    newName: registry.digitalocean.com/journal/alpine/apibackend
     newTag: ${COMMIT_HASH}
   - name: frontend
-    newName: registry.digitalocean.com/journal/newsletter/frontend
+    newName: registry.digitalocean.com/journal/alpine/frontend
     newTag: ${COMMIT_HASH}
   - name: staticserver
-    newName: registry.digitalocean.com/journal/newsletter/staticserver
+    newName: registry.digitalocean.com/journal/alpine/staticserver
     newTag: ${COMMIT_HASH}
