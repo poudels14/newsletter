@@ -63,7 +63,7 @@ const commonConfig = {
       template: './frontend/index.html',
       showErrors: process.env.NODE_ENV !== 'production',
 
-      title: 'The Reading App',
+      title: 'Alpine',
       base: '/',
       libraries: {
         react:
