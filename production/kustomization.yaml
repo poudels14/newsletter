@@ -5,6 +5,7 @@ bases:
   - ../kube/apibackend
   - ../kube/envoy/
   - ../kube/staticserver/
+  - ../kube/mailgun/
   - app/frontend/
 resources:
   - pvc.yaml
@@ -19,6 +20,9 @@ secretGenerator:
   - name: frontend-builder-env-secrets
     envs:
       - secrets/frontend.env
+  - name: mailgun-env-secrets
+    envs:
+      - secrets/mailgun.env
 generatorOptions:
   labels:
     app: ${APP}
@@ -34,4 +38,7 @@ images:
     newTag: ${COMMIT_HASH}
   - name: staticserver
     newName: registry.digitalocean.com/journal/alpine/staticserver
+    newTag: ${COMMIT_HASH}
+  - name: mailgunserver
+    newName: registry.digitalocean.com/journal/alpine/mailgunserver
     newTag: ${COMMIT_HASH}

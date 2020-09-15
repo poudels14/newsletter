@@ -6,7 +6,7 @@ k8s_resource('tilt-mysql', port_forwards="3306:3306")
 # allow access to app server for debugging
 k8s_resource('tilt-apibackend', port_forwards=["8001:8001"])
 k8s_resource('tilt-frontend', port_forwards=["8002:8002"])
-# k8s_resource('tilt-staticserver', port_forwards=["8003:8003"])
+k8s_resource('tilt-mailgunserver', port_forwards=["8004:8004"])
 
 docker_build('tilt-apibackend', '.',
     dockerfile='./tilt/app/Dockerfile',
@@ -26,4 +26,13 @@ docker_build('tilt-frontend', '.',
     live_update=[
         sync('./app/frontend', '/app/frontend'),
         run('cd /app && yarn install', trigger=['./app/package.json', './app/yarn.lock']),
+])
+
+docker_build('tilt-mailgunserver', '.',
+    dockerfile='./kube/mailgun/Dockerfile',
+    only=['./mailgun'],
+    entrypoint='uvicorn --host 0.0.0.0 --port 8004 main:app --reload',
+    live_update=[
+        sync('./mailgun', '/mailgun'),
+        run('pip install -r requirements.txt', trigger=['./mailgun/requirements.txt']),
 ])

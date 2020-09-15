@@ -33,6 +33,15 @@ if [[ "$1" == "staticserver" ]]; then
   echo "Pushing container to registry"
   docker push registry.digitalocean.com/journal/alpine/staticserver:$COMMIT_HASH
 fi
+if [[ "$1" == "mailgunserver" ]]; then
+  echo "Building mailgunserver docker container"
+  docker build \
+    -t registry.digitalocean.com/journal/alpine/mailgunserver:$COMMIT_HASH \
+    -f kube/mailgun/Dockerfile .
+
+  echo "Pushing container to registry"
+  docker push registry.digitalocean.com/journal/alpine/mailgunserver:$COMMIT_HASH
+fi
 
 # echo "Deploying ..."
 # kubectl set image jobs/prod-$1 $1=registry.digitalocean.com/journal/alpine/$1:$COMMIT_HASH --record

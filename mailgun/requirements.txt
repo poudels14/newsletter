@@ -1,0 +1,6 @@
+fastapi==0.61.1
+uvicorn==0.11.8
+python-multipart==0.0.5
+boto3==1.14.62
+requests==2.24.0
+uuid==1.30

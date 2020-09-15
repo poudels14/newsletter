@@ -5,6 +5,7 @@ bases:
   - ../kube/apibackend
   - app/frontend
   - ../kube/envoy/
+  - ../kube/mailgun/
   - ../kube/mysql
 resources:
   - pvc.yaml
@@ -22,6 +23,9 @@ secretGenerator:
   - name: mysql-env-secrets
     envs:
       - secrets/mysql.env
+  - name: mailgun-env-secrets
+    envs:
+      - secrets/mailgun.env
 images:
   - name: envoyproxy
     newName: envoyproxy/envoy
@@ -33,3 +37,5 @@ images:
     newName: tilt-apibackend
   - name: frontend
     newName: tilt-frontend
+  - name: mailgunserver
+    newName: tilt-mailgunserver

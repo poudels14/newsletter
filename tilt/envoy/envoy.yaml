@@ -74,6 +74,11 @@ static_resources:
                                 regex: (.*)$
                               substitution: /
                         - match:
+                            prefix: /mailgun/
+                          route:
+                            cluster: mailgunserver
+                            prefix_rewrite: /
+                        - match:
                             prefix: /
                           route:
                             cluster: frontend
@@ -104,3 +109,16 @@ static_resources:
                   socket_address:
                     address: tilt-frontend
                     port_value: 8002
+    - name: mailgunserver
+      connect_timeout: 60s
+      type: strict_dns
+      lb_policy: round_robin
+      load_assignment:
+        cluster_name: mailgunserver_1
+        endpoints:
+          - lb_endpoints:
+              endpoint:
+                address:
+                  socket_address:
+                    address: tilt-mailgunserver
+                    port_value: 8004

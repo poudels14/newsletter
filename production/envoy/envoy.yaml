@@ -59,6 +59,11 @@ static_resources:
                                 regex: (.*)$
                               substitution: /static/public/
                         - match:
+                            prefix: /mailgun/
+                          route:
+                            cluster: mailgunserver
+                            prefix_rewrite: /
+                        - match:
                             prefix: /
                           route:
                             cluster: staticserver
@@ -90,3 +95,16 @@ static_resources:
                   socket_address:
                     address: alpine-staticserver
                     port_value: 8003
+    - name: mailgunserver
+      connect_timeout: 60s
+      type: strict_dns
+      lb_policy: round_robin
+      load_assignment:
+        cluster_name: mailgunserver_1
+        endpoints:
+          - lb_endpoints:
+              endpoint:
+                address:
+                  socket_address:
+                    address: alpine-mailgunserver
+                    port_value: 8004
