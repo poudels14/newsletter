@@ -87,8 +87,9 @@ const listDigests = async (ctxt: Context, res: Response): Promise<void> => {
 
   const digests = await queryDigests({
     userId,
-    newsletterId: filters.newsletterId,
-    isNewsletter: true,
+    newsletterId:
+      filters.newsletterId === 'unknown' ? null : filters.newsletterId,
+    isNewsletter: filters.newsletterId !== 'unknown',
     unread: filters.unreadOnly ? true : undefined,
     offset,
   }).then((digests) => {

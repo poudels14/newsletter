@@ -110,25 +110,35 @@ const NewslettersSidebar = (props) => {
           </div>
         )}
       </div>
-      <Button
-        id=""
-        name="All"
-        classNames={classnames({
-          active: props.selectedNewsletterId === undefined,
-        })}
-      />
-      {props.publishers &&
-        props.publishers.map((publisher, i) => {
-          return (
-            <Button
-              {...publisher}
-              key={i}
-              classNames={classnames({
-                active: props.selectedNewsletterId === publisher.id,
-              })}
-            />
-          );
-        })}
+      {props.publishers && (
+        <>
+          <Button
+            id=""
+            name="All"
+            classNames={classnames({
+              active: props.selectedNewsletterId === undefined,
+            })}
+          />
+          {props.publishers.map((publisher, i) => {
+            return (
+              <Button
+                {...publisher}
+                key={i}
+                classNames={classnames({
+                  active: props.selectedNewsletterId === publisher.id,
+                })}
+              />
+            );
+          })}
+          <Button
+            id="unknown"
+            name="Unknown"
+            classNames={classnames({
+              active: props.selectedNewsletterId === 'unknown',
+            })}
+          />
+        </>
+      )}
     </Layout.Sider>
   );
 };
