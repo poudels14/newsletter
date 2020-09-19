@@ -23,6 +23,7 @@ routes.get(
   Cookies.authorizedOnly(),
   admin.listNewsletters
 );
+routes.get('/admin/runCommand', Cookies.authorizedOnly(), admin.runCommand);
 
 routes.get(
   '/newsletters/populate',

@@ -64,6 +64,11 @@ const Sidebar = (props) => {
         name="Newsletters"
         classNames={classnames({ active: props.pageId === 'newsletters' })}
       />
+      <Button
+        pageId="emailheaders"
+        name="Email Headers"
+        classNames={classnames({ active: props.pageId === 'emailheaders' })}
+      />
     </Layout.Sider>
   );
 };

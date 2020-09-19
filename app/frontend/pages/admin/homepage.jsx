@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 
+import EmailHeaders from './emailheaders';
 import { Layout } from 'antd';
 import Newsletters from './newsletters';
 import PropTypes from 'prop-types';
@@ -63,6 +64,16 @@ const Homepage = () => {
             return (
               <ContentWrapper pageId={'newsletters'}>
                 <Newsletters />
+              </ContentWrapper>
+            );
+          }}
+        />
+        <Route
+          path="/admin/emailheaders"
+          render={() => {
+            return (
+              <ContentWrapper pageId={'emailheaders'}>
+                <EmailHeaders />
               </ContentWrapper>
             );
           }}
