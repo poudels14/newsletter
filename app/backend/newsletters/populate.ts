@@ -135,7 +135,7 @@ const loadAndStoreGmail = async (
 
   try {
     const emailId = uuid.v1();
-    const sender = headers.sender || headers.from; //? headers.sender : headers.from; // TODO(sagar): maybe we shouldn't parse from?
+    const sender = headers.from || headers.sender; //? headers.sender : headers.from; // TODO(sagar): maybe we shouldn't parse from?
     const {
       name: senderName,
       email: senderEmail,
@@ -170,7 +170,7 @@ const loadAndStoreGmail = async (
       id: emailId,
       newsletterId,
       userId,
-      isNewsetter: true,
+      isNewsetter: visible,
       title: headers.subject,
       receiverEmail: headers.to,
       receivedDate: datefns.formatISO9075(new Date(headers.date)),
