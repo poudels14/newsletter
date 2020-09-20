@@ -3,7 +3,7 @@ import React, { useCallback, useState } from 'react';
 import ReactJson from 'react-json-view';
 import axios from 'axios';
 
-const EmailHeaders = () => {
+const RunCommand = () => {
   const [command, setCommand] = useState('');
   const [commandPayload, setCommandPayload] = useState('');
   const [response, setResponse] = useState({});
@@ -42,4 +42,4 @@ const EmailHeaders = () => {
   );
 };
 
-export default EmailHeaders;
+export default RunCommand;

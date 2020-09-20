@@ -1,10 +1,10 @@
 import React, { useMemo, useState } from 'react';
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 
-import EmailHeaders from './emailheaders';
 import { Layout } from 'antd';
 import Newsletters from './newsletters';
 import PropTypes from 'prop-types';
+import RunCommand from './runcommand';
 import Sidebar from './sidebar';
 import Users from './users';
 import axios from 'axios';
@@ -69,11 +69,11 @@ const Homepage = () => {
           }}
         />
         <Route
-          path="/admin/emailheaders"
+          path="/admin/runcommand"
           render={() => {
             return (
-              <ContentWrapper pageId={'emailheaders'}>
-                <EmailHeaders />
+              <ContentWrapper pageId={'runcommand'}>
+                <RunCommand />
               </ContentWrapper>
             );
           }}
