@@ -37,12 +37,13 @@ func uploadFile(url string, filename string, content string) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		panic(err)
-	}
-	defer resp.Body.Close()
-	_, err = ioutil.ReadAll(resp.Body)
-	if err != nil {
-		panic(err)
+		fmt.Println(err)
+	} else {
+		defer resp.Body.Close()
+		_, err = ioutil.ReadAll(resp.Body)
+		if err != nil {
+			fmt.Println(err)
+		}
 	}
 }
 
@@ -77,11 +78,11 @@ func main() {
 		fmt.Println("Uploading file: ", file.Key)
 		content, err := bucket.ReadAll(context.Background(), file.Key)
 		if err != nil {
-			panic("Error writing to file")
+			fmt.Println("Error writing to file")
+		} else {
+			filename := fmt.Sprintf("/public/%s", file.Key)
+			contentBase64 := base64.StdEncoding.EncodeToString(content)
+			uploadFile(uploadURL, filename, contentBase64)
 		}
-
-		filename := fmt.Sprintf("/public/%s", file.Key)
-		contentBase64 := base64.StdEncoding.EncodeToString(content)
-		uploadFile(uploadURL, filename, contentBase64)
 	}
 }
