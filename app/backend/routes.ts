@@ -11,12 +11,11 @@ routes.post('/account/gmail/signin', account.gmail.gmailSign);
 
 // Note(sagar): /account/profile should be a public url. it's used to determine if user is logged in
 routes.get('/account/profile', account.getProfile);
-routes.post(
-  '/account/updateSettings',
-  Cookies.authorizedOnly(),
-  account.updateSettings
-);
+routes.get('/newsletters/verified', newsletters.listVerifiedNewsletters);
 
+/*********************** private routes ***********/
+
+/** admin routes */
 routes.get('/admin/listUsers', Cookies.authorizedOnly(), admin.listUsers);
 routes.get(
   '/admin/listNewsletters',
@@ -25,18 +24,22 @@ routes.get(
 );
 routes.get('/admin/runCommand', Cookies.authorizedOnly(), admin.runCommand);
 
+/** user routes */
+routes.post(
+  '/account/updateSettings',
+  Cookies.authorizedOnly(),
+  account.updateSettings
+);
 routes.get(
   '/newsletters/populate',
   Cookies.authorizedOnly(),
   newsletters.populate
 );
-
 routes.get(
   '/newsletters/populate/status',
   Cookies.authorizedOnly(),
   newsletters.getPopulatingStatus
 );
-
 routes.get(
   '/newsletters/listNewsletters',
   Cookies.authorizedOnly(),
