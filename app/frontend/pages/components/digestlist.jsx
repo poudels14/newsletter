@@ -59,6 +59,18 @@ const DigestList = (props) => {
           onChange={toggleUnreadOnly}
         />
       </div>
+      {selectedNewsletter && (
+        <div
+          css={css(`
+          padding: 10px 20px;
+          font-size: 17px;
+          font-weight: 700;
+        `)}
+        >
+          <div>Author: {selectedNewsletter.authorName}</div>
+          <div>Email: {selectedNewsletter.authorEmail}</div>
+        </div>
+      )}
       <div
         css={css(`
           padding: 10px 10px;
