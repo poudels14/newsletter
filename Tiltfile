@@ -27,7 +27,3 @@ docker_build('tilt-frontend', '.',
         sync('./app/frontend', '/app/frontend'),
         run('cd /app && yarn install', trigger=['./app/package.json', './app/yarn.lock']),
 ])
-
-docker_build('tilt-staticserver', '.',
-    dockerfile='./kube/staticserver/Dockerfile',
-    only=['./staticserver'])
