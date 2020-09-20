@@ -1,6 +1,7 @@
 const path = require('path');
 const merge = require('webpack-merge');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
   .BundleAnalyzerPlugin;
 
@@ -79,6 +80,18 @@ const commonConfig = {
         clientId: process.env.GMAIL_CLIENT_ID,
         apiKey: process.env.GMAIL_API_KEY,
       }),
+    }),
+    new CopyPlugin({
+      patterns: [
+        {
+          from: 'assets/',
+          to: 'assets/',
+        },
+        {
+          from: 'manifest.webmanifest',
+          to: 'manifest.webmanifest',
+        },
+      ],
     }),
   ],
 };

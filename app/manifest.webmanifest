@@ -1,0 +1,36 @@
+{
+  "short_name": "Alpine",
+  "name": "Alpine",
+  "description": "Cloud reader for your newsletters",
+  "icons": [
+    {
+      "src": "/assets/logo_white.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/assets/logo_white.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/?source=pwa",
+  "background_color": "#3367D6",
+  "display": "standalone",
+  "scope": "/",
+  "theme_color": "#3367D6",
+  "shortcuts": [
+    {
+      "name": "All newsletters",
+      "short_name": "All",
+      "description": "View all newsletters",
+      "url": "/nl",
+      "icons": [
+        {
+          "src": "/assets/logo_white.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}
