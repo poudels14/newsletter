@@ -16,6 +16,7 @@ import { connect } from 'react-redux';
 const Signin = lazy(() => import('./pages/signin'));
 const RequestGmailAccess = lazy(() => import('./pages/requestgmailaccess'));
 const AdminHomepage = lazy(() => import('./pages/admin/homepage'));
+const VerifiedNewsletters = lazy(() => import('./pages/verifiednewsletters'));
 
 const NoMatch = () => {
   return <div>404 Not found</div>;
@@ -80,6 +81,12 @@ const App = () => {
             exact
             render={(props) => {
               return <ConnectedPrivateApp {...props} />;
+            }}
+          />
+          <Route
+            path="/supported-newsletters"
+            render={() => {
+              return <VerifiedNewsletters />;
             }}
           />
           <Route
