@@ -8,6 +8,7 @@ cat \
     schemas/add_name_columns_in_users.sql \
     schemas/add_settings_column_in_users.sql \
     schemas/add_populate_status_columns_in_users.sql \
+    schemas/add_mailgun_columns_in_users.sql \
     \
     schemas/create_user_emails_table.sql \
     schemas/add_preview_columns_in_user_emails_table.sql \
