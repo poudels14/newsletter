@@ -36,14 +36,15 @@ const Settings = () => {
 
   const deleteAccount = useCallback(() => {
     updateUIState({ accountDeleteInProgress: true });
-    console.log('Deleting account');
+    axios.post('/api/account/deleteAccount').then(() => {
+      window.location = '/';
+    });
   }, []);
 
   const unlinkGmail = useCallback(() => {
     updateUIState({
       gmailUnlinkInProgress: true,
     });
-    console.log('Unlinking gmail');
     axios.post('/api/account/unlinkGmail').then(() => {
       updateUIState({
         gmailLinked: false,

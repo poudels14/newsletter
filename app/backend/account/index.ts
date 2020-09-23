@@ -1,3 +1,4 @@
+import deleteAccount from './deleteaccount';
 import getProfile from './getprofile';
 import getSettings from './getsettings';
 import { gmail } from './gmail';
@@ -10,6 +11,7 @@ const account = {
   getSettings,
   updateSettings,
   unlinkGmail,
+  deleteAccount,
 };
 
 export { account };

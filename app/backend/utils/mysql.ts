@@ -1,5 +1,6 @@
+import { createConnection, createPool } from 'mysql2';
+
 import Knex from 'knex';
-import { createPool } from 'mysql2';
 
 console.log('Creating db pool...');
 
@@ -18,8 +19,18 @@ const query = async (query: string, values: unknown): Promise<unknown> => {
   return data;
 };
 
+const connection = async (): Promise<unknown> => {
+  return await createConnection({
+    host: process.env.MYSQL_HOST,
+    user: process.env.MYSQL_USER,
+    password: process.env.MYSQL_PASSWORD,
+    database: process.env.MYSQL_DATABASE,
+  }).promise();
+};
+
 const database = {
   query,
+  connection,
 };
 
 const knex = Knex({

@@ -40,6 +40,11 @@ routes.post(
   Cookies.authorizedOnly(),
   account.unlinkGmail
 );
+routes.post(
+  '/account/deleteAccount',
+  Cookies.authorizedOnly(),
+  account.deleteAccount
+);
 routes.get(
   '/newsletters/populate',
   Cookies.authorizedOnly(),

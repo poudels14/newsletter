@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect } from 'react';
 
 import { Actions } from '../controllers/newsletters';
 import { CloseCircleOutlined } from '@ant-design/icons';
@@ -15,7 +15,7 @@ import { connect } from 'react-redux';
 import { css } from '@emotion/core';
 
 const Homepage = (props) => {
-  useMemo(() => {
+  useEffect(() => {
     props.selectPublisher(props.publisher);
   }, [props.publisher]);
   const closeDialog = useCallback(() => {
