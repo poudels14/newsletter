@@ -28,7 +28,7 @@ function* loadListener() {
 
     // Note(sagar): since user.settings contains digestFilters, update the newsletters filter after profile is loaded
     yield put({
-      type: NewsletterActions.SET_DIGEST_FILTERS,
+      type: NewsletterActions.SET_INITIAL_DIGEST_FILTERS,
       filters: user?.settings?.digestFilters,
     });
 

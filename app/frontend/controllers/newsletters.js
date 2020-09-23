@@ -15,7 +15,7 @@ const Actions = {
   LOAD_PUBLISHERS: '/newsletters/publishers/load',
   SET_PUBLISHERS: '/newsletters/publishers/set',
 
-  SET_DIGEST_FILTERS: '/newsletters/digests/filters/set', // triggered after stored filters are loaded from server
+  SET_INITIAL_DIGEST_FILTERS: '/newsletters/digests/filters/set', // triggered after stored filters are loaded from server
   UPDATE_DIGEST_FILTERS: '/newsletters/digests/filters/update',
   APPEND_DIGESTS: '/newsletters/digests/append',
   LOAD_MORE_DIGESTS: '/newsletters/digests/loadmore',
@@ -40,7 +40,7 @@ const reducer = (state = {}, action) => {
         publishers,
       };
     }
-    case Actions.SET_DIGEST_FILTERS: {
+    case Actions.SET_INITIAL_DIGEST_FILTERS: {
       const { filters } = action;
       return {
         ...state,
