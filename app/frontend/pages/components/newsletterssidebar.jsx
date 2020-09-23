@@ -94,7 +94,6 @@ const NewslettersSidebar = (props) => {
         <span>
           {props.user?.firstName} {props.user?.lastName}
         </span>
-
         <div
           css={css(`
             display: inline-block;
@@ -104,8 +103,10 @@ const NewslettersSidebar = (props) => {
           <Link
             to={`/settings`}
             css={css(`
-              display: inline-block;
-              margin-left: 20px;
+              color: inherit;
+              &:hover {
+                color: inherit;
+              }
             `)}
           >
             <SettingOutlined />

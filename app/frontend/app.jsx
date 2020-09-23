@@ -1,3 +1,4 @@
+import React, { lazy } from 'react';
 import {
   Redirect,
   Route,
@@ -8,10 +9,11 @@ import {
 import { Homepage } from './pages/homepage';
 import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
-import React from 'react';
 import { SplashScreen } from './pages/splashscreen';
 import { connect } from 'react-redux';
 import { store } from './controllers/app';
+
+const Settings = lazy(() => import('./pages/settings'));
 
 const PrivateApp = (props) => {
   if (props.user != undefined && !props.user?.email) {
@@ -47,6 +49,7 @@ const PrivateApp = (props) => {
             );
           }}
         />
+        <Route path="/settings" component={Settings} />
       </Switch>
     </Router>
   );

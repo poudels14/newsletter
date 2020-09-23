@@ -25,6 +25,11 @@ routes.get(
 routes.get('/admin/runCommand', Cookies.authorizedOnly(), admin.runCommand);
 
 /** user routes */
+routes.get(
+  '/account/getSettings',
+  Cookies.authorizedOnly(),
+  account.getSettings
+);
 routes.post(
   '/account/updateSettings',
   Cookies.authorizedOnly(),
