@@ -33,7 +33,7 @@ const Button = ({ classNames, id, name, authorEmail, totalUnread }) => {
             color: white;
             // background: rgb(77, 75, 110); /* rgba(54, 52, 105, 1); */
             // background: #2c3a61;
-            background: #043e61;
+            background: #042d46;
           }
         `)}
       >
