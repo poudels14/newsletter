@@ -72,7 +72,8 @@ const Settings = () => {
             max-width: 700px;
             margin: 0 auto;
             padding: 50px 50px;
-            background: #1971a5;
+            // background: #1971a5;
+            background: #003e63;
             color: white;
             h2, h3, a, a:hover {
               color: white;

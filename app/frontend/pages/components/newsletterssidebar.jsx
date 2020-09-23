@@ -15,7 +15,7 @@ const Button = ({ classNames, id, name, authorEmail, totalUnread }) => {
       to={`/nl/${id}`}
       css={css(`
         color: inherit;
-        font-size: 16px;
+        font-size: 15px;
         font-weight: 500;
 
         &:hover, &.active {
@@ -31,8 +31,9 @@ const Button = ({ classNames, id, name, authorEmail, totalUnread }) => {
           border-bottom-width: 1px;
           &:hover, &.active {
             color: white;
-            background: rgb(77, 75, 110); /* rgba(54, 52, 105, 1); */
-            background: #2c3a61;
+            // background: rgb(77, 75, 110); /* rgba(54, 52, 105, 1); */
+            // background: #2c3a61;
+            background: #043e61;
           }
         `)}
       >
@@ -76,9 +77,9 @@ const NewslettersSidebar = (props) => {
       css={css(`
         // background: rgb(40, 40, 54); /* rgb(42, 40, 77); rgb(37, 35, 75); rgb(66, 63, 134); rgba(54, 52, 105, 1); */
         //background: #001529;
-        background: #1c253e;
+        // background: #1c253e;
+        background: #003e63;
         color: white;
-        font-size: 16px;
         @media (max-width: 425px) {
           display: none;
         }
