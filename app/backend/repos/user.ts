@@ -67,7 +67,8 @@ const update: Update = async (userId, data) => {
   return await knex('users').where({ id: userId }).update(finalRecord);
 };
 
-const clearRefreshToken = async (userId: string) => {
+type ClearRefreshToken = (userId: string) => Promise<void>;
+const clearRefreshToken: ClearRefreshToken = async (userId) => {
   return await knex('users')
     .where({ id: userId })
     .update({

@@ -1,7 +1,6 @@
-import { database, knex } from 'Utils';
-
 import { Context } from 'Http/request';
 import { Response } from 'Http/response';
+import { knex } from 'Utils';
 
 const listVerifiedNewsletters = async (
   ctxt: Context,

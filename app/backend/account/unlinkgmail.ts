@@ -4,7 +4,6 @@ import { Context } from 'Http/request';
 import { Cookies } from 'Http/cookies';
 import { Response } from 'Http/response';
 import { User } from 'Repos';
-import { knex } from 'Utils';
 
 const unlinkGmail = async (ctxt: Context, res: Response): Promise<void> => {
   const { id: userId } = await Cookies.getUser(ctxt);
