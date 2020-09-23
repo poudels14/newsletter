@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useMemo } from 'react';
 
 import { Actions } from '../controllers/newsletters';
 import { CloseCircleOutlined } from '@ant-design/icons';
@@ -15,11 +15,7 @@ import { connect } from 'react-redux';
 import { css } from '@emotion/core';
 
 const Homepage = (props) => {
-  useEffect(() => {
-    props.populate();
-    props.loadPublishers();
-  }, []);
-  useEffect(() => {
+  useMemo(() => {
     props.selectPublisher(props.publisher);
   }, [props.publisher]);
   const closeDialog = useCallback(() => {
@@ -98,8 +94,6 @@ Homepage.propTypes = {
   publisher: PropTypes.string,
   digestId: PropTypes.string,
   /** Redux props */
-  populate: PropTypes.func.isRequired,
-  loadPublishers: PropTypes.func.isRequired,
   selectPublisher: PropTypes.func.isRequired,
 };
 
@@ -107,8 +101,6 @@ Homepage.propTypes = {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    populate: () => dispatch({ type: Actions.POPULATE }),
-    loadPublishers: () => dispatch({ type: Actions.LOAD_PUBLISHERS }),
     selectPublisher: (newsletterId) =>
       dispatch({
         type: Actions.UPDATE_DIGEST_FILTERS,

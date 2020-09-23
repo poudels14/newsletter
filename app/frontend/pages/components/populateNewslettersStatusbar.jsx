@@ -1,17 +1,29 @@
+import React, { useEffect } from 'react';
+
+import { Actions } from '../../controllers/newsletters';
 import PropTypes from 'prop-types';
-import React from 'react';
 import { connect } from 'react-redux';
 import { css } from '@emotion/core';
 
 const PopulateNewslettersStatusBar = (props) => {
-  if (props.status?.inProgress !== true) {
+  const gmailLinkingSkipped = props.user?.settings?.gmailLinkingSkipped;
+  let message = 'Importing newsletters from Gmail';
+  if (gmailLinkingSkipped) {
+    message = 'Link Gmail to import newsletters from your email';
+  }
+  useEffect(() => {
+    if (!gmailLinkingSkipped) {
+      props.populate();
+    }
+  }, []);
+  if (!gmailLinkingSkipped && props.status?.inProgress != true) {
     return <></>;
   }
   return (
     <div
       css={css(`
-        width: 100%;
-        position: absolute;
+        // width: 100%;
+        // position: absolute;
         left: 0;
         @media (min-width: 425px) {
           top: 0;
@@ -42,26 +54,37 @@ const PopulateNewslettersStatusBar = (props) => {
             }
           `)}
         >
-          Importing newsletters from Gmail
+          {message}
         </div>
       </div>
     </div>
   );
 };
 PopulateNewslettersStatusBar.propTypes = {
+  user: PropTypes.object,
   status: PropTypes.object,
+  /** Redux props */
+  populate: PropTypes.func.isRequired,
 };
 
 /** Redux */
 const mapStateToProps = (state) => {
-  const { newsletters } = state;
+  const { newsletters, account } = state;
   return {
+    user: account?.user,
     status: newsletters?.populateStatus,
   };
 };
 
-const connectedPopulateNewslettersStatusBar = connect(mapStateToProps)(
-  PopulateNewslettersStatusBar
-);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    populate: () => dispatch({ type: Actions.POPULATE }),
+  };
+};
+
+const connectedPopulateNewslettersStatusBar = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(PopulateNewslettersStatusBar);
 
 export { connectedPopulateNewslettersStatusBar as PopulateNewslettersStatusBar };

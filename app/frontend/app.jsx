@@ -13,15 +13,15 @@ import { SplashScreen } from './pages/splashscreen';
 import { connect } from 'react-redux';
 import { store } from './controllers/app';
 
-const NoMatch = () => {
-  return <div>404 Not found</div>;
-};
-
 const PrivateApp = (props) => {
   if (props.user != undefined && !props.user?.email) {
     return <Redirect to="/signin" />;
   }
-  if (props.user != undefined && !props.user?.hasRequiredAccess) {
+  if (
+    props.user != undefined &&
+    !props.user?.hasRequiredAccess &&
+    !props.user?.settings?.gmailLinkingSkipped
+  ) {
     return <Redirect to="/grantaccess" />;
   }
   if (!props.user) {
@@ -47,9 +47,6 @@ const PrivateApp = (props) => {
             );
           }}
         />
-        <Route path="*">
-          <NoMatch />
-        </Route>
       </Switch>
     </Router>
   );

@@ -1,7 +1,9 @@
+import React, { useEffect } from 'react';
+
+import { Actions } from '../../controllers/newsletters';
 import { Layout } from 'antd';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import React from 'react';
 import { SettingOutlined } from '@ant-design/icons';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
@@ -65,6 +67,9 @@ Button.propTypes = {
 };
 
 const NewslettersSidebar = (props) => {
+  useEffect(() => {
+    props.loadPublishers();
+  }, []);
   return (
     <Layout.Sider
       width={props.width}
@@ -89,26 +94,23 @@ const NewslettersSidebar = (props) => {
         <span>
           {props.user?.firstName} {props.user?.lastName}
         </span>
-        {props.user?.isAdmin && (
-          <div
+
+        <div
+          css={css(`
+            display: inline-block;
+            margin-left: 20px;
+          `)}
+        >
+          <Link
+            to={`/settings`}
             css={css(`
               display: inline-block;
               margin-left: 20px;
             `)}
           >
-            <Link
-              to={`/admin`}
-              css={css(`
-                color: inherit;
-                &:hover {
-                  color: inherit;
-                }
-              `)}
-            >
-              <SettingOutlined />
-            </Link>
-          </div>
-        )}
+            <SettingOutlined />
+          </Link>
+        </div>
       </div>
       {props.publishers && (
         <>
@@ -150,6 +152,7 @@ NewslettersSidebar.propTypes = {
   user: PropTypes.object,
   selectedNewsletterId: PropTypes.string,
   publishers: PropTypes.array,
+  loadPublishers: PropTypes.func.isRequired,
 };
 
 /** Redux */
@@ -163,8 +166,15 @@ const mapStateToProps = (state) => {
   };
 };
 
-const connectedNewslettersSidebar = connect(mapStateToProps)(
-  NewslettersSidebar
-);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    loadPublishers: () => dispatch({ type: Actions.LOAD_PUBLISHERS }),
+  };
+};
+
+const connectedNewslettersSidebar = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(NewslettersSidebar);
 
 export { connectedNewslettersSidebar as NewslettersSidebar };

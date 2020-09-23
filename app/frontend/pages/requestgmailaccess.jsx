@@ -1,6 +1,8 @@
 import { InfoCircleOutlined, WarningOutlined } from '@ant-design/icons';
 import React, { useCallback, useState } from 'react';
 
+import { Link } from 'react-router-dom';
+import axios from 'axios';
 import { css } from '@emotion/core';
 import { requestOfflineAccess } from '../authenticate/gmail';
 
@@ -21,6 +23,13 @@ const RequestGmailAccess = () => {
         console.error(err);
         setErrorMessage('Failed to authorize with Gmail');
       });
+  }, []);
+
+  const skipGmailLinking = useCallback(async () => {
+    await axios.post('/api/account/updateSettings', {
+      settings: { gmailLinkingSkipped: true },
+    });
+    window.location.href = '/';
   }, []);
 
   return (
@@ -47,7 +56,7 @@ const RequestGmailAccess = () => {
             width: 400px;
             flex: 40px 0 0;
             margin: 0 auto;
-            padding: 50px 25px 50px 25px;
+            padding: 50px 25px 30px 25px;
             border-radius: 5px;
             border: 1px solid rgba(34,36,38,.15);
           `)}
@@ -115,16 +124,29 @@ const RequestGmailAccess = () => {
                 </svg>
               </div>
             </div>
-            <span css={css(`line-height: 48px; `)}>Grant access to Gmail</span>
+            <span css={css(`line-height: 48px;`)}>Grant access to Gmail</span>
           </div>
           <div
             css={css(`
               font-size: 12px;
               text-align: center;
+              margin-bottom: 20px;
             `)}
           >
             <InfoCircleOutlined /> Gmail access is required to load newsletters
             from your email
+          </div>
+          <div
+            css={css(`
+              text-align: center;
+              a {
+                color: inherit;
+              }
+            `)}
+          >
+            <Link to="#" onClick={skipGmailLinking}>
+              Skip {'>'}
+            </Link>
           </div>
         </div>
       </div>
