@@ -21,6 +21,10 @@ const getProfile = async (ctxt: Context, res: Response): Promise<void> => {
   const { id: userId } = await Cookies.getUser(ctxt);
   if (userId) {
     const dbUser = await User.getById(userId);
+    if (!dbUser) {
+      res.json({});
+      return;
+    }
 
     const user = {
       firstName: dbUser.firstName,
