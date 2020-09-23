@@ -30,6 +30,11 @@ routes.post(
   Cookies.authorizedOnly(),
   account.updateSettings
 );
+routes.post(
+  '/account/unlinkGmail',
+  Cookies.authorizedOnly(),
+  account.unlinkGmail
+);
 routes.get(
   '/newsletters/populate',
   Cookies.authorizedOnly(),

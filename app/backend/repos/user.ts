@@ -67,4 +67,12 @@ const update: Update = async (userId, data) => {
   return await knex('users').where({ id: userId }).update(finalRecord);
 };
 
-export { getById, getByEmail, listUsers, update };
+const clearRefreshToken = async (userId: string) => {
+  return await knex('users')
+    .where({ id: userId })
+    .update({
+      refreshToken: knex.raw('DEFAULT'),
+    });
+};
+
+export { getById, getByEmail, listUsers, update, clearRefreshToken };
