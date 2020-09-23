@@ -1,10 +1,24 @@
+import { database, knex } from 'Utils';
+
 import { Context } from 'Http/request';
 import { Cookies } from 'Http/cookies';
 import { Response } from 'Http/response';
 import { User } from 'Repos';
+import { format as formatQuery } from 'sqlstring';
 import { parser } from '../newsletters/parser';
 
-// import { knex } from 'Utils';
+const listGmailFilters = async () => {
+  const rows = await knex('gmail_newsletter_filters').orderBy('id');
+  return rows;
+};
+
+const addGmailFilter = async (filter: string) => {
+  await database.query(
+    formatQuery('INSERT IGNORE INTO gmail_newsletter_filters SET ?', [
+      { filter },
+    ])
+  );
+};
 
 const execScript = async (ctxt: Context, res: Response): Promise<void> => {
   const { id: userId } = await Cookies.getUser(ctxt);
@@ -19,12 +33,17 @@ const execScript = async (ctxt: Context, res: Response): Promise<void> => {
     return;
   }
 
-  const command = ctxt.query.command;
+  const { command, data } = ctxt.query;
   if (command === 'parseEmail') {
-    res.json(parser.gmail.parseEmailAddress(ctxt.query.data));
+    res.json(parser.gmail.parseEmailAddress(data));
+  } else if (command === 'listGmailFilters') {
+    res.json(await listGmailFilters());
+  } else if (command === 'addGmailFilter') {
+    await addGmailFilter(data);
+    res.json({ msg: `added filter: ${data}` });
+  } else {
+    res.json({ msg: `command not found: ${command}` });
   }
-
-  res.json({});
 };
 
 export default execScript;

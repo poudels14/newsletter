@@ -18,15 +18,14 @@ const RunCommand = () => {
     setResponse(data);
   }, [command, commandPayload]);
 
-  console.log('commandPayload =', commandPayload);
-  console.log('command =', command);
-
   return (
     <div>
       <div>
         <select value={command} onChange={(e) => setCommand(e.target.value)}>
           <option>Select Command</option>
           <option value="parseEmail">Parse Email</option>
+          <option value="listGmailFilters">List Gmail Filters</option>
+          <option value="addGmailFilter">Add Gmail Filter</option>
         </select>
         <input
           type="text"
