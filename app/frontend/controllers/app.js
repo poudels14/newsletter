@@ -1,8 +1,4 @@
-import {
-  Actions as AccountActions,
-  reducer as accountReducer,
-  sagas as accountSagas,
-} from './account';
+import { reducer as accountReducer, sagas as accountSagas } from './account';
 import { applyMiddleware, combineReducers, createStore } from 'redux';
 import {
   reducer as newslettersReducer,
@@ -12,23 +8,6 @@ import {
 import { composeWithDevTools } from 'redux-devtools-extension';
 import createSagaMiddleware from 'redux-saga';
 import { reducer as gmailReducer } from './gmail';
-import { connect as reduxConnect } from 'react-redux';
-
-const mapStateToProps = (state) => {
-  const { account } = state;
-  const { user } = account;
-  return {
-    user,
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    loadAccount: () => dispatch({ type: AccountActions.LOAD }),
-  };
-};
-
-const connect = reduxConnect(mapStateToProps, mapDispatchToProps);
 
 /** store */
 const composeEnhancers = composeWithDevTools({ trace: true });
@@ -44,4 +23,4 @@ const store = createStore(
 sagaMiddleware.run(newslettersSagas);
 sagaMiddleware.run(accountSagas);
 
-export { connect, store };
+export { store };
