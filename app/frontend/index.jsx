@@ -8,7 +8,6 @@ import Modal from 'react-modal';
 import ReactDOM from 'react-dom';
 
 const App = lazy(() => import('./app'));
-const Signin = lazy(() => import('./pages/signin'));
 const RequestGmailAccess = lazy(() => import('./pages/requestgmailaccess'));
 const AdminHomepage = lazy(() => import('./pages/admin/homepage'));
 const VerifiedNewsletters = lazy(() => import('./pages/verifiednewsletters'));
@@ -22,12 +21,6 @@ const Pages = () => {
     <Suspense fallback={<div></div>}>
       <Router>
         <Switch>
-          <Route
-            path="/signin"
-            render={() => {
-              return <Signin />;
-            }}
-          />
           <Route
             path="/grantaccess"
             render={() => {

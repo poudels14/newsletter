@@ -62,6 +62,7 @@ const commonConfig = {
   plugins: [
     new HtmlWebPackPlugin({
       template: './frontend/index.html',
+      filename: 'index.html',
       showErrors: process.env.NODE_ENV !== 'production',
 
       title: 'Alpine',
@@ -80,6 +81,16 @@ const commonConfig = {
         clientId: process.env.GMAIL_CLIENT_ID,
         apiKey: process.env.GMAIL_API_KEY,
       }),
+      inject: true,
+    }),
+    new HtmlWebPackPlugin({
+      template: './frontend/signin.html',
+      filename: 'signin.html',
+      showErrors: process.env.NODE_ENV !== 'production',
+      title: 'Sign in',
+      base: '/',
+      gmailClientId: process.env.GMAIL_CLIENT_ID,
+      inject: false,
     }),
     new CopyPlugin({
       patterns: [

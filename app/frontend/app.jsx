@@ -17,7 +17,8 @@ const Settings = lazy(() => import('./pages/settings'));
 
 const PrivateApp = (props) => {
   if (props.user != undefined && !props.user?.email) {
-    return <Redirect to="/signin" />;
+    window.location.href = '/signin';
+    return <></>;
   }
   if (
     props.user != undefined &&

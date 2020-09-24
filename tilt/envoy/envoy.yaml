@@ -52,7 +52,7 @@ static_resources:
                                 google_re2:
                                   max_program_size: 100
                                 regex: (.*)$
-                              substitution: /
+                              substitution: /signin.html
                         - match:
                             prefix: /grantaccess
                           route:
