@@ -91,18 +91,6 @@ const getUserProfile = (user) => {
   };
 };
 
-const hasRequiredAccess = async () => {
-  const auth2 = await getAuthInstance();
-  const authResponse = auth2.currentUser.get().getAuthResponse(true);
-
-  const { id_token: authenticationCode, scope } = authResponse;
-  const { data } = await axios.post('/api/account/gmail/signin', {
-    authenticationCode,
-    scope,
-  });
-  return data.hasRequiredAccess;
-};
-
 const requestOfflineAccess = async () => {
   const auth2 = await getAuthInstance();
   await auth2
@@ -119,10 +107,4 @@ const requestOfflineAccess = async () => {
   return getUserProfile(gapi.auth2.getAuthInstance().currentUser.get());
 };
 
-export {
-  initGmailApi,
-  initAuthentication,
-  signIn,
-  hasRequiredAccess,
-  requestOfflineAccess,
-};
+export { initGmailApi, initAuthentication, signIn, requestOfflineAccess };
