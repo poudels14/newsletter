@@ -50,36 +50,6 @@ func main() {
 		c.Send("OK")
 	})
 
-	app.Get("/newsletters/delete/*", func(c *fiber.Ctx) {
-		directoryToDelete := fmt.Sprintf("newsletters/%s", c.Params("*"))
-		files := bucket.List(&blob.ListOptions{Prefix: directoryToDelete})
-
-		ctxt := context.Background()
-		for {
-			file, _ := files.Next(ctxt)
-			if file == nil {
-				break
-			}
-			bucket.Delete(ctxt, file.Key)
-		}
-	})
-
-	app.Post("/newsletters/upload", func(c *fiber.Ctx) {
-		type Request struct {
-			RelativePath string `json:"relativePath"`
-			Content      string `json:"content"`
-		}
-		type Response struct {
-			URI string `json:"uri"`
-		}
-		request := new(Request)
-		c.BodyParser(request)
-
-		b := []byte(request.Content)
-		filename := saveFile(bucket, fmt.Sprintf("newsletters/%s", request.RelativePath), &b)
-		c.JSON(Response{URI: filename})
-	})
-
 	app.Post("/upload", func(c *fiber.Ctx) {
 		type Request struct {
 			RelativePath  string `json:"relativePath"`
