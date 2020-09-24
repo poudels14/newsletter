@@ -89,6 +89,10 @@ const commonConfig = {
       showErrors: process.env.NODE_ENV !== 'production',
       title: 'Sign in',
       base: '/',
+      gmailConfig: JSON.stringify({
+        clientId: process.env.GMAIL_CLIENT_ID,
+        apiKey: process.env.GMAIL_API_KEY,
+      }),
       gmailClientId: process.env.GMAIL_CLIENT_ID,
       inject: false,
     }),

@@ -15,10 +15,12 @@
       rel="stylesheet"
       type="text/css"
     />
+    <script id="gmail-config" type="application/json">
+      <%= htmlWebpackPlugin.options.gmailConfig %>
+    </script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script>
       function onSuccess(googleUser) {
-        console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
         const authResponse = googleUser.getAuthResponse(true);
         const { id_token: authenticationCode, scope } = authResponse;
         axios
@@ -40,14 +42,33 @@
       }
 
       function renderButton() {
-        gapi.signin2.render('google-signin-button', {
-          scope: 'profile email',
-          width: 240,
-          height: 50,
-          longtitle: true,
-          theme: 'dark',
-          onsuccess: onSuccess,
-          onfailure: onFailure,
+        const gmailConfig = JSON.parse(
+          document.getElementById('gmail-config').innerText
+        );
+        const DISCOVERY_DOCS = [
+          'https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest',
+        ];
+
+        gapi.load('client:auth2', () => {
+          gapi.client
+            .init({
+              ...gmailConfig,
+              discoveryDocs: DISCOVERY_DOCS,
+              scope: 'profile email',
+            })
+            .then(() => {
+              gapi.auth2.getAuthInstance().signOut();
+
+              gapi.signin2.render('google-signin-button', {
+                scope: 'profile email',
+                width: 240,
+                height: 50,
+                longtitle: true,
+                theme: 'dark',
+                onsuccess: onSuccess,
+                onfailure: onFailure,
+              });
+            });
         });
       }
     </script>
