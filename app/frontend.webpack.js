@@ -88,8 +88,8 @@ const commonConfig = {
           to: 'assets/',
         },
         {
-          from: 'manifest.webmanifest',
-          to: 'manifest.webmanifest',
+          from: 'manifest.webmanifest.json',
+          to: 'manifest.webmanifest.json',
         },
       ],
     }),
