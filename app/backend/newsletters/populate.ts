@@ -19,6 +19,31 @@ const listFilters = async () => {
   );
 };
 
+const listSubscribedNewsletters = async (userId: string) => {
+  return await knex('newsletters')
+    .leftJoin('user_emails', 'user_emails.newsletter_id', 'newsletters.id')
+    .distinct('newsletters.authorEmail')
+    .where({ 'user_emails.user_id': userId });
+};
+
+const insertGmailQueryAuditLog = ({
+  userId,
+  populateId,
+  searchId,
+  emailCount,
+  searchFilter,
+  createdDate,
+}: Record<string, unknown>) => {
+  return knex('gmail_query_audit_log').insert({
+    user_id: userId,
+    populateId,
+    searchId,
+    emailCount,
+    searchFilter,
+    createdDate,
+  });
+};
+
 const insertEmailHeaders = ({
   emailId,
   sender,
@@ -125,8 +150,7 @@ const updateLastQueryDate = ({
 const loadAndStoreGmail = async (
   client: google.OAuthClient,
   userId: string,
-  gmailId: string,
-  filters?: string[]
+  gmailId: string
 ) => {
   const email = await Gmail.getEmail(client, gmailId);
 
@@ -134,23 +158,15 @@ const loadAndStoreGmail = async (
   const newsletter = parser.gmail.parseNewsletter(email.payload);
 
   try {
-    const emailId = uuid.v1();
+    const emailId = uuid.v4();
     const sender = headers.from || headers.sender; //? headers.sender : headers.from; // TODO(sagar): maybe we shouldn't parse from?
     const {
       name: senderName,
       email: senderEmail,
     } = parser.gmail.parseEmailAddress(sender);
 
-    if (
-      filters &&
-      filters.filter((f) => senderEmail.indexOf(f) >= 0).length == 0
-    ) {
-      console.log('Email not matched with filter, from: ', senderEmail);
-      return;
-    }
-
     const dbNewsletter = await getNewsletter(senderEmail);
-    const newsletterId = dbNewsletter?.id || hash(uuid.v1());
+    const newsletterId = dbNewsletter?.id || hash(uuid.v4());
     const visible = !!senderName || !!senderEmail;
     if (!dbNewsletter) {
       await insertNewsletter(
@@ -162,7 +178,6 @@ const loadAndStoreGmail = async (
         visible
       ).catch((err) => {
         console.error(err);
-        throw err;
       });
     }
 
@@ -201,30 +216,36 @@ const loadAndStoreGmail = async (
 const loadAndStoreGmails = (
   client: google.OAuthClient,
   userId: string,
-  gmailIds: string[],
-  filters?: string[]
+  gmailIds: string[]
 ) => {
   if (!gmailIds) {
     return;
   }
 
   return Promise.each(gmailIds, async (emailId: string) => {
-    return await loadAndStoreGmail(client, userId, emailId, filters);
+    return await loadAndStoreGmail(client, userId, emailId);
   });
 };
 
-const populateUsingFilters = async (
+const searchAndPopulate = async (
   client: google.OAuthClient,
-  userId: string
+  userId: string,
+  populateId: string,
+  filters: string[]
 ) => {
-  console.log(
-    `populating newsletters using filters: ${JSON.stringify({ userId })}`
-  );
-  const allLoaders = (await listFilters()).map(async (filter: string) => {
+  const allLoaders = filters.map(async (filter: string) => {
+    const searchId = uuid.v4();
     let emails = await Gmail.searchEmails(client, {
       q: filter,
     });
     while (emails) {
+      await insertGmailQueryAuditLog({
+        userId,
+        populateId,
+        searchId,
+        emailCount: emails.messages?.length || 0,
+        searchFilter: filter,
+      });
       await loadAndStoreGmails(
         client,
         userId,
@@ -238,38 +259,6 @@ const populateUsingFilters = async (
   });
 
   await Promise.all(allLoaders);
-};
-
-const populateEmailsAfterLastDate = async (
-  client: google.OAuthClient,
-  userId: string,
-  lastQueryDate: number
-) => {
-  const lastQueryDateInSeconds = Math.floor(lastQueryDate / 1000);
-  console.log(
-    `populating new newsletters: ${JSON.stringify({
-      userId,
-      lastQueryDateInSeconds,
-    })}`
-  );
-  let emails = await Gmail.searchEmails(client, {
-    q: `after:${lastQueryDateInSeconds}`,
-  });
-  const emailFilters = (await listFilters()).map(
-    (f: string) => f.substr(5) /* "from:" is 5 chars long */
-  );
-  while (emails) {
-    await loadAndStoreGmails(
-      client,
-      userId,
-      emails.messages?.map((e: Record<string, string>) => e.id),
-      emailFilters
-    );
-    if (!emails.next) {
-      break;
-    }
-    emails = await emails.next();
-  }
 };
 
 const populate = async (ctxt: Context, res: Response): Promise<void> => {
@@ -300,22 +289,36 @@ const populate = async (ctxt: Context, res: Response): Promise<void> => {
   await User.update(userId, { gmailQueryInProgress: 1 });
   const populatedDate = new Date(); // next time, the emails will be loaded after this timestamp for the user
   const client = Gmail.getClient({ refresh_token: user.refreshToken });
+  const populateId = uuid.v4();
 
-  if (user.lastGmailQueryDate) {
-    // if the user isn't new, fetch all emails from the last popupated date
-    // it might be fater to do that than searching using filters since there won't be
-    // that many emails since that last populated date and the newsletter filters will be a long list
-    await populateEmailsAfterLastDate(client, userId, user.lastGmailQueryDate);
-  } else {
-    // it's faster to use email filters to fetch newsletters from email for the new user
-    // since fetching all the emails in the Gmail and checking if it's newsletter is much slower because of the
-    // quota per user that Gmail has
-    await populateUsingFilters(client, userId);
+  try {
+    if (user.lastGmailQueryDate) {
+      // if the user isn't new, search for email from the newsletters that the user already has and those that arrived
+      // after the last search time
+
+      const lastQueryDateInSeconds = Math.floor(user.lastGmailQueryDate / 1000);
+      const userEmailFilters = await listSubscribedNewsletters(userId);
+      const gmailSearchFilters = userEmailFilters.map(
+        ({ authorEmail }: { authorEmail: string }) => {
+          return `from:${authorEmail} after:${lastQueryDateInSeconds}`;
+        }
+      );
+      await searchAndPopulate(client, userId, populateId, gmailSearchFilters);
+    } else {
+      // it's faster to use email filters to fetch newsletters from email for the new user
+      // since fetching all the emails in the Gmail and checking if it's newsletter is much slower because of the
+      // quota per user that Gmail has
+      const genericFilters = await listFilters();
+      await searchAndPopulate(client, userId, populateId, genericFilters);
+    }
+  } catch (e) {
+    // Note(sagar): if there was any error when populating, set the queryInProgress to 0
+    //              but don't set the last populated date
+    await User.update(userId, { gmailQueryInProgress: 0 });
+    return;
   }
 
   await updateLastQueryDate({ userId, date: populatedDate });
-
-  console.log('done populating');
 };
 
 export default populate;
