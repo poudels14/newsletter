@@ -3,7 +3,6 @@ import React, { useCallback, useMemo, useState } from 'react';
 
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
-import { Switch } from 'antd';
 import axios from 'axios';
 import { css } from '@emotion/core';
 
@@ -112,7 +111,7 @@ const Settings = () => {
               <h3>
                 Linked Email: <b>{settings.email}</b>
               </h3>
-              <div>
+              {/* <div>
                 <h3>
                   Alpine Email: <b>{settings.mailgunEmail}</b>
                 </h3>
@@ -142,11 +141,11 @@ const Settings = () => {
                     />
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
 
-          <div
+          {/* <div
             css={css(`
               width: 100%;
               padding: 25px 0;
@@ -161,7 +160,7 @@ const Settings = () => {
               <h2>Billing</h2>
             </div>
             <div>You are on a free plan.</div>
-          </div>
+          </div> */}
 
           <div
             css={css(`
