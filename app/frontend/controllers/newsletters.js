@@ -10,30 +10,34 @@ const listDigests = async (options) => {
 const Actions = {
   POPULATE: '/newsletters/populate',
   POLL_POPULATE_STATUS: '/newsletters/populate/status/poll',
-  SET_POPULATE_STATUS: '/newsletters/populate/status/set',
+  UPDATE_POPULATE_STATUS: '/newsletters/populate/status/update',
 
   LOAD_PUBLISHERS: '/newsletters/publishers/load',
-  SET_PUBLISHERS: '/newsletters/publishers/set',
+  LOAD_PUBLISHERS_SUCCEEDED: '/newsletters/publishers/load/succeeded',
+  LOAD_PUBLISHERS_FAILED: '/newsletters/publishers/load/failed',
 
   SET_INITIAL_DIGEST_FILTERS: '/newsletters/digests/filters/set', // triggered after stored filters are loaded from server
   UPDATE_DIGEST_FILTERS: '/newsletters/digests/filters/update',
-  APPEND_DIGESTS: '/newsletters/digests/append',
-  LOAD_MORE_DIGESTS: '/newsletters/digests/loadmore',
+
+  LOAD_DIGESTS: '/newsletters/digests/load',
+  LOAD_DIGESTS_SUCCEEDED: '/newsletters/digests/load/succeeded',
+  LOAD_DIGESTS_FAILED: '/newsletters/digests/load/failed',
+  LOAD_MORE_DIGESTS: '/newsletters/digests/load/more',
 
   LOAD_HIGHLIGHTS: '/newsletters/highlights/load',
-  APPEND_HIGHLIGHTS: '/newsletters/highlights/append',
+  LOAD_HIGHLIGHTS_SUCCEEDED: '/newsletters/highlights/load/succeeded',
 };
 
 const reducer = (state = {}, action) => {
   switch (action.type) {
-    case Actions.SET_POPULATE_STATUS: {
+    case Actions.UPDATE_POPULATE_STATUS: {
       const { status } = action;
       return {
         ...state,
         populateStatus: status,
       };
     }
-    case Actions.SET_PUBLISHERS: {
+    case Actions.LOAD_PUBLISHERS_SUCCEEDED: {
       const { publishers } = action;
       return {
         ...state,
@@ -58,14 +62,14 @@ const reducer = (state = {}, action) => {
         highlights: null, // reset highlights when different publisher is selected
       };
     }
-    case Actions.APPEND_DIGESTS: {
+    case Actions.LOAD_DIGESTS_SUCCEEDED: {
       const { digests } = action;
       return {
         ...state,
         digests: state.digests ? state.digests.concat(digests) : digests,
       };
     }
-    case Actions.APPEND_HIGHLIGHTS: {
+    case Actions.LOAD_HIGHLIGHTS_SUCCEEDED: {
       const highlights = state.highlights
         ? state.highlights.concat(action.highlights)
         : action.highlights;
@@ -81,20 +85,23 @@ const reducer = (state = {}, action) => {
 
 function* populateListener() {
   yield takeEvery(Actions.POPULATE, function* () {
-    const { data } = yield axios.get('/api/newsletters/populate');
-    yield put({ type: Actions.SET_POPULATE_STATUS, status: data });
+    const { data: status } = yield axios.get('/api/newsletters/populate');
+    yield put({ type: Actions.UPDATE_POPULATE_STATUS, status });
 
-    while (true) {
-      const { data } = yield axios.get('/api/newsletters/populate/status');
-      if (data.inProgress === 0) {
-        yield put({ type: Actions.SET_POPULATE_STATUS, status: data });
+    if (status.inProgress) {
+      while (true) {
+        const { data } = yield axios.get('/api/newsletters/populate/status');
+        if (data.inProgress === 0) {
+          yield put({ type: Actions.UPDATE_POPULATE_STATUS, status: data });
 
-        // update newsletters after populating is completed
-        yield put({ type: Actions.LOAD_PUBLISHERS });
-        // TODO(sagar): maybe update the digest list as well?
-        break;
+          // update newsletters after populating is completed
+          yield put({ type: Actions.LOAD_PUBLISHERS });
+          // NOTE(sagar): trigger update digest filter with empty filters to refresh digest list
+          yield put({ type: Actions.UPDATE_DIGEST_FILTERS, filters: {} });
+          break;
+        }
+        yield delay(2000);
       }
-      yield delay(2000);
     }
   });
 }
@@ -102,7 +109,7 @@ function* populateListener() {
 function* loadPublishersListener() {
   yield takeEvery(Actions.LOAD_PUBLISHERS, function* () {
     const { data } = yield axios.get('/api/newsletters/listNewsletters');
-    yield put({ type: Actions.SET_PUBLISHERS, publishers: data });
+    yield put({ type: Actions.LOAD_PUBLISHERS_SUCCEEDED, publishers: data });
   });
 }
 
@@ -110,28 +117,36 @@ function* updateDigestFiltersListener() {
   yield takeEvery(Actions.UPDATE_DIGEST_FILTERS, function* ({
     filters: newFilters,
   }) {
+    yield put({ type: Actions.LOAD_DIGESTS });
+    // NOTE(sagar): update settings if filter other than newsletterId is changed
+    const persistantFiltersUpdated = Object.keys(newFilters).find(
+      (f) => f !== 'newsletterId'
+    );
+    if (persistantFiltersUpdated) {
+      const digestFilters = yield select(
+        (state) => state.newsletters?.digestFilters
+      );
+      yield axios.post('/api/account/updateSettings', {
+        settings: { digestFilters },
+      });
+    }
+  });
+}
+
+function* loadDigestsListener() {
+  yield takeEvery(Actions.LOAD_DIGESTS, function* () {
     const digestFilters = yield select(
       (state) => state.newsletters?.digestFilters
     );
     const digests = yield listDigests({
       params: { filters: digestFilters },
     });
-    yield put({ type: Actions.APPEND_DIGESTS, digests });
+    yield put({ type: Actions.LOAD_DIGESTS_SUCCEEDED, digests });
 
     yield put({
       type: Actions.LOAD_HIGHLIGHTS,
       filters: digestFilters,
     });
-
-    // NOTE(sagar): update settings if filter other than newsletterId is changed
-    const persistantFiltersUpdated = Object.keys(newFilters).find(
-      (f) => f !== 'newsletterId'
-    );
-    if (persistantFiltersUpdated) {
-      yield axios.post('/api/account/updateSettings', {
-        settings: { digestFilters },
-      });
-    }
   });
 }
 
@@ -143,7 +158,7 @@ function* loadMoreDigestsListener() {
     const digests = yield listDigests({
       params: { filters: digestFilters, offset },
     });
-    yield put({ type: Actions.APPEND_DIGESTS, digests });
+    yield put({ type: Actions.LOAD_DIGESTS_SUCCEEDED, digests });
   });
 }
 
@@ -152,7 +167,7 @@ function* loadHighlightsListener() {
     const { data } = yield axios.get('/api/newsletters/listHighlights', {
       params: { filters },
     });
-    yield put({ type: Actions.APPEND_HIGHLIGHTS, highlights: data });
+    yield put({ type: Actions.LOAD_HIGHLIGHTS_SUCCEEDED, highlights: data });
   });
 }
 
@@ -160,6 +175,7 @@ function* sagas() {
   yield all([
     populateListener(),
     loadPublishersListener(),
+    loadDigestsListener(),
     updateDigestFiltersListener(),
     loadMoreDigestsListener(),
     loadHighlightsListener(),
