@@ -3,9 +3,9 @@ const merge = require('webpack-merge');
 const commonConfig = require('./backend.webpack');
 
 module.exports = merge(commonConfig, {
-  entry: './emailprocessing/main.js',
+  entry: './backend/emailprocessing/main.js',
   output: {
-    path: path.resolve(__dirname, 'build/emailprocessing/'),
+    path: path.resolve(__dirname, 'build/backend/emailprocessing/'),
     filename: '[name].js',
   },
 });

@@ -12,17 +12,17 @@ k8s_resource('tilt-mailgunserver', port_forwards=["8004:8004"])
 docker_build('tilt-apibackend', '.',
     dockerfile='./tilt/app/Dockerfile',
     only=['./app', './highlighter'],
-    ignore=['./app/node_modules', './app/frontend', './app/emailprocessing'],
+    ignore=['./app/node_modules', './app/frontend', './app/backend/emailprocessing'],
     entrypoint='yarn run api:dev',
     live_update=[
-        sync('./app/api', '/app/api'),
+        sync('./app/backend', '/app/backend'),
         run('cd /app && yarn install', trigger=['./app/package.json', './app/yarn.lock']),
 ])
 
 docker_build('tilt-frontend', '.',
     dockerfile='./tilt/app/Dockerfile',
     only=['./app', './highlighter'],
-    ignore=['./app/node_modules', './app/api', './app/emailprocessing'],
+    ignore=['./app/node_modules', './app/backend'],
     entrypoint='yarn run frontend:dev',
     live_update=[
         sync('./app/frontend', '/app/frontend'),

@@ -18,5 +18,5 @@
     "lib": ["es2019"]
   },
   "exclude": ["node_modules"],
-  "include": ["api/**/*frontend/**/*"]
+  "include": ["backend/**/*", "frontend/**/*"]
 }

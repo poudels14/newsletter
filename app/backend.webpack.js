@@ -7,9 +7,9 @@ const commonConfig = {
   externals: [nodeExternals()],
   resolve: {
     alias: {
-      Http: path.resolve(__dirname, 'api/http'),
-      Utils: path.resolve(__dirname, 'api/utils'),
-      Repos: path.resolve(__dirname, 'api/repos'),
+      Http: path.resolve(__dirname, 'backend/http'),
+      Utils: path.resolve(__dirname, 'backend/utils'),
+      Repos: path.resolve(__dirname, 'backend/repos'),
     },
     extensions: ['.ts', '.js', '.json'],
   },
