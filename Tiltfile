@@ -2,6 +2,7 @@ k8s_yaml(kustomize('./tilt'))
 
 k8s_resource('tilt-envoyproxy', port_forwards=["8000:8000", "5000:5000"])
 k8s_resource('tilt-mysql', port_forwards="3306:3306")
+k8s_resource('tilt-rabbitmq', port_forwards=["5672:5672", "15672:15672"])
 
 # allow access to app server for debugging
 k8s_resource('tilt-apibackend', port_forwards=["8001:8001"])

@@ -4,9 +4,10 @@ namePrefix: tilt-
 bases:
   - ../kube/apibackend
   - app/frontend
-  - ../kube/envoy/
-  - ../kube/mailgun/
+  - ../kube/envoy
+  - ../kube/mailgun
   - ../kube/mysql
+  - ../kube/rabbitmq
 resources:
   - pvc.yaml
 configMapGenerator:
@@ -33,6 +34,9 @@ images:
   - name: mysql
     newName: mysql
     newTag: "8.0"
+  - name: rabbitmq
+    newName: rabbitmq
+    newTag: 3.8.9-management-alpine
   - name: apibackend
     newName: tilt-apibackend
   - name: frontend
