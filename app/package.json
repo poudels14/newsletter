@@ -4,15 +4,20 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "npm-run-all --parallel backend:dev frontend:dev",
-    "build": "npm-run-all --parallel frontend:build backend:build",
+    "dev": "npm-run-all --parallel api:dev frontend:dev",
+    "build": "npm-run-all --parallel frontend:build api:build",
     "frontend:dev": "webpack-dev-server --config frontend.webpack.js",
     "frontend:build": "webpack --config frontend.webpack.js",
-    "backend:dev": "npm-run-all --parallel backend:dev:webpack backend:dev:nodemon",
-    "backend:dev:webpack": "webpack --watch --config backend.webpack.js",
-    "backend:dev:nodemon": "yarn run backend:build && nodemon --watch build/server build/apiserver/main.js",
-    "backend:build": "webpack --config backend.webpack.js",
-    "start": "node build/apiserver/main.js"
+    "api:dev:webpack": "webpack --watch --config api.webpack.js",
+    "api:dev:nodemon": "yarn run api:build && nodemon --watch build/server build/apiserver/main.js",
+    "api:dev": "npm-run-all --parallel api:dev:webpack api:dev:nodemon",
+    "api:build": "webpack --config api.webpack.js",
+    "api:start": "node build/apiserver/main.js",
+    "emailprocessing:dev:webpack": "webpack --watch --config emailprocessing.webpack.js",
+    "emailprocessing:dev:nodemon": "yarn run emailprocessing:build && nodemon --watch build/emailprocessing build/emailprocessing/main.js",
+    "emailprocessing:dev": "npm-run-all --parallel emailprocessing:dev:webpack emailprocessing:dev:nodemon",
+    "emailprocessing:build": "webpack --config emailprocessing.webpack.js",
+    "emailprocessing:start": "node build/emailprocessing/main.js"
   },
   "husky": {
     "hooks": {
@@ -24,6 +29,7 @@
     "@emotion/core": "^10.0.28",
     "@emotion/hash": "^0.8.0",
     "@types/jsdom": "^16.2.4",
+    "amqplib": "^0.6.0",
     "antd": "^4.4.2",
     "axios": "^0.19.2",
     "bluebird": "^3.7.2",

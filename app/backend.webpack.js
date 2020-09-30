@@ -3,13 +3,8 @@ const merge = require('webpack-merge');
 const nodeExternals = require('webpack-node-externals');
 
 const commonConfig = {
-  entry: './api/server.ts',
   target: 'node',
   externals: [nodeExternals()],
-  output: {
-    path: path.resolve(__dirname, 'build/apiserver/'),
-    filename: '[name].js',
-  },
   resolve: {
     alias: {
       Http: path.resolve(__dirname, 'api/http'),

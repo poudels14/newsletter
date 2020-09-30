@@ -36,4 +36,4 @@ COPY --from=BUILD_IMAGE /app/build ./build
 COPY --from=SECOND_STAGE /app/package.json ./package.json
 COPY --from=SECOND_STAGE /app/node_modules ./node_modules
 
-ENTRYPOINT [ "node", "./build/server/main.js" ]
+ENTRYPOINT [ "node", "./build/apiserver/main.js" ]
