@@ -15,7 +15,7 @@ docker_build('tilt-apibackend', '.',
     ignore=['./app/node_modules', './app/frontend'],
     entrypoint='yarn run backend:dev',
     live_update=[
-        sync('./app/backend', '/app/backend'),
+        sync('./app/api', '/app/api'),
         run('cd /app && yarn install', trigger=['./app/package.json', './app/yarn.lock']),
 ])
 

@@ -65,6 +65,8 @@ const deleteAccount = async (ctxt: Context, res: Response): Promise<void> => {
     await connection.commit();
     await connection.end();
 
+    // TODO(sagar): delete mailgun routes
+
     res.json({ success: true });
     return;
   }

@@ -10,9 +10,9 @@
     "frontend:build": "webpack --config frontend.webpack.js",
     "backend:dev": "npm-run-all --parallel backend:dev:webpack backend:dev:nodemon",
     "backend:dev:webpack": "webpack --watch --config backend.webpack.js",
-    "backend:dev:nodemon": "yarn run backend:build && nodemon --watch build/server build/server/main.js",
+    "backend:dev:nodemon": "yarn run backend:build && nodemon --watch build/server build/apiserver/main.js",
     "backend:build": "webpack --config backend.webpack.js",
-    "start": "node build/server/main.js"
+    "start": "node build/apiserver/main.js"
   },
   "husky": {
     "hooks": {
