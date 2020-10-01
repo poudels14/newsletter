@@ -1,10 +1,10 @@
-import * as Gmail from 'Utils/gmail';
 import * as uuid from 'uuid';
 
 import { crypto, database } from 'Utils';
 
 import { Context } from 'Http/request';
 import { Cookies } from 'Http/cookies';
+import { Gmail } from 'Utils';
 import { Response } from 'Http/response';
 
 const insertUserInfoToDb = ({

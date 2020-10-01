@@ -1,5 +1,8 @@
+import { Auth, google } from 'googleapis';
+import { Credentials, TokenPayload } from 'google-auth-library';
+
+import { GetAccessTokenResponse } from 'google-auth-library/build/src/auth/oauth2client';
 import dotenv from 'dotenv';
-import { google } from 'googleapis';
 import lo from 'lodash';
 
 dotenv.config();
@@ -7,7 +10,8 @@ dotenv.config();
 const REQUIRED_SCOPES =
   'openid profile email https://www.googleapis.com/auth/gmail.readonly';
 
-const oAuth2Client = () => {
+type BuildOAuth2Client = () => Auth.OAuth2Client;
+const buildOAuth2Client: BuildOAuth2Client = () => {
   return new google.auth.OAuth2(
     process.env.GMAIL_CLIENT_ID,
     process.env.GMAIL_CLIENT_SECRET,
@@ -15,20 +19,22 @@ const oAuth2Client = () => {
   );
 };
 
-type GmailClient = (credentials: unknown) => google.OAuthClient;
+type GmailClient = (credentials: unknown) => Auth.OAuth2Client;
 const getClient: GmailClient = (credentials) => {
-  const client = oAuth2Client();
+  const client = buildOAuth2Client();
   client.setCredentials(credentials);
   return client;
 };
 
-const getToken = async (code: string): Promise<unknown> => {
-  return await oAuth2Client()
+type GetToken = (code: string) => Promise<string | Credentials>;
+const getToken: GetToken = async (code) => {
+  return await buildOAuth2Client()
     .getToken(code)
     .then((res) => res.tokens);
 };
 
-const refreshAccessToken = async (refreshToken: string): Promise<unknown> => {
+type RefreshToken = (refreshToken: string) => Promise<GetAccessTokenResponse>;
+const refreshAccessToken: RefreshToken = async (refreshToken) => {
   const client = getClient({
     refresh_token: refreshToken,
     include_granted_scopes: true,
@@ -36,14 +42,15 @@ const refreshAccessToken = async (refreshToken: string): Promise<unknown> => {
   return await client.getAccessToken();
 };
 
-const hasRequiredScopes = (scopes: string[]): boolean => {
+type HasRequiredScopes = (scopes: string[]) => boolean;
+const hasRequiredScopes: HasRequiredScopes = (scopes) => {
   return lo.difference(REQUIRED_SCOPES, scopes).length === 0;
 };
 
 // Get user info from the JWT id_token received from `oAuth2Client.getToken`
-type GetUserInfo = (a: string) => Promise<unknown>;
+type GetUserInfo = (a: string) => Promise<TokenPayload>;
 const getUserInfo: GetUserInfo = async (idToken) => {
-  const data = await oAuth2Client().verifyIdToken({
+  const data = await buildOAuth2Client().verifyIdToken({
     idToken: idToken,
     audience: process.env.GMAIL_CLIENT_ID,
   });
@@ -54,11 +61,18 @@ interface SearchOptions {
   q?: string;
   maxResults?: number;
 }
-const searchEmails: (
-  client: google.OAuthClient,
+interface SearchEmailsResponse {
+  messages?: unknown;
+  nextPageToken?: string;
+  resultSizeEstimate?: number;
+  next: () => Promise<SearchEmailsResponse>;
+}
+type SearchEmails = (
+  client: Auth.OAuth2Client,
   options: SearchOptions,
   pageToken?: string
-) => unknown = async (client, options, pageToken) => {
+) => Promise<SearchEmailsResponse>;
+const searchEmails: SearchEmails = async (client, options, pageToken) => {
   const gmail = google.gmail({ version: 'v1', auth: client });
   const { data: emails } = await gmail.users.messages.list({
     userId: 'me',
@@ -78,9 +92,9 @@ const searchEmails: (
 };
 
 const getEmail = async (
-  client: google.OAuthClient,
+  client: Auth.OAuth2Client,
   emailId: string
-): Promise<unknown> => {
+): Promise<Record<string, unknown>> => {
   const gmail = google.gmail({ version: 'v1', auth: client });
   const { data } = await gmail.users.messages.get({
     userId: 'me',
@@ -90,7 +104,7 @@ const getEmail = async (
   return data;
 };
 
-export {
+export default {
   getClient,
   getToken,
   refreshAccessToken,

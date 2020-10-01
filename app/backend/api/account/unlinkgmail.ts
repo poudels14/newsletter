@@ -1,7 +1,6 @@
-import * as Gmail from 'Utils/gmail';
-
 import { Context } from 'Http/request';
 import { Cookies } from 'Http/cookies';
+import { Gmail } from 'Utils';
 import { Response } from 'Http/response';
 import { User } from 'Repos';
 

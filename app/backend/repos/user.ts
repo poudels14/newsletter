@@ -1,8 +1,20 @@
 import { crypto, knex } from 'Utils';
 
+type User = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  refreshToken: string;
+  lastGmailQueryDate: number | Date;
+  gmailQueryInProgress: boolean;
+  isAdmin?: boolean;
+};
+
 const ADMIN_EMAILS = ['poudels14@gmail.com'];
 
-const buildUser = (dbUser: Record<string, unknown>) => {
+type BuildUser = (user: User) => User;
+const buildUser: BuildUser = (dbUser: User) => {
   if (!dbUser) {
     return null;
   }
@@ -22,13 +34,13 @@ const buildUser = (dbUser: Record<string, unknown>) => {
   };
 };
 
-type GetById = (userId: string) => Promise<Record<string, unknown>>;
+type GetById = (userId: string) => Promise<User>;
 const getById: GetById = async (userId) => {
   const rows = await knex('users').select('*').where({ id: userId });
   return buildUser(rows[0]);
 };
 
-type GetByEmail = (email: string) => Promise<Record<string, unknown>>;
+type GetByEmail = (email: string) => Promise<User>;
 const getByEmail: GetByEmail = async (email) => {
   const rows = await knex('users').select('*').where({ email });
   return buildUser(rows[0]);
@@ -40,7 +52,7 @@ type ListUsers = ({
 }: {
   filter: Record<string, unknown>;
   limit: number;
-}) => Promise<Record<string, unknown>[]>;
+}) => Promise<User[]>;
 const listUsers: ListUsers = async ({ filter, limit }) => {
   const rows = await knex('users')
     .select('firstName')
@@ -55,7 +67,7 @@ const listUsers: ListUsers = async ({ filter, limit }) => {
   return rows.map(buildUser);
 };
 
-type Update = (userId: string, data: Record<string, unknown>) => Promise<void>;
+type Update = (userId: string, user: Partial<User>) => Promise<void>;
 const update: Update = async (userId, data) => {
   const finalRecord = data;
   if (data.refreshToken) {
