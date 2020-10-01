@@ -1,8 +1,8 @@
 import { database, knex } from 'Utils';
 
-import { Context } from 'Http/request';
-import { Cookies } from 'Http/cookies';
-import { Response } from 'Http/response';
+import { Context } from 'Http';
+import { Cookies } from 'Http';
+import { Response } from 'Http';
 import { User } from 'Repos';
 import { format as formatQuery } from 'sqlstring';
 import { parser } from '../newsletters/parser';

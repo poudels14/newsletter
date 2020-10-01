@@ -1,7 +1,7 @@
 import { Base64 } from 'js-base64';
-import { Context } from 'Http/request';
-import { Cookies } from 'Http/cookies';
-import { Response } from 'Http/response';
+import { Context } from 'Http';
+import { Cookies } from 'Http';
+import { Response } from 'Http';
 import { knex } from 'Utils';
 import lo from 'lodash';
 

@@ -1,5 +1,5 @@
-import { Context } from 'Http/request';
-import { Response } from 'Http/response';
+import { Context } from 'Http';
+import { Response } from 'Http';
 import { knex } from 'Utils';
 
 const listVerifiedNewsletters = async (

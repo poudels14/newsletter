@@ -1,11 +1,11 @@
-import { Context } from 'Http/request';
-import { Cookies } from 'Http/cookies';
+import { Context } from 'Http';
+import { Cookies } from 'Http';
 import { Gmail } from 'Utils';
-import { Response } from 'Http/response';
+import { Response } from 'Http';
 import { User } from 'Repos';
 import { database } from 'Utils';
 
-const hasValidRefreshToken = async (user: Record<string, string>) => {
+const hasValidRefreshToken = async (user: User.User) => {
   if (user['refreshToken']) {
     try {
       await Gmail.refreshAccessToken(user['refreshToken']);

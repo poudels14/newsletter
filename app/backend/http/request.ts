@@ -1,11 +1,11 @@
 interface Context {
   id: string;
-  user?: any;
-  params?: any;
-  query?: any;
-  body?: any;
-  files?: any;
-  cookies?: any;
+  user?: Record<string, string>;
+  params?: Record<string, unknown>;
+  query?: Record<string, unknown>;
+  body?: Record<string, unknown>;
+  files?: Record<string, unknown>;
+  cookies?: Record<string, unknown>;
 }
 
 export { Context };

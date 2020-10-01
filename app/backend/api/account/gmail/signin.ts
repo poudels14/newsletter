@@ -1,9 +1,9 @@
 import * as uuid from 'uuid';
 
-import { Context } from 'Http/request';
-import { Cookies } from 'Http/cookies';
+import { Context } from 'Http';
+import { Cookies } from 'Http';
 import { Gmail } from 'Utils';
-import { Response } from 'Http/response';
+import { Response } from 'Http';
 import { User } from 'Repos';
 import { database } from 'Utils';
 
@@ -30,7 +30,7 @@ const signIn = async (ctxt: Context, res: Response): Promise<void> => {
 
   if (authenticationCode) {
     try {
-      const user = await Gmail.getUserInfo(authenticationCode);
+      const user = await Gmail.getUserInfo(authenticationCode as string);
       const dbUser = await User.getByEmail(user.email);
 
       const userId = dbUser?.id || uuid.v1();
@@ -43,7 +43,7 @@ const signIn = async (ctxt: Context, res: Response): Promise<void> => {
           lastName: user['family_name'] || dbUser.lastName,
         });
 
-        if (!Gmail.hasRequiredScopes(scope)) {
+        if (!Gmail.hasRequiredScopes(scope as string[])) {
           response = { hasRequiredAccess: false };
         } else {
           // This is to make sure the refreshToken in the db is still valid

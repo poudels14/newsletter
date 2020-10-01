@@ -4,7 +4,11 @@ import jwt from 'jsonwebtoken';
 
 interface UserCookie {
   id: string;
-  exp: string;
+  exp?: number;
+}
+
+interface User {
+  id?: string;
 }
 
 const setUser = (res: Response, user: UserCookie): void => {
@@ -15,18 +19,18 @@ const setUser = (res: Response, user: UserCookie): void => {
   });
 };
 
-type GetUser = (req: Context) => Promise<unknown>;
+type GetUser = (req: Context) => Promise<User>;
 const getUser: GetUser = (req) => {
   return new Promise((resolve) => {
     // TODO(sagar): make sure the expired tokens are invalid
     jwt.verify(
       req.cookies['logged-user'],
       process.env.LOGIN_COOKIE_SIGNING_KEY,
-      (err: Error, user: Record<string, unknown>) => {
+      (err: Error, user: User) => {
         if (err) {
           resolve({});
         } else {
-          resolve({ id: user.id });
+          resolve(user);
         }
       }
     );
@@ -41,7 +45,7 @@ type AuthorizedOnly = () => (
 const authorizedOnly: AuthorizedOnly = () => async (req, res, next) => {
   getUser(req)
     .catch(() => res.sendStatus(403))
-    .then((user) => {
+    .then((user: User) => {
       if (user?.id) {
         req.user = user;
         next();

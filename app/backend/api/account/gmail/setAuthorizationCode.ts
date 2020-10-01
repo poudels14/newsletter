@@ -2,10 +2,10 @@ import * as uuid from 'uuid';
 
 import { crypto, database } from 'Utils';
 
-import { Context } from 'Http/request';
-import { Cookies } from 'Http/cookies';
+import { Context } from 'Http';
+import { Cookies } from 'Http';
 import { Gmail } from 'Utils';
-import { Response } from 'Http/response';
+import { Response } from 'Http';
 
 const insertUserInfoToDb = ({
   id,

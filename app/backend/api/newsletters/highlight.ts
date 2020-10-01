@@ -5,10 +5,10 @@ import {
 } from 'highlighter';
 
 import { Base64 } from 'js-base64';
-import { Context } from 'Http/request';
-import { Cookies } from 'Http/cookies';
+import { Context } from 'Http';
+import { Cookies } from 'Http';
 import { JSDOM } from 'jsdom';
-import { Response } from 'Http/response';
+import { Response } from 'Http';
 import { knex } from 'Utils';
 import lo from 'lodash';
 

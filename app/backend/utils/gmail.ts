@@ -101,7 +101,7 @@ const getEmail = async (
     id: emailId,
   });
 
-  return data;
+  return data as Record<string, unknown>;
 };
 
 export default {

@@ -9,6 +9,8 @@ type User = {
   lastGmailQueryDate: number | Date;
   gmailQueryInProgress: boolean;
   isAdmin?: boolean;
+  settings?: Record<string, unknown>;
+  mailgunEmailId?: string;
 };
 
 const ADMIN_EMAILS = ['poudels14@gmail.com'];
@@ -50,8 +52,8 @@ type ListUsers = ({
   filter,
   limit,
 }: {
-  filter: Record<string, unknown>;
-  limit: number;
+  filter?: Record<string, unknown>;
+  limit?: number;
 }) => Promise<User[]>;
 const listUsers: ListUsers = async ({ filter, limit }) => {
   const rows = await knex('users')
@@ -59,7 +61,7 @@ const listUsers: ListUsers = async ({ filter, limit }) => {
     .select('lastName')
     .select('email')
     .where(filter || {})
-    .modify((queryBuilder: unknown) => {
+    .modify((queryBuilder) => {
       if (limit) {
         queryBuilder.limit(limit);
       }
@@ -88,4 +90,5 @@ const clearRefreshToken: ClearRefreshToken = async (userId) => {
     });
 };
 
+export type { User };
 export { getById, getByEmail, listUsers, update, clearRefreshToken };

@@ -1,6 +1,6 @@
-import { Context } from 'Http/request';
-import { Cookies } from 'Http/cookies';
-import { Response } from 'Http/response';
+import { Context } from 'Http';
+import { Cookies } from 'Http';
+import { Response } from 'Http';
 import { database } from 'Utils';
 
 const queryNewsletters = async ({ userId }: Record<string, string>) => {

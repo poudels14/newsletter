@@ -2,7 +2,17 @@ import { createConnection, createPool } from 'mysql2';
 
 import Knex from 'knex';
 
-console.log('Creating db pool...');
+type Connection = {
+  beginTransaction: () => Promise<void>;
+  commit: () => Promise<void>;
+  end: () => Promise<void>;
+  execute: (query: string, args: unknown[]) => Promise<unknown[]>;
+};
+
+interface Database {
+  query: (query: string, values?: unknown) => Promise<unknown[]>;
+  connection: () => Promise<Connection>;
+}
 
 const pool = createPool({
   host: process.env.MYSQL_HOST,
@@ -14,12 +24,12 @@ const pool = createPool({
   queueLimit: 0,
 });
 
-const query = async (query: string, values: unknown): Promise<unknown> => {
+const query = async (query: string, values?: unknown): Promise<unknown[]> => {
   const data = await pool.promise().query(query, values);
   return data;
 };
 
-const connection = async (): Promise<unknown> => {
+const connection = async (): Promise<Connection> => {
   return await createConnection({
     host: process.env.MYSQL_HOST,
     user: process.env.MYSQL_USER,
@@ -28,7 +38,7 @@ const connection = async (): Promise<unknown> => {
   }).promise();
 };
 
-const database = {
+const database: Database = {
   query,
   connection,
 };
@@ -43,4 +53,5 @@ const knex = Knex({
   },
 });
 
+export type { Connection };
 export { database, knex };

@@ -1,5 +1,5 @@
-import { Cookies } from 'Http/cookies';
-import { Router } from 'Http/router';
+import { Cookies } from 'Http';
+import { Router } from 'Http';
 import { account } from './account';
 import { admin } from './admin';
 import { newsletters } from './newsletters';

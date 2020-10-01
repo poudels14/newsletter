@@ -29,7 +29,7 @@ class Router {
     };
   }
 
-  get(path: string, middleware: Middleware, handler: Handler): void {
+  get(path: string, middleware: Middleware, handler?: Handler): void {
     if (!handler) {
       handler = middleware as Handler;
       middleware = (req, res, next) => next();
@@ -43,7 +43,7 @@ class Router {
     );
   }
 
-  post(path: string, middleware: Middleware, handler: Handler): void {
+  post(path: string, middleware: Middleware, handler?: Handler): void {
     if (!handler) {
       handler = middleware as Handler;
       middleware = (req, res, next) => next();

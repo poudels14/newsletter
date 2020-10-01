@@ -1,7 +1,7 @@
-import { Context } from 'Http/request';
-import { Cookies } from 'Http/cookies';
+import { Context } from 'Http';
+import { Cookies } from 'Http';
 import { Gmail } from 'Utils';
-import { Response } from 'Http/response';
+import { Response } from 'Http';
 import { User } from 'Repos';
 
 const unlinkGmail = async (ctxt: Context, res: Response): Promise<void> => {

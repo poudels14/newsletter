@@ -1,11 +1,12 @@
-import { Context } from 'Http/request';
-import { Cookies } from 'Http/cookies';
-import { Gmail } from 'Utils';
-import { Response } from 'Http/response';
-import { User } from 'Repos';
-import { database } from 'Utils';
+import { MysqlConnection, database } from 'Utils';
 
-const unlinkGmail = async (user: Record<string, unknown>) => {
+import { Context } from 'Http';
+import { Cookies } from 'Http';
+import { Gmail } from 'Utils';
+import { Response } from 'Http';
+import { User } from 'Repos';
+
+const unlinkGmail = async (user: User.User) => {
   try {
     const client = Gmail.getClient({ refresh_token: user.refreshToken });
     await client.revokeToken(user.refreshToken);
@@ -15,7 +16,7 @@ const unlinkGmail = async (user: Record<string, unknown>) => {
 };
 
 const deleteHighlights = async (
-  connection: unknown,
+  connection: MysqlConnection,
   user: Record<string, unknown>
 ) => {
   await connection.execute(`DELETE FROM highlights WHERE user_id = ?`, [
@@ -24,7 +25,7 @@ const deleteHighlights = async (
 };
 
 const deleteEmails = async (
-  connection: unknown,
+  connection: MysqlConnection,
   user: Record<string, unknown>
 ) => {
   await connection.execute(
@@ -38,7 +39,7 @@ const deleteEmails = async (
 };
 
 const deleteUser = async (
-  connection: unknown,
+  connection: MysqlConnection,
   user: Record<string, unknown>
 ) => {
   await connection.execute(`DELETE FROM users WHERE id = ?`, [user.id]);
