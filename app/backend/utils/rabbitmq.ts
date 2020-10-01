@@ -1,28 +1,39 @@
-import amqp, { Channel, Connection, Message } from 'amqplib';
+import amqp, { Channel, Connection } from 'amqplib';
+
+import process from 'process';
 
 type Config = {
   host?: string;
   queue: string;
+  durable?: boolean;
 };
 type RabbitmqResponse = {
   connection: Connection;
   channel: Channel;
-  publish: (msg: Message) => void;
+  publish: (msg: string, options?: Record<string, unknown>) => void;
 };
 type Rabbitmq = (config: Config) => Promise<RabbitmqResponse>;
-const rabbitmq: Rabbitmq = async ({ host = 'localhost', queue }) => {
+const rabbitmq: Rabbitmq = async ({
+  host = process.env.RABBITMQ_HOST,
+  queue,
+  ...config
+}) => {
+  console.log('host = ', host);
   const connection = await amqp.connect(`amqp://${host}`);
   const channel = await connection.createChannel();
 
   await channel.assertQueue(queue, {
-    durable: false,
+    durable: config.durable || true,
   });
 
   return {
     connection,
     channel,
-    publish: (msg) => {
-      channel.sendToQueue(queue, Buffer.from(msg));
+    publish: (msg, options) => {
+      channel.sendToQueue(queue, Buffer.from(msg), {
+        persistent: true,
+        ...(options || {}),
+      });
     },
   };
 };

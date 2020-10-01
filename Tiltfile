@@ -19,6 +19,16 @@ docker_build('tilt-apibackend', '.',
         run('cd /app && yarn install', trigger=['./app/package.json', './app/yarn.lock']),
 ])
 
+docker_build('tilt-emailprocessor', '.',
+    dockerfile='./tilt/app/Dockerfile',
+    only=['./app', './highlighter'],
+    ignore=['./app/node_modules', './app/frontend', './app/backend/api'],
+    entrypoint='yarn run emailprocessing:dev',
+    live_update=[
+        sync('./app/backend', '/app/backend'),
+        run('cd /app && yarn install', trigger=['./app/package.json', './app/yarn.lock']),
+])
+
 docker_build('tilt-frontend', '.',
     dockerfile='./tilt/app/Dockerfile',
     only=['./app', './highlighter'],

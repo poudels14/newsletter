@@ -1,8 +1,11 @@
+import * as uuid from 'uuid';
+
 import { Context } from 'Http';
 import { Cookies } from 'Http';
 import { Response } from 'Http';
 import { User } from 'Repos';
 import { differenceInMinutes } from 'date-fns';
+import { rabbitmq } from 'Utils';
 
 const populate = async (ctxt: Context, res: Response): Promise<void> => {
   const { id: userId } = await Cookies.getUser(ctxt);
@@ -24,17 +27,20 @@ const populate = async (ctxt: Context, res: Response): Promise<void> => {
       lastPopulated: lastGmailQueryDate,
       inProgress: gmailQueryInProgress || shouldPopulate,
     });
-    if (!shouldPopulate) {
-      return;
+    if (shouldPopulate) {
+      const { publish } = await rabbitmq({ queue: 'gmail-import' });
+      publish(
+        JSON.stringify({
+          userId,
+          populateId: uuid.v4(),
+          lastPopulated: lastGmailQueryDate.getTime(),
+          source: 'api',
+        })
+      );
+
+      await User.update(userId, { gmailQueryInProgress: true });
     }
   }
-
-  await User.update(userId, { gmailQueryInProgress: true });
-  // TODO(sagar): publish rabbitmq message
-  // publish({
-  //   userId,
-  //   populateId : uuid.v4(),
-  // });
 };
 
 export default populate;

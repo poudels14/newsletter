@@ -54,7 +54,7 @@ const listGmailQueryFilters: ListGmailQueryFilters = async () => {
 
 type ListSubscribedNewsletters = (
   userId: string
-) => Promise<Record<string, string>>;
+) => Promise<Record<string, string>[]>;
 const listSubscribedNewsletters: ListSubscribedNewsletters = async (userId) => {
   return await knex('newsletters')
     .leftJoin('user_emails', 'user_emails.newsletter_id', 'newsletters.id')
@@ -101,10 +101,10 @@ const getNewsletterByEmail: GetNewsletterByEmail = async (email) => {
     `SELECT * FROM newsletters WHERE authorEmail = ? LIMIT 1`,
     [email]
   );
-  return rows[0];
+  return rows[0] as Newsletter;
 };
 
-type InsertNewsletter = (newsletter: Newsletter) => Promise<void>;
+type InsertNewsletter = (newsletter: Newsletter) => Promise<unknown>;
 const insertNewsletter: InsertNewsletter = async (newsletter) => {
   const [rows] = await database.query(
     `INSERT INTO newsletters(id, name, authorEmail, authorName, thirdpartyId, visible)

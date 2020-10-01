@@ -10,6 +10,33 @@ dotenv.config();
 const REQUIRED_SCOPES =
   'openid profile email https://www.googleapis.com/auth/gmail.readonly';
 
+interface Payload {
+  body?: {
+    data?: string;
+  };
+  headers: Record<string, string>[];
+  parts: {
+    mimeType: string;
+    body?: {
+      data?: string;
+    };
+  }[];
+}
+interface Email {
+  id: string;
+  payload?: Payload;
+}
+interface SearchOptions {
+  q?: string;
+  maxResults?: number;
+}
+interface SearchEmailsResponse {
+  messages?: unknown[];
+  nextPageToken?: string;
+  resultSizeEstimate?: number;
+  next: () => Promise<SearchEmailsResponse>;
+}
+
 type BuildOAuth2Client = () => Auth.OAuth2Client;
 const buildOAuth2Client: BuildOAuth2Client = () => {
   return new google.auth.OAuth2(
@@ -57,16 +84,6 @@ const getUserInfo: GetUserInfo = async (idToken) => {
   return data.getPayload();
 };
 
-interface SearchOptions {
-  q?: string;
-  maxResults?: number;
-}
-interface SearchEmailsResponse {
-  messages?: unknown;
-  nextPageToken?: string;
-  resultSizeEstimate?: number;
-  next: () => Promise<SearchEmailsResponse>;
-}
 type SearchEmails = (
   client: Auth.OAuth2Client,
   options: SearchOptions,
@@ -94,16 +111,17 @@ const searchEmails: SearchEmails = async (client, options, pageToken) => {
 const getEmail = async (
   client: Auth.OAuth2Client,
   emailId: string
-): Promise<Record<string, unknown>> => {
+): Promise<Email> => {
   const gmail = google.gmail({ version: 'v1', auth: client });
   const { data } = await gmail.users.messages.get({
     userId: 'me',
     id: emailId,
   });
 
-  return data as Record<string, unknown>;
+  return data as Email;
 };
 
+export type { Payload, Email };
 export default {
   getClient,
   getToken,

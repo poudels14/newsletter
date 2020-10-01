@@ -1,4 +1,5 @@
 import { Base64 } from 'js-base64';
+import type { Payload } from './gmail';
 import lo from 'lodash';
 import regex from 'xregexp';
 
@@ -39,9 +40,7 @@ function camelize(str: string) {
     .replace(/\s+/g, '');
 }
 
-const parseNewsletter = (
-  payload: Record<string, unknown>
-): Record<string, string> => {
+const parseNewsletter = (payload: Payload): Record<string, string> => {
   // Note(sagar): check if the parsed email has body
   //              it won't have body if the content is in parts
   let data = payload?.body?.data;
@@ -64,10 +63,12 @@ const parseHeaders = (
     return { [key]: h.value };
   });
 
-  const mergedObject = lo.reduce(
-    keyValuesList,
-    (collection: Record<string, string>[], n: Record<string, string>) => {
-      return lo.merge(collection, n);
+  const mergedObject: Record<string, string> = keyValuesList.reduce(
+    (
+      accumulator: Record<string, string>,
+      currentValue: Record<string, string>
+    ) => {
+      return lo.merge(accumulator, currentValue);
     },
     {}
   );

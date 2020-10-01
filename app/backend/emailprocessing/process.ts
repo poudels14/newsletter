@@ -1,12 +1,12 @@
 import * as datefns from 'date-fns';
 import * as uuid from 'uuid';
 
+import { Channel, Message } from 'amqplib';
 import { Newsletters, User } from 'Repos';
 
 import { Auth } from 'googleapis';
 import { Gmail } from 'Utils';
 import { GmailParser } from 'Utils';
-import { Message } from 'amqplib';
 import Promise from 'bluebird';
 import hash from '@emotion/hash';
 
@@ -124,20 +124,26 @@ const searchAndPopulate = async (
   await Promise.all(allLoaders);
 };
 
-type Process = (msg: Message) => void;
-const process: Process = async (msg) => {
-  const { userId, populateId } = JSON.parse(msg.content.toString());
+interface ProcessRequest {
+  message: Message;
+  channel: Channel;
+}
+type Process = (req: ProcessRequest) => void;
+const process: Process = async ({ message, channel }) => {
+  const { userId, populateId, lastPopulated, newsletterFilters } = JSON.parse(
+    message.content.toString()
+  );
 
   const user = await User.getById(userId);
   const populatedDate = new Date(); // next time, the emails will be loaded after this timestamp for the user
   const client = Gmail.getClient({ refresh_token: user.refreshToken });
 
   try {
-    if (user.lastGmailQueryDate) {
+    if (lastPopulated) {
       // if the user isn't new, search for email from the newsletters that the user already has and those that arrived
       // after the last search time
 
-      const lastQueryDateInSeconds = Math.floor(user.lastGmailQueryDate / 1000);
+      const lastQueryDateInSeconds = Math.floor(lastPopulated / 1000);
       const userEmailFilters = await Newsletters.listSubscribedNewsletters(
         userId
       );
@@ -151,12 +157,14 @@ const process: Process = async (msg) => {
       // it's faster to use email filters to fetch newsletters from email for the new user
       // since fetching all the emails in the Gmail and checking if it's newsletter is much slower because of the
       // quota per user that Gmail has
-      const genericFilters = await Newsletters.listGmailQueryFilters();
-      await searchAndPopulate(client, userId, populateId, genericFilters);
+      const gmailSearchFilters =
+        newsletterFilters || (await Newsletters.listGmailQueryFilters());
+      await searchAndPopulate(client, userId, populateId, gmailSearchFilters);
     }
   } catch (e) {
     // Note(sagar): if there was any error when populating, set the queryInProgress to 0
     //              but don't set the last populated date
+    console.error(e);
     await User.update(userId, { gmailQueryInProgress: false });
     return;
   }
@@ -165,6 +173,8 @@ const process: Process = async (msg) => {
     gmailQueryInProgress: false,
     lastGmailQueryDate: populatedDate,
   });
+
+  channel.ack(message);
 };
 
 export default process;

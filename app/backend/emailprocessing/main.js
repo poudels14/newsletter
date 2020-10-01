@@ -5,8 +5,8 @@ import { rabbitmq } from 'Utils';
 
 const listenAndProcess = async () => {
   console.log('listenting and processing');
-  const queue = 'alpine_rabbit_mq_test';
-  const { connection, channel, publish } = await rabbitmq({
+  const queue = 'gmail-import';
+  const { channel } = await rabbitmq({
     queue,
   });
 
@@ -14,9 +14,13 @@ const listenAndProcess = async () => {
 
   channel.consume(
     queue,
-    (msg) => console.log('Received: ', msg.content.toString()),
+    (msg) =>
+      process({
+        message: msg,
+        channel,
+      }),
     {
-      noAck: true,
+      noAck: false,
     }
   );
 };

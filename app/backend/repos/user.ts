@@ -6,7 +6,7 @@ type User = {
   lastName: string;
   email: string;
   refreshToken: string;
-  lastGmailQueryDate: number | Date;
+  lastGmailQueryDate?: Date;
   gmailQueryInProgress: boolean;
   isAdmin?: boolean;
   settings?: Record<string, unknown>;
