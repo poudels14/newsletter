@@ -2,7 +2,7 @@
 set -e
 
 . production/secrets/frontend.env
-. production/secrets/apibackend.env
+. production/secrets/apiserver.env
 # . production/secrets/mysql.env
 
 if [[ $# < 1 ]]; then
@@ -13,16 +13,25 @@ echo "Deploying $1"
 COMMIT_HASH=$(git rev-parse HEAD)
 echo "Deploying commit $COMMIT_HASH"
 
-if [[ "$1" == "apibackend" ]] || [[ "$1" == "frontend" ]]; then
-  echo "Building apibackend docker container"
+if [[ "$1" == "apiserver" ]] || [[ "$1" == "emailprocessor" ]]; then
+  echo "Building $1 docker container"
+  docker build \
+    -t registry.digitalocean.com/journal/alpine/backend/$1:$COMMIT_HASH \
+    -f production/app/backend/$1/Dockerfile .
+
+  echo "Pushing container to registry"
+  docker push registry.digitalocean.com/journal/alpine/backend/$1:$COMMIT_HASH
+fi
+if [[ "$1" == "frontend" ]]; then
+  echo "Building $1 docker container"
   docker build \
     --build-arg GMAIL_API_KEY=$GMAIL_API_KEY \
     --build-arg=GMAIL_CLIENT_ID=$GMAIL_CLIENT_ID \
-    -t registry.digitalocean.com/journal/alpine/$1:$COMMIT_HASH \
-    -f production/app/$1/Dockerfile .
+    -t registry.digitalocean.com/journal/alpine/frontend:$COMMIT_HASH \
+    -f production/app/frontend/Dockerfile .
 
   echo "Pushing container to registry"
-  docker push registry.digitalocean.com/journal/alpine/$1:$COMMIT_HASH
+  docker push registry.digitalocean.com/journal/alpine/frontend:$COMMIT_HASH
 fi
 if [[ "$1" == "staticserver" ]]; then
   echo "Building staticserver docker container"

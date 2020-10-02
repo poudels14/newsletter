@@ -8,7 +8,7 @@ Development environment setup:
 - Secrets:
   There are several environment variables that are requireed by the app during runtime. These are stored in secret files which will be used by Tilt in development environment and kubernetes clusters in production environment. Most of these variables should be kept secret, so, git is configured to NOT track those files. To get the app up and running, you need to create following secret files:
 
-  - filename: tilt/secrets/apibackend.env
+  - filename: tilt/secrets/apiserver.env
     content:
 
     - NODE_ENV=development

@@ -4,4 +4,4 @@ resources:
   - service.yaml
   - deployment.yaml
 commonLabels:
-  app: apibackend
+  app: apiserver

@@ -2,7 +2,8 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namePrefix: alpine-
 bases:
-  - ../kube/apibackend
+  - ../kube/apiserver
+  - ../kube/emailprocessor
   - ../kube/envoy/
   - ../kube/rabbitmq
   - ../kube/staticserver/
@@ -15,9 +16,12 @@ configMapGenerator:
     files:
       - envoy/envoy.yaml
 secretGenerator:
-  - name: apibackend-env-secrets
+  - name: apiserver-env-secrets
     envs:
-      - secrets/apibackend.env
+      - secrets/apiserver.env
+  - name: emailprocessor-env-secrets
+    envs:
+      - secrets/emailprocessor.env
   - name: frontend-builder-env-secrets
     envs:
       - secrets/frontend.env
@@ -37,8 +41,11 @@ images:
   - name: rabbitmq
     newName: rabbitmq
     newTag: 3.8.9-management-alpine
-  - name: apibackend
-    newName: registry.digitalocean.com/journal/alpine/apibackend
+  - name: apiserver
+    newName: registry.digitalocean.com/journal/alpine/backend/apiserver
+    newTag: ${COMMIT_HASH}
+  - name: emailprocessor
+    newName: registry.digitalocean.com/journal/alpine/backend/emailprocessor
     newTag: ${COMMIT_HASH}
   - name: frontend
     newName: registry.digitalocean.com/journal/alpine/frontend

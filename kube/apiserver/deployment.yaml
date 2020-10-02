@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: apibackend
+  name: apiserver
 spec:
   replicas: 1
   template:
@@ -9,10 +9,10 @@ spec:
       imagePullSecrets:
         - name: registry-journal
       containers:
-        - name: apibackend
-          image: apibackend
+        - name: apiserver
+          image: apiserver
           ports:
             - containerPort: 8001
           envFrom:
             - secretRef:
-                name: apibackend-env-secrets
+                name: apiserver-env-secrets

@@ -114,7 +114,7 @@ static_resources:
               - endpoint:
                   address:
                     socket_address:
-                      address: tilt-apibackend
+                      address: tilt-apiserver
                       port_value: 8001
     - name: frontend
       connect_timeout: 60s

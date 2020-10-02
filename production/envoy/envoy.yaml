@@ -32,7 +32,7 @@ static_resources:
                         - match:
                             prefix: /api/
                           route:
-                            cluster: apibackend
+                            cluster: apiserver
                         - match:
                             prefix: /nl/
                           route:
@@ -94,18 +94,18 @@ static_resources:
                             cluster: staticserver
                             prefix_rewrite: /static/public/
   clusters:
-    - name: apibackend
+    - name: apiserver
       connect_timeout: 60s
       type: strict_dns
       lb_policy: round_robin
       load_assignment:
-        cluster_name: apibackend_1
+        cluster_name: apiserver_1
         endpoints:
           - lb_endpoints:
               - endpoint:
                   address:
                     socket_address:
-                      address: alpine-apibackend
+                      address: alpine-apiserver
                       port_value: 8001
     - name: staticserver
       connect_timeout: 60s

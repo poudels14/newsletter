@@ -5,11 +5,11 @@ k8s_resource('tilt-mysql', port_forwards="3306:3306")
 k8s_resource('tilt-rabbitmq', port_forwards=["5672:5672", "15672:15672"])
 
 # allow access to app server for debugging
-k8s_resource('tilt-apibackend', port_forwards=["8001:8001"])
+k8s_resource('tilt-apiserver', port_forwards=["8001:8001"])
 k8s_resource('tilt-frontend', port_forwards=["8002:8002"])
 k8s_resource('tilt-mailgunserver', port_forwards=["8004:8004"])
 
-docker_build('tilt-apibackend', '.',
+docker_build('tilt-apiserver', '.',
     dockerfile='./tilt/app/Dockerfile',
     only=['./app', './highlighter'],
     ignore=['./app/node_modules', './app/frontend', './app/backend/emailprocessing'],

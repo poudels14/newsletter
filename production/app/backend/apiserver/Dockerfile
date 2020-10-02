@@ -11,7 +11,7 @@ RUN yarn install
 ENV NODE_ENV=production
 
 ADD ./app .
-RUN yarn run backend:build
+RUN yarn run api:build
 
 
 
@@ -36,4 +36,4 @@ COPY --from=BUILD_IMAGE /app/build ./build
 COPY --from=SECOND_STAGE /app/package.json ./package.json
 COPY --from=SECOND_STAGE /app/node_modules ./node_modules
 
-ENTRYPOINT [ "node", "./build/apiserver/main.js" ]
+ENTRYPOINT [ "node", "./build/backend/api/main.js" ]

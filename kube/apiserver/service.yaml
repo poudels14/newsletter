@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: apibackend
+  name: apiserver
 spec:
   ports:
     - name: api

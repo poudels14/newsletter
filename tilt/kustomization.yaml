@@ -2,7 +2,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namePrefix: tilt-
 bases:
-  - ../kube/apibackend
+  - ../kube/apiserver
   - ../kube/emailprocessor
   - app/frontend
   - ../kube/envoy
@@ -16,9 +16,9 @@ configMapGenerator:
     files:
       - envoy/envoy.yaml
 secretGenerator:
-  - name: apibackend-env-secrets
+  - name: apiserver-env-secrets
     envs:
-      - secrets/apibackend.env
+      - secrets/apiserver.env
   - name: emailprocessor-env-secrets
     envs:
       - secrets/emailprocessor.env
@@ -44,8 +44,8 @@ images:
   - name: rabbitmq
     newName: rabbitmq
     newTag: 3.8.9-management-alpine
-  - name: apibackend
-    newName: tilt-apibackend
+  - name: apiserver
+    newName: tilt-apiserver
   - name: emailprocessor
     newName: tilt-emailprocessor
   - name: frontend
