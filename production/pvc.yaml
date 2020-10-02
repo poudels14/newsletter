@@ -1,20 +1,9 @@
-# ---
-# apiVersion: v1
-# kind: PersistentVolumeClaim
-# metadata:
-#   name: mysql-pvc
-# spec:
-#   storageClassName: do-block-storage
-#   accessModes:
-#     - ReadWriteOnce
-#   resources:
-#     requests:
-#       storage: 10Gi
----
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: staticserver-pvc
+  labels:
+    resource: alpine-config
 spec:
   storageClassName: do-block-storage
   accessModes:
@@ -22,3 +11,17 @@ spec:
   resources:
     requests:
       storage: 2Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rabbitmq-pvc
+  labels:
+    resource: alpine-config
+spec:
+  storageClassName: do-block-storage
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 4Gi

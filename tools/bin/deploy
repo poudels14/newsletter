@@ -46,6 +46,11 @@ fi
 # echo "Deploying ..."
 # kubectl set image jobs/prod-$1 $1=registry.digitalocean.com/journal/alpine/$1:$COMMIT_HASH --record
 
+echo "Updating configs ..."
+kustomize build production | \
+COMMIT_HASH=${COMMIT_HASH} envsubst | \
+kubectl apply -l resource=alpine-config -f -
+
 echo "Deploying ..."
 kustomize build production | \
 COMMIT_HASH=${COMMIT_HASH} APP=$1 envsubst | \
