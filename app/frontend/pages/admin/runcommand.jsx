@@ -26,6 +26,7 @@ const RunCommand = () => {
           <option value="parseEmail">Parse Email</option>
           <option value="listGmailFilters">List Gmail Filters</option>
           <option value="addGmailFilter">Add Gmail Filter</option>
+          <option value="populate">Populate</option>
         </select>
         <input
           type="text"

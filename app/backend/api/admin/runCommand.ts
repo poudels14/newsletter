@@ -1,3 +1,5 @@
+import * as uuid from 'uuid';
+
 import { database, knex } from 'Utils';
 
 import { Context } from 'Http';
@@ -6,6 +8,7 @@ import { GmailParser } from 'Utils';
 import { Response } from 'Http';
 import { User } from 'Repos';
 import { format as formatQuery } from 'sqlstring';
+import { rabbitmq } from 'Utils';
 
 const listGmailFilters = async () => {
   const rows = await knex('gmail_newsletter_filters').orderBy('id');
@@ -18,6 +21,29 @@ const addGmailFilter = async (filter: string) => {
       { filter },
     ])
   );
+  await populateForAllUsers(filter);
+};
+
+const populateForAllUsers = async (newsletterFilter: string) => {
+  const userIds = await knex('users')
+    .select('id')
+    .then((rows) => rows.map((row) => row.id));
+
+  const { connection, channel, publish } = await rabbitmq({
+    queue: 'gmail-import',
+  });
+  userIds.forEach((userId) =>
+    publish(
+      JSON.stringify({
+        userId,
+        populateId: uuid.v4(),
+        newsletterFilters: [newsletterFilter],
+        source: 'runCommand@admin',
+      })
+    )
+  );
+  await channel.close();
+  await connection.close();
 };
 
 const execScript = async (ctxt: Context, res: Response): Promise<void> => {
@@ -41,6 +67,9 @@ const execScript = async (ctxt: Context, res: Response): Promise<void> => {
   } else if (command === 'addGmailFilter') {
     await addGmailFilter(data as string);
     res.json({ msg: `added filter: ${data}` });
+  } else if (command === 'populate') {
+    await populateForAllUsers(data as string);
+    res.json({ msg: `started populating for filter: ${data}` });
   } else {
     res.json({ msg: `command not found: ${command}` });
   }

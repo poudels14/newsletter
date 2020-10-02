@@ -31,6 +31,9 @@ secretGenerator:
   - name: mailgun-env-secrets
     envs:
       - secrets/mailgun.env
+  - name: rabbitmq-env-secrets
+    envs:
+      - secrets/rabbitmq.env
 images:
   - name: envoyproxy
     newName: envoyproxy/envoy

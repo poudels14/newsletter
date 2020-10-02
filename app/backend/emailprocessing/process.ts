@@ -133,6 +133,7 @@ const process: Process = async ({ message, channel }) => {
   const { userId, populateId, lastPopulated, newsletterFilters } = JSON.parse(
     message.content.toString()
   );
+  console.log(`populate request id: ${populateId}`);
 
   const user = await User.getById(userId);
   const populatedDate = new Date(); // next time, the emails will be loaded after this timestamp for the user

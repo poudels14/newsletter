@@ -9,7 +9,7 @@
     "frontend:dev": "webpack-dev-server --config frontend.webpack.js",
     "frontend:build": "webpack --config frontend.webpack.js",
     "api:dev:webpack": "webpack --watch --config api.webpack.js",
-    "api:dev:nodemon": "yarn run api:build && nodemon --watch build/server build/backend/api/main.js",
+    "api:dev:nodemon": "yarn run api:build && nodemon --watch build/backend/api build/backend/api/main.js",
     "api:dev": "npm-run-all --parallel api:dev:webpack api:dev:nodemon",
     "api:build": "webpack --config api.webpack.js",
     "api:start": "node build/backend/api/main.js",

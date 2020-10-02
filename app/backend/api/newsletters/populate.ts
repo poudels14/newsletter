@@ -28,7 +28,9 @@ const populate = async (ctxt: Context, res: Response): Promise<void> => {
       inProgress: gmailQueryInProgress || shouldPopulate,
     });
     if (shouldPopulate) {
-      const { publish } = await rabbitmq({ queue: 'gmail-import' });
+      const { connection, channel, publish } = await rabbitmq({
+        queue: 'gmail-import',
+      });
       publish(
         JSON.stringify({
           userId,
@@ -37,6 +39,8 @@ const populate = async (ctxt: Context, res: Response): Promise<void> => {
           source: 'api',
         })
       );
+      await channel.close();
+      await connection.close();
 
       await User.update(userId, { gmailQueryInProgress: true });
     }

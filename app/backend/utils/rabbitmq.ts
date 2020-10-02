@@ -19,7 +19,11 @@ const rabbitmq: Rabbitmq = async ({
   ...config
 }) => {
   console.log('host = ', host);
-  const connection = await amqp.connect(`amqp://${host}`);
+  const connection = await amqp.connect({
+    hostname: host,
+    username: process.env.RABBITMQ_USERNMAE,
+    password: process.env.RABBITMQ_PASSWORD,
+  });
   const channel = await connection.createChannel();
 
   await channel.assertQueue(queue, {
