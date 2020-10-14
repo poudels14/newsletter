@@ -73,6 +73,12 @@
       }
     </script>
     <style>
+      body {
+        margin: 0;
+        height: 100%;
+      }
+    </style>
+    <style>
       .wrapper {
         width: 100%;
         height: 100%;
@@ -82,7 +88,7 @@
 
       .center-box {
         width: 100%;
-        flex: 600px 1 0;
+        padding: 100px 0 100px 0;
         display: flex;
         flex-direction: column;
         justify-content: space-around;
@@ -91,9 +97,8 @@
       .button-wrapper {
         flex: 40px 0 0;
         margin: 0 auto;
-        padding: 50px 150px 50px 150px;
+        padding: 50px 0 50px 0;
         border-radius: 5px;
-        border: 1px solid rgba(34, 36, 38, 0.15);
         text-align: center;
       }
 
@@ -104,15 +109,168 @@
         margin-bottom: 20px;
       }
     </style>
+    <style>
+      .sign-in-header {
+        color: rgb(101, 105, 114);
+        padding: 10px 0 20px 0;
+        line-height: 1.2;
+        font-size: 1.6em;
+        font-weight: 700;
+        text-align: center;
+      }
+
+      .header {
+        display: block;
+        padding: 15px;
+        background: linear-gradient(45deg, #152649 0%, #243055 100%);
+        opacity: 0.9;
+      }
+
+      .footer {
+        position: relative;
+        overflow: visible;
+        padding: 140px 20px 40px;
+        background-image: linear-gradient(45deg, #152649 0%, #243055 100%);
+        opacity: 0.9;
+      }
+
+      .footer-wrapper {
+        max-width: 1140px;
+        margin-right: auto;
+        margin-left: auto;
+      }
+
+      .footer-col-title {
+        margin-top: 0px;
+        margin-bottom: 30px;
+        color: #dbe4f1;
+        font-size: 14px;
+        line-height: 14px;
+        font-weight: 400;
+      }
+
+      .footer-link {
+        display: block;
+        margin-bottom: 18px;
+        -webkit-transition: all 250ms ease-in;
+        transition: all 250ms ease-in;
+        color: #f8fbfe;
+        font-size: 16px;
+        text-decoration: none;
+      }
+
+      .footer-link:hover {
+        margin-left: 4px;
+        color: #50e3c2;
+      }
+
+      .footer-info {
+        position: relative;
+        z-index: 2;
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: -ms-flexbox;
+        display: flex;
+        margin-top: 60px;
+        -webkit-box-pack: justify;
+        -webkit-justify-content: space-between;
+        -ms-flex-pack: justify;
+        justify-content: space-between;
+        -webkit-box-align: center;
+        -webkit-align-items: center;
+        -ms-flex-align: center;
+        align-items: center;
+      }
+
+      .footer-info-text {
+        margin-top: 0px;
+        margin-bottom: 0px;
+        color: #dbe4f1;
+        font-size: 12px;
+        line-height: 18px;
+      }
+
+      .footer-info-link {
+        margin-right: 10px;
+        margin-left: 10px;
+        -webkit-transition: color 250ms ease-in;
+        transition: color 250ms ease-in;
+        color: #dbe4f1;
+        font-size: 12px;
+        text-decoration: none;
+      }
+
+      .footer-info-link:hover {
+        color: #50e3c2;
+      }
+
+      .footer-info-links {
+        position: relative;
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: -ms-flexbox;
+        display: flex;
+      }
+    </style>
     <title><%= htmlWebpackPlugin.options.title %></title>
   </head>
 
   <body>
+    <div class="header">
+      <div class="header-nav">
+        <a href="https://www.alpinereader.com/" class="logo w-inline-block">
+          <img
+            src="assets/images/logo_white.png"
+            width="200"
+            alt="Alpine logo"
+            style="vertical-align: middle"
+          />
+        </a>
+      </div>
+    </div>
     <div class="wrapper">
       <div class="center-box">
+        <div class="sign-in-header">Login to your account</div>
         <div class="button-wrapper">
           <div class="error-message"></div>
           <div id="google-signin-button" onclick="resetError()"></div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <div class="footer-wrapper">
+        <div class="w-layout-grid grid">
+          <div class="footer-col">
+            <h4 class="footer-col-title">Alpine</h4>
+            <a href="https://www.alpinereader.com/#features" class="footer-link"
+              >Features</a
+            >
+            <a href="https://www.alpinereader.com/#faqs" class="footer-link"
+              >F.A.Q</a
+            >
+            <a
+              href="https://www.alpinereader.com/#linking-gmail"
+              class="footer-link"
+              >Google API Services usage disclosure</a
+            >
+          </div>
+        </div>
+        <div class="footer-info">
+          <p class="footer-info-text">© 2020 Alpine. All rights reserved</p>
+          <div class="footer-info-links">
+            <a
+              href="https://www.alpinereader.com/privacy.html"
+              target="_blank"
+              class="footer-info-link"
+              >Privacy Policy</a
+            >
+            <a
+              href="https://www.alpinereader.com/tos.html"
+              target="_blank"
+              class="footer-info-link"
+              >Terms &amp; Conditions<br />
+            </a>
+          </div>
         </div>
       </div>
     </div>

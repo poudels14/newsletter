@@ -55,7 +55,12 @@ const Settings = () => {
     return <div>Loading...</div>;
   }
   return (
-    <div css={css(`height: 100%;`)}>
+    <div
+      css={css(`
+        height: 100%;
+        font-size: 14px;
+      `)}
+    >
       <Layout
         className="settings"
         css={css(`

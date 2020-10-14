@@ -22,14 +22,8 @@ const PopulateNewslettersStatusBar = (props) => {
   return (
     <div
       css={css(`
-        // width: 100%;
-        // position: absolute;
-        left: 0;
-        @media (min-width: 425px) {
-          top: 0;
-        }
+        font-size: 14px;
         @media (max-width: 425px) {
-          bottom: 0;
           font-size: 12px;
         }
       `)}
