@@ -1,5 +1,6 @@
 import React from 'react';
 import { css } from '@emotion/core';
+import PropTypes from 'prop-types';
 
 const SiteWrapper = (props) => {
   return (
@@ -147,6 +148,7 @@ const SiteWrapper = (props) => {
               <a
                 href="https://www.alpinereader.com/privacy.html"
                 target="_blank"
+                rel="noreferrer"
                 className="footer-info-link"
               >
                 Privacy Policy
@@ -154,6 +156,7 @@ const SiteWrapper = (props) => {
               <a
                 href="https://www.alpinereader.com/tos.html"
                 target="_blank"
+                rel="noreferrer"
                 className="footer-info-link"
               >
                 Terms &amp; Conditions
@@ -165,6 +168,9 @@ const SiteWrapper = (props) => {
       </div>
     </div>
   );
+};
+SiteWrapper.propTypes = {
+  children: PropTypes.object,
 };
 
 export default SiteWrapper;
