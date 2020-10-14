@@ -35,7 +35,7 @@ const populate = async (ctxt: Context, res: Response): Promise<void> => {
         JSON.stringify({
           userId,
           populateId: uuid.v4(),
-          lastPopulated: lastGmailQueryDate.getTime(),
+          lastPopulated: lastGmailQueryDate?.getTime(),
           source: 'api',
         })
       );
