@@ -47,6 +47,7 @@ const Settings = () => {
     axios.post('/api/account/unlinkGmail').then(() => {
       updateUIState({
         gmailLinked: false,
+        unlinkGmailPromptVisible: false,
       });
     });
   }, []);
