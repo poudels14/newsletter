@@ -8,15 +8,7 @@ const updateSettings = async (ctxt: Context, res: Response): Promise<void> => {
   if (userId) {
     const { settings } = ctxt.body;
 
-    const dbUser = await User.getById(userId);
-    const updatedSettings = {
-      ...dbUser.settings,
-      ...settings,
-    };
-
-    await User.update(userId, {
-      settings: JSON.stringify(updatedSettings),
-    });
+    await User.updateSettings(userId, settings as Record<string, unknown>);
     res.json({ success: true });
     return;
   }

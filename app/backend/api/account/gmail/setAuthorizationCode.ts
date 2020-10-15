@@ -6,6 +6,7 @@ import { Context } from 'Http';
 import { Cookies } from 'Http';
 import { Gmail } from 'Utils';
 import { Response } from 'Http';
+import { User } from 'Repos';
 
 const insertUserInfoToDb = ({
   id,
@@ -32,7 +33,10 @@ const setAuthorizationCode = async (
   // Note(sagar): even if the use is not in our system, calling the method
   //              will auto sign-up the user
   if (code) {
-    const token = await Gmail.getToken(code);
+    const token = (await Gmail.getToken(code as string)) as Record<
+      string,
+      string
+    >;
     const user = await Gmail.getUserInfo(token['id_token']);
 
     const { id: userId } = await Cookies.getUser(ctxt);
@@ -46,6 +50,8 @@ const setAuthorizationCode = async (
         process.env.GMAIL_REFRESH_TOKEN_ENCRYPTION_KEY
       ),
     });
+
+    await User.updateSettings(userId, { gmailLinkingSkipped: false });
 
     Cookies.setUser(res, { id, exp: user.exp });
     res.json({ success: true });

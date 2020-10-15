@@ -9,7 +9,7 @@ type User = {
   lastGmailQueryDate?: Date;
   gmailQueryInProgress: boolean;
   isAdmin?: boolean;
-  settings?: Record<string, unknown>;
+  settings?: string;
   mailgunEmailId?: string;
 };
 
@@ -81,6 +81,22 @@ const update: Update = async (userId, data) => {
   return await knex('users').where({ id: userId }).update(finalRecord);
 };
 
+type UpdateSettings = (
+  userId: string,
+  settings: Record<string, unknown>
+) => Promise<void>;
+const updateSettings: UpdateSettings = async (userId, settings) => {
+  const dbUser = await getById(userId);
+  const updatedSettings = {
+    ...dbUser.settings,
+    ...settings,
+  };
+
+  await update(userId, {
+    settings: JSON.stringify(updatedSettings),
+  });
+};
+
 type ClearRefreshToken = (userId: string) => Promise<void>;
 const clearRefreshToken: ClearRefreshToken = async (userId) => {
   return await knex('users')
@@ -91,4 +107,11 @@ const clearRefreshToken: ClearRefreshToken = async (userId) => {
 };
 
 export type { User };
-export { getById, getByEmail, listUsers, update, clearRefreshToken };
+export {
+  getById,
+  getByEmail,
+  listUsers,
+  update,
+  updateSettings,
+  clearRefreshToken,
+};
