@@ -24,4 +24,6 @@ cat \
     schemas/create_newsletter_table.sql \
     schemas/add_visible_columns_in_newsletters.sql \
     schemas/index_visible_column_of_newsletters_table.sql \
-    schemas/add_verified_column_in_newsletters_table.sql
+    schemas/add_verified_column_in_newsletters_table.sql \
+    \
+    schemas/create_gmail_query_audit_log.sql
