@@ -6,7 +6,7 @@ bases:
   - ../kube/emailprocessor
   - app/frontend
   - ../kube/envoy
-  - ../kube/mailgun
+  # - ../kube/mailgun
   - ../kube/mysql
   - ../kube/rabbitmq
 resources:
@@ -28,9 +28,9 @@ secretGenerator:
   - name: mysql-env-secrets
     envs:
       - secrets/mysql.env
-  - name: mailgun-env-secrets
-    envs:
-      - secrets/mailgun.env
+  # - name: mailgun-env-secrets
+  #   envs:
+  #     - secrets/mailgun.env
   - name: rabbitmq-env-secrets
     envs:
       - secrets/rabbitmq.env
@@ -50,5 +50,5 @@ images:
     newName: tilt-emailprocessor
   - name: frontend
     newName: tilt-frontend
-  - name: mailgunserver
-    newName: tilt-mailgunserver
+  # - name: mailgunserver
+  #   newName: tilt-mailgunserver
