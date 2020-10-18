@@ -35,10 +35,33 @@ Development environment setup:
 
   - filename:mysql.env
     content:
+
     - MYSQL_ROOT_PASSWORD={root mysql password (can be random)}
     - MYSQL_DATABASE={database name}
     - MYSQL_USER={database user (can be anything)}
     - MYSQL_PASSWORD={database password (can be random)}
+
+  - filename: emailprocessor.env
+    content:
+
+    - NODE_ENV=development
+    - MYSQL_HOST={value}
+    - MYSQL_DATABASE={value}
+    - MYSQL_USER={value}
+    - MYSQL_PASSWORD={value}
+    - GMAIL_API_KEY={value}
+    - GMAIL_CLIENT_ID={value}
+    - GMAIL_CLIENT_SECRET={value}
+    - GMAIL_REDIRECT_URL={value}
+    - GMAIL_REFRESH_TOKEN_ENCRYPTION_KEY={value}
+    - RABBITMQ_HOST={value}
+    - RABBITMQ_USERNMAE={value}
+    - RABBITMQ_PASSWORD={value}
+
+  - filename: rabbitmq.env
+    content:
+    - RABBITMQ_DEFAULT_USER={any value}
+    - RABBITMQ_DEFAULT_PASS={any value}
 
 Running services:
 
