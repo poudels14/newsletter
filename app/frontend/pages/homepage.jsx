@@ -40,8 +40,8 @@ const Homepage = (props) => {
       <CloseCircleOutlined
         css={css(`
           position: fixed;
-          top: 20px;
-          right: 20px;
+          top: 2px;
+          right: 5px;
           z-index: 9999;
           background: white;
           border-radius: 22px;
@@ -60,11 +60,11 @@ const Homepage = (props) => {
         contentLabel="Digest Modal"
         css={css(`
           position: absolute;
-          top: 40px;
-          left: 40px;
-          right: 40px;
-          bottom: 40px;
-          padding: 20px;
+          top: 10px;
+          left: 10px;
+          right: 10px;
+          bottom: 10px;
+          padding: 20px 10px 20px 10px;
           @media (max-width: 425px) {
             top: 40px;
             left: 0px;

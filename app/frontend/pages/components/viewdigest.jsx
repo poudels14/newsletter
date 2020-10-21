@@ -306,6 +306,7 @@ const ViewDigest = (props) => {
           onMouseUp={showActionPopover}
           css={css(`
             flex: 1 0 400px;
+            padding: 40px 0 0 0;
           `)}
         >
           <div>Loading...</div>
