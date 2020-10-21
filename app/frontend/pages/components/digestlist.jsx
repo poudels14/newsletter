@@ -155,9 +155,10 @@ const DigestList = (props) => {
                       }
                     `)}
                   >
-                    <h2
+                    <div
                       className={readClassName}
                       css={css(`
+                        font-size: 19px;
                         margin-bottom: 0;
                         &.read {
                           color: inherit !IMPORTANT;
@@ -165,7 +166,7 @@ const DigestList = (props) => {
                       `)}
                     >
                       {digest.title}
-                    </h2>
+                    </div>
                     <div css={css(`font-size: 11px;`)}>
                       {formatDate(
                         new Date(digest.receivedDate),
