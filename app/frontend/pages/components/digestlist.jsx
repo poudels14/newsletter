@@ -40,6 +40,7 @@ const DigestList = (props) => {
         max-width: 800px;
         margin: 10px auto;
       `)}
+      className="digest-list"
     >
       <div
         css={css(`
@@ -62,13 +63,24 @@ const DigestList = (props) => {
       {selectedNewsletter && (
         <div
           css={css(`
-          padding: 10px 20px;
-          font-size: 17px;
-          font-weight: 700;
-        `)}
+            padding: 10px 20px;
+          `)}
         >
-          <div>Author: {selectedNewsletter.authorName}</div>
-          <div>Email: {selectedNewsletter.authorEmail}</div>
+          <div
+            css={css(`
+              font-size: 18px;
+              font-weight: 700;
+            `)}
+          >
+            {selectedNewsletter.authorName}
+          </div>
+          <div
+            css={css(`
+              font-size: 15px;
+            `)}
+          >
+            {selectedNewsletter.authorEmail}
+          </div>
         </div>
       )}
       <div
@@ -134,8 +146,9 @@ const DigestList = (props) => {
                     css={css(`
                       flex: 1 0 300px;
                       margin-left: 15px;
+                      color: var(--text-color);
                       &.read {
-                        color: rgba(150, 150, 150, 0.7);
+                        color: var(--read-digest-color);
                       }
                       @media (max-width: 425px) {
                         flex: 1 0 200px;
@@ -153,13 +166,17 @@ const DigestList = (props) => {
                     >
                       {digest.title}
                     </h2>
-                    <div>
+                    <div css={css(`font-size: 11px;`)}>
                       {formatDate(
                         new Date(digest.receivedDate),
                         'LLL dd, yyyy'
                       )}
                     </div>
-                    <div css={css(`font-size: 15px;`)}>
+                    <div
+                      css={css(`
+                      font-size: 14px;
+                    `)}
+                    >
                       {digest.previewContent}
                     </div>
                   </div>

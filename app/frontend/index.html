@@ -20,8 +20,6 @@
       html {
         height: 100%;
         overflow: hidden;
-        font-family: Roboto, Segoe UI, Helvetica Neue, Arial, Noto Sans,
-          sans-serif;
       }
       body {
         margin: 0;
@@ -30,8 +28,36 @@
       * {
         box-sizing: border-box;
       }
+      #the-reading-app {
+        font-family: sans-serif, Segoe UI, Helvetica Neue, Arial, Noto Sans;
+      }
       .ant-select-arrow {
         color: rgba(200, 200, 200, 1) !important;
+      }
+    </style>
+    <style>
+      :root {
+        --sidebar-box-shadow: 0px 0px 5px 5px rgba(200, 200, 200, 0.1);
+      }
+      .newsletters-sidebar {
+        --user-name-text-color: rgba(55, 55, 60, 1);
+        --background: white;
+        --text-color: #545657;
+        --active-tab-background-color: #efefef;
+        --active-tab-color: black;
+        --unread-digests-count-background-color: rgb(240, 240, 245);
+      }
+      .digest-list {
+        --text-color: rgba(85, 85, 88, 1);
+        --read-digest-color: rgba(60, 62, 60, 0.5);
+      }
+      .highlight-sidebar {
+        --title-text-color: #2e2e2e;
+        --title-background-color: rgba(11, 147, 92, 0.6);
+        --highlighted-text-color: rgba(79, 79, 79, 1);
+      }
+      .settings {
+        --box-shadow: 0px 0px 5px 5px rgba(200, 200, 200, 0.1);
       }
     </style>
     <script id="gmail-config" type="application/json">

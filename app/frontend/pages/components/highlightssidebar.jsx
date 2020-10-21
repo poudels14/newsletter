@@ -12,18 +12,17 @@ const HighlightsSidebar = ({ highlights, ...props }) => {
       width={props.width}
       css={css(`
         background: white;
-        border: 0px solid rgba(11, 147, 92, 1);
-        border-left-width: 1px;
-        font-size: 16px;
+        box-shadow: var(--sidebar-box-shadow);
         @media (max-width: 1020px) {
           display: none;
         }
       `)}
+      className="highlight-sidebar"
     >
       <div
         css={css(`
-          background: rgba(11, 147, 92, 1);
-          color: white;
+          background: var(--title-background-color);
+          color: var(--title-text-color);
           padding: 15px 14px;
           font-size: 18px;
           font-weight: 700;
@@ -69,9 +68,10 @@ const HighlightsSidebar = ({ highlights, ...props }) => {
                 `)}
                 >
                   <Link
-                    key={highlight.id}
                     to={`/nl/${highlight.newsletterId}/?digestId=${highlight.digestId}#${highlight.id}`}
-                    css={css(`color: inherit;`)}
+                    css={css(`
+                      color: var(--highlighted-text-color);
+                    `)}
                   >
                     {highlight.content}
                   </Link>

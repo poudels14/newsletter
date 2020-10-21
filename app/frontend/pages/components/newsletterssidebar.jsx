@@ -15,8 +15,7 @@ const Button = ({ classNames, id, name, authorEmail, totalUnread }) => {
       to={`/nl/${id}`}
       css={css(`
         color: inherit;
-        font-size: 15px;
-        font-weight: 500;
+        font-size: 14px;
 
         &:hover, &.active {
           color: inherit;
@@ -30,10 +29,8 @@ const Button = ({ classNames, id, name, authorEmail, totalUnread }) => {
           border: 0 solid rgba(100, 100, 100, 0.2);
           border-bottom-width: 1px;
           &:hover, &.active {
-            color: white;
-            // background: rgb(77, 75, 110); /* rgba(54, 52, 105, 1); */
-            // background: #2c3a61;
-            background: #042d46;
+            color: var(--active-tab-color);
+            background: var(--active-tab-background-color);
           }
         `)}
       >
@@ -42,11 +39,11 @@ const Button = ({ classNames, id, name, authorEmail, totalUnread }) => {
           <div
             css={css(`
               display: inline-block;
-              background: rgb(97, 97, 97);
+              background: var(--unread-digests-count-background-color);
               padding: 0 4px;
               border-radius: 2px;
               margin-left: 5px;
-              font-size: 12px;
+              font-size: 11px;
 
               text-align:center;
               vertical-align: middle;
@@ -75,15 +72,14 @@ const NewslettersSidebar = (props) => {
     <Layout.Sider
       width={props.width}
       css={css(`
-        // background: rgb(40, 40, 54); /* rgb(42, 40, 77); rgb(37, 35, 75); rgb(66, 63, 134); rgba(54, 52, 105, 1); */
-        //background: #001529;
-        // background: #1c253e;
-        background: #003e63;
-        color: white;
+        background: var(--background);
+        color: var(--text-color);
+        box-shadow: var(--sidebar-box-shadow);
         @media (max-width: 425px) {
           display: none;
         }
       `)}
+      className="newsletters-sidebar"
     >
       <div
         css={css(`
@@ -92,7 +88,11 @@ const NewslettersSidebar = (props) => {
           font-weight: 700;
         `)}
       >
-        <span>
+        <span
+          css={css(`
+            color: var(--user-name-text-color);
+          `)}
+        >
           {props.user?.firstName} {props.user?.lastName}
         </span>
         <div

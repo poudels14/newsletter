@@ -61,6 +61,7 @@ const Settings = () => {
         height: 100%;
         font-size: 14px;
       `)}
+      className="settings"
     >
       <Layout
         className="settings"
@@ -77,15 +78,19 @@ const Settings = () => {
             max-width: 700px;
             margin: 0 auto;
             padding: 50px 50px;
-            // background: #1971a5;
-            background: #003e63;
-            color: white;
+            box-shadow: var(--box-shadow);
             h2, h3, a, a:hover {
-              color: white;
+              // color: white;
             }
           `)}
         >
-          <div>
+          <div
+            css={css(`
+              a {
+                color: inherit;
+              }
+            `)}
+          >
             <Link to="/">
               <ArrowLeftOutlined /> Go back to the reader
             </Link>
@@ -190,7 +195,6 @@ const Settings = () => {
                 This is a list of all the newsletters that you are subscribed
                 to. If you are subscribed to a newsletter but you don&apos;t
                 find it in the list below, please contact help@alpinereader.com
-                and we will resolve the issue.
               </div>
             </div>
             <div>
