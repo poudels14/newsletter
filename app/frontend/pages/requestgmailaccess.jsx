@@ -38,7 +38,7 @@ const RequestGmailAccess = () => {
       <div
         css={css(`
           font-size: 18px;
-          padding: 100px 0 100px 0;
+          padding: 150px 0 100px 0;
           display: flex;
           flex-direction: column;
           justify-content: space-around;

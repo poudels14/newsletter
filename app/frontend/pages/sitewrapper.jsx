@@ -9,7 +9,6 @@ const SiteWrapper = (props) => {
         css={css(`
         display: block;
         padding: 15px;
-        background: linear-gradient(45deg, #152649 0%, #243055 100%);
         opacity: 0.9;
       `)}
       >
@@ -18,13 +17,16 @@ const SiteWrapper = (props) => {
             href="https://www.alpinereader.com/"
             className="logo w-inline-block"
             css={css(`
-              color: white;
+              color: var(--logo-fill-color);
               text-decoration: none;
+              :hover {
+                color: var(--logo-fill-color);
+              }
             `)}
           >
             <img
-              src="assets/logos/icon_light_512x515.png"
-              width="30"
+              src="assets/logos/logo-light.png"
+              width="50px"
               alt="Alpine logo"
               css={css(`
                 vertical-align: middle;
@@ -34,9 +36,9 @@ const SiteWrapper = (props) => {
             />
             <div
               css={css(`
-                font-size: 25px;
-                font-weight: bold;
-                line-height: 30px;
+                font-size: 32px;
+                font-weight: 800;
+                line-height: 50px;
               `)}
             >
               Alpine
@@ -49,9 +51,8 @@ const SiteWrapper = (props) => {
         css={css(`
           position: relative;
           overflow: visible;
-          padding: 140px 20px 40px;
-          background-image: linear-gradient(45deg, #152649 0%, #243055 100%);
-          opacity: 0.9;
+          padding: 100px 20px 40px;
+          background-image: linear-gradient(45deg, var(--footer-color-start) 0%, var(--footer-color-end) 100%);
         `)}
       >
         <div
@@ -78,18 +79,6 @@ const SiteWrapper = (props) => {
         >
           <div className="w-layout-grid grid">
             <div className="footer-col">
-              <h4
-                css={css(`
-                  margin-top: 0px;
-                  margin-bottom: 30px;
-                  color: #dbe4f1;
-                  font-size: 14px;
-                  line-height: 14px;
-                  font-weight: 400;
-                `)}
-              >
-                Alpine
-              </h4>
               <a
                 href="https://www.alpinereader.com/#features"
                 className="footer-link"

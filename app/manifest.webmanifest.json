@@ -4,12 +4,12 @@
   "description": "Cloud reader for your newsletters",
   "icons": [
     {
-      "src": "/assets/logos/icon_dark_192x192.png",
+      "src": "/assets/logos/dark-192x192.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "/assets/logos/icon_dark_512x515.png",
+      "src": "/assets/logos/dark-512x512.png",
       "type": "image/png",
       "sizes": "512x512"
     }
@@ -27,7 +27,7 @@
       "url": "/nl",
       "icons": [
         {
-          "src": "/assets/logos/icon_dark_192x192.png",
+          "src": "/assets/logos/dark-192x192.png",
           "sizes": "192x192"
         }
       ]

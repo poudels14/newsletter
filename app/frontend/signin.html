@@ -78,6 +78,15 @@
       body {
         margin: 0;
         height: 100%;
+        font-family: 'Graphik Web', sans-serif, Segoe UI, Helvetica Neue, Arial,
+          Noto Sans;
+      }
+      :root {
+        --logo-color: #2a9d8f;
+        --logo-background-color: #fff;
+        --logo-fill-color: #2a9d8f;
+        --footer-color-start: #264653;
+        --footer-color-end: #2a9d8f;
       }
     </style>
     <style>
@@ -90,7 +99,7 @@
 
       .center-box {
         width: 100%;
-        padding: 100px 0 100px 0;
+        padding: 150px 0 150px 0;
         display: flex;
         flex-direction: column;
         justify-content: space-around;
@@ -113,7 +122,6 @@
     </style>
     <style>
       .logo {
-        color: white;
         text-decoration: none;
       }
       .logo img {
@@ -122,9 +130,10 @@
         margin-right: 10px;
       }
       .logo .name {
-        font-size: 25px;
-        font-weight: bold;
-        line-height: 30px;
+        font-size: 30px;
+        font-weight: 800;
+        line-height: 50px;
+        color: var(--logo-fill-color);
       }
       .sign-in-header {
         color: rgb(101, 105, 114);
@@ -138,16 +147,17 @@
       .header {
         display: block;
         padding: 15px;
-        background: linear-gradient(45deg, #152649 0%, #243055 100%);
-        opacity: 0.9;
       }
 
       .footer {
         position: relative;
         overflow: visible;
-        padding: 140px 20px 40px;
-        background-image: linear-gradient(45deg, #152649 0%, #243055 100%);
-        opacity: 0.9;
+        padding: 100px 20px 40px;
+        background-image: linear-gradient(
+          45deg,
+          var(--footer-color-start) 0%,
+          var(--footer-color-end) 100%
+        );
       }
 
       .footer-wrapper {
@@ -235,14 +245,12 @@
     <div class="header">
       <div class="header-nav">
         <a href="https://www.alpinereader.com/" class="logo">
-          <div>
-            <img
-              src="assets/logos/icon_light_512x515.png"
-              width="30"
-              alt="Alpine logo"
-            />
-            <div class="name">Alpine</div>
-          </div>
+          <img
+            src="assets/logos/logo-light.png"
+            width="50px"
+            alt="Alpine logo"
+          />
+          <div class="name">Alpine</div>
         </a>
       </div>
     </div>
@@ -259,7 +267,6 @@
       <div class="footer-wrapper">
         <div class="w-layout-grid grid">
           <div class="footer-col">
-            <h4 class="footer-col-title">Alpine</h4>
             <a href="https://www.alpinereader.com/#features" class="footer-link"
               >Features</a
             >
