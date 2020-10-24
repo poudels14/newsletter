@@ -17,12 +17,30 @@ const SiteWrapper = (props) => {
           <a
             href="https://www.alpinereader.com/"
             className="logo w-inline-block"
+            css={css(`
+              color: white;
+              text-decoration: none;
+            `)}
           >
             <img
-              src="assets/images/logo_white.png"
-              width="200"
+              src="assets/logos/icon_light_512x515.png"
+              width="30"
               alt="Alpine logo"
+              css={css(`
+                vertical-align: middle;
+                float: left;
+                margin-right: 10px;
+              `)}
             />
+            <div
+              css={css(`
+                font-size: 25px;
+                font-weight: bold;
+                line-height: 30px;
+              `)}
+            >
+              Alpine
+            </div>
           </a>
         </div>
       </div>

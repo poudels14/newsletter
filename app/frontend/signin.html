@@ -10,6 +10,8 @@
       name="google-signin-client_id"
       content="<%= htmlWebpackPlugin.options.gmailClientId %>"
     />
+    <link rel="icon" type="image/png" href="/assets/logos/favicon.ico" />
+    <link rel="manifest" href="/manifest.webmanifest.json" />
     <link
       href="https://fonts.googleapis.com/css?family=Roboto"
       rel="stylesheet"
@@ -110,6 +112,20 @@
       }
     </style>
     <style>
+      .logo {
+        color: white;
+        text-decoration: none;
+      }
+      .logo img {
+        vertical-align: middle;
+        float: left;
+        margin-right: 10px;
+      }
+      .logo .name {
+        font-size: 25px;
+        font-weight: bold;
+        line-height: 30px;
+      }
       .sign-in-header {
         color: rgb(101, 105, 114);
         padding: 10px 0 20px 0;
@@ -218,13 +234,15 @@
   <body>
     <div class="header">
       <div class="header-nav">
-        <a href="https://www.alpinereader.com/" class="logo w-inline-block">
-          <img
-            src="assets/images/logo_white.png"
-            width="200"
-            alt="Alpine logo"
-            style="vertical-align: middle"
-          />
+        <a href="https://www.alpinereader.com/" class="logo">
+          <div>
+            <img
+              src="assets/logos/icon_light_512x515.png"
+              width="30"
+              alt="Alpine logo"
+            />
+            <div class="name">Alpine</div>
+          </div>
         </a>
       </div>
     </div>
