@@ -14,6 +14,15 @@ module.exports = (api) => {
         },
       ],
     ],
-    plugins: ['@babel/plugin-syntax-dynamic-import'],
+    plugins: [
+      '@babel/plugin-syntax-dynamic-import',
+      [
+        'import',
+        {
+          libraryName: 'antd',
+          style: true,
+        },
+      ],
+    ],
   };
 };

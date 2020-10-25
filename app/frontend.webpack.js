@@ -45,7 +45,22 @@ const commonConfig = {
         },
       },
       {
-        test: /\.css$/i,
+        test: /\.less$/i,
+        use: [
+          'style-loader',
+          'css-loader',
+          {
+            loader: 'less-loader',
+            options: {
+              lessOptions: {
+                javascriptEnabled: true,
+              },
+            },
+          },
+        ],
+      },
+      {
+        test: /\.(css)$/i,
         use: ['style-loader', 'css-loader'],
       },
       {
