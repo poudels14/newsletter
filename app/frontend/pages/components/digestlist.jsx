@@ -107,6 +107,7 @@ const DigestList = (props) => {
           props.digests.map((digest) => {
             const readClassName = classnames({
               read: digest.read,
+              unread: !digest.read,
             });
 
             return (
@@ -162,6 +163,9 @@ const DigestList = (props) => {
                         margin-bottom: 0;
                         &.read {
                           color: inherit !IMPORTANT;
+                        }
+                        &.unread {
+                          font-weight: 600;
                         }
                       `)}
                     >

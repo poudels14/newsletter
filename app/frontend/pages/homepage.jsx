@@ -35,7 +35,7 @@ const Homepage = (props) => {
           <PopulateNewslettersStatusBar />
           <DigestList />
         </Layout.Content>
-        <HighlightsSidebar width="350px" />
+        <HighlightsSidebar width="300px" />
       </Layout>
       <CloseCircleOutlined
         css={css(`

@@ -33,7 +33,7 @@ const bindHighlights = ({ dom, timerRef, setPopoverOptions }) => {
       timerRef.current = setTimeout(() => {
         setPopoverOptions({});
         timerRef.current = null;
-      }, 150);
+      }, 200);
     });
   });
 };
@@ -86,7 +86,7 @@ ActionTray.propTypes = {
 const SelectedTextActionPopover = ({ hidePopoverTimer, ...props }) => {
   const { top, left } = props.popoverOptions || {};
 
-  const highlightSelected = useCallback(() => {
+  const toggleHighlight = useCallback(() => {
     if (!props.popoverOptions) {
       return;
     }
@@ -152,6 +152,9 @@ const SelectedTextActionPopover = ({ hidePopoverTimer, ...props }) => {
     }
   }, [props.popoverOptions]);
 
+  if (!props.popoverOptions?.top) {
+    return null;
+  }
   return (
     <div
       className={'selected-text-action-popover'}
@@ -160,7 +163,6 @@ const SelectedTextActionPopover = ({ hidePopoverTimer, ...props }) => {
         position: absolute;
         top: ${top}px;
         left: ${left}px;
-        display: ${props.popoverOptions?.top !== undefined ? 'block' : 'none'};
         transform: translateX(-100%) translateY(calc(-100% - 10px));
       `)}
       onMouseEnter={() => {
@@ -171,14 +173,18 @@ const SelectedTextActionPopover = ({ hidePopoverTimer, ...props }) => {
       }}
       onMouseLeave={() => {
         hidePopoverTimer.current = setTimeout(() => {
-          props.setPopoverOptions({});
+          // Note(sagar): hide highlight tray only if this tray is open when hovering over existing highlights
+          //              meaning, don't hide tray when it's shown because of active text selection
+          if (props.popoverOptions?.highlightId) {
+            props.setPopoverOptions({});
+          }
           hidePopoverTimer.current = null;
-        }, 100);
+        }, 200);
       }}
     >
       <ActionTray
         popoverOptions={props.popoverOptions}
-        toggleHighlight={highlightSelected}
+        toggleHighlight={toggleHighlight}
         shadowDom={props.shadowDom}
       />
     </div>
@@ -281,8 +287,18 @@ const ViewDigest = (props) => {
   }, [props.newsletterId, props.digestId, shadowHost]);
 
   const showActionPopover = useCallback(() => {
-    const range = shadowDom.current.getSelection().getRangeAt(0);
-    setPopoverOptions(buildPopoverOptions(shadowHostContainer?.current, range));
+    // Note(sagar): run this after timeout so that selection is updated before this is executed
+    setTimeout(() => {
+      const selection = shadowDom.current.getSelection();
+      if (selection.rangeCount > 0) {
+        const range = shadowDom.current.getSelection().getRangeAt(0);
+        setPopoverOptions(
+          buildPopoverOptions(shadowHostContainer?.current, range)
+        );
+      } else {
+        setPopoverOptions({});
+      }
+    }, 10);
   }, [shadowHostContainer.current, shadowDom.current]);
 
   return (
