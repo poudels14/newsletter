@@ -184,6 +184,7 @@ function* captureSelectionChange() {
     listener,
   }) {
     globalListener.current = listener;
+    yield async () => {};
   });
 }
 
