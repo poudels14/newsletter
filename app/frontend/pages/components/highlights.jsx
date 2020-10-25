@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { css } from '@emotion/core';
 import { format as formatDate } from 'date-fns';
 
-const Highlights = ({ highlights, ...props }) => {
+const Highlights = ({ highlights }) => {
   return (
     <div
       css={css(`
@@ -87,7 +87,6 @@ const Highlights = ({ highlights, ...props }) => {
   );
 };
 Highlights.propTypes = {
-  width: PropTypes.string,
   /** Redux */
   highlights: PropTypes.array,
 };

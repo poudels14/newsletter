@@ -69,7 +69,7 @@ const PrivateApp = (props) => {
     props.setDeviceType(deviceType);
   }, [deviceType]);
   useEffect(() => {
-    props.selectPublisher(homepageRoute?.params?.newsletterId);
+    props.setPublisher(homepageRoute?.params?.newsletterId);
   }, [homepageRoute]);
 
   if (props.user != undefined && !props.user?.email) {
@@ -114,6 +114,8 @@ PrivateApp.propTypes = {
   /** Redux */
   user: PropTypes.object,
   deviceType: PropTypes.object,
+  setDeviceType: PropTypes.func,
+  setPublisher: PropTypes.func,
 };
 const mapStateToProps = (state) => {
   const { account } = state;
@@ -126,7 +128,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     setDeviceType: (device) =>
       dispatch({ type: DeviceActions.SET_DEVICE_TYPE, device }),
-    selectPublisher: (newsletterId) =>
+    setPublisher: (newsletterId) =>
       dispatch({
         type: NewsletterActions.UPDATE_DIGEST_FILTERS,
         filters: { newsletterId },

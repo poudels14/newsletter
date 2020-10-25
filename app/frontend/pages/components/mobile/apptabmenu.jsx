@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import classnames from 'classnames';
-import { Actions } from '../../../controllers/newsletters';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { css } from '@emotion/core';
@@ -116,13 +115,6 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {};
-};
-
-const connectedAppTabMenu = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AppTabMenu);
+const connectedAppTabMenu = connect(mapStateToProps)(AppTabMenu);
 
 export default connectedAppTabMenu;
