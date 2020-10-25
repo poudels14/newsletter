@@ -38,7 +38,7 @@ const DigestList = (props) => {
     <div
       css={css(`
         max-width: 800px;
-        margin: 10px auto;
+        margin: 10px auto 50px auto;
       `)}
       className="digest-list"
     >

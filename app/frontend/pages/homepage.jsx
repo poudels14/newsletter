@@ -1,9 +1,8 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback } from 'react';
 
-import { Actions } from '../controllers/newsletters';
 import { CloseCircleOutlined } from '@ant-design/icons';
 import { DigestList } from './components/digestlist';
-import { HighlightsSidebar } from './components/highlightssidebar';
+import Highlights from './components/highlights';
 import { Layout } from 'antd';
 import Modal from 'react-modal';
 import { NewslettersDropdown } from './components/newslettersdropdown';
@@ -15,9 +14,9 @@ import { connect } from 'react-redux';
 import { css } from '@emotion/core';
 
 const Homepage = (props) => {
-  useEffect(() => {
-    props.selectPublisher(props.publisher);
-  }, [props.publisher]);
+  const query = new URLSearchParams(props.location.search);
+  const digestId = query.get('digestId');
+
   const closeDialog = useCallback(() => {
     props.history.push(props.history.location.pathname);
   }, [props.history.push]);
@@ -28,14 +27,24 @@ const Homepage = (props) => {
         className="homepage"
         css={css(`background: white; min-height: 100%;`)}
       >
-        <NewslettersSidebar width="250px" />
+        {!props.deviceType.mobile && <NewslettersSidebar width="250px" />}
         <Layout.Content>
           {/* Note(sagar) This will only show in mobile devices */}
-          <NewslettersDropdown />
+          {props.deviceType.mobile && <NewslettersDropdown />}
           <PopulateNewslettersStatusBar />
           <DigestList />
         </Layout.Content>
-        <HighlightsSidebar width="300px" />
+
+        {props.deviceType.desktop && (
+          <Layout.Sider
+            width="300px"
+            css={css(`
+              box-shadow: var(--sidebar-box-shadow);
+            `)}
+          >
+            <Highlights />
+          </Layout.Sider>
+        )}
       </Layout>
       <CloseCircleOutlined
         css={css(`
@@ -51,11 +60,11 @@ const Homepage = (props) => {
             right: 10px;
           }
         `)}
-        style={{ display: props.digestId !== null ? 'block' : 'none' }}
+        style={{ display: digestId !== null ? 'block' : 'none' }}
         onClick={closeDialog}
       />
       <Modal
-        isOpen={props.digestId !== null}
+        isOpen={digestId !== null}
         onRequestClose={closeDialog}
         contentLabel="Digest Modal"
         css={css(`
@@ -79,36 +88,30 @@ const Homepage = (props) => {
           outline: none;
         `)}
       >
-        {props.digestId && (
-          <ViewDigest
-            newsletterId={props.publisher}
-            digestId={props.digestId}
-          />
+        {digestId && (
+          <ViewDigest newsletterId={props.publisher} digestId={digestId} />
         )}
       </Modal>
     </div>
   );
 };
 Homepage.propTypes = {
-  history: PropTypes.object,
   publisher: PropTypes.string,
-  digestId: PropTypes.string,
+  route: PropTypes.object,
+  location: PropTypes.object,
+  history: PropTypes.object,
   /** Redux props */
-  selectPublisher: PropTypes.func.isRequired,
+  deviceType: PropTypes.object,
 };
 
 /** Redux */
 
-const mapDispatchToProps = (dispatch) => {
+const mapStateToProps = (state) => {
   return {
-    selectPublisher: (newsletterId) =>
-      dispatch({
-        type: Actions.UPDATE_DIGEST_FILTERS,
-        filters: { newsletterId },
-      }),
+    deviceType: state?.device?.type,
   };
 };
 
-const connectedHomepage = connect(null, mapDispatchToProps)(Homepage);
+const connectedHomepage = connect(mapStateToProps)(Homepage);
 
 export { connectedHomepage as Homepage };

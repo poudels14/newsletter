@@ -1,5 +1,4 @@
 import 'regenerator-runtime/runtime';
-import 'antd/dist/antd.css';
 
 import React, { Suspense, lazy } from 'react';
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';

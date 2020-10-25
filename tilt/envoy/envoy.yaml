@@ -74,6 +74,16 @@ static_resources:
                                 regex: (.*)$
                               substitution: /
                         - match:
+                            prefix: /highlights
+                          route:
+                            cluster: frontend
+                            regex_rewrite:
+                              pattern:
+                                google_re2:
+                                  max_program_size: 100
+                                regex: (.*)$
+                              substitution: /
+                        - match:
                             prefix: /supported-newsletters
                           route:
                             cluster: frontend

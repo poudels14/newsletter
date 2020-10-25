@@ -8,12 +8,14 @@ import {
 import { composeWithDevTools } from 'redux-devtools-extension';
 import createSagaMiddleware from 'redux-saga';
 import { reducer as gmailReducer } from './gmail';
+import { reducer as deviceReducer } from './device';
 
 /** store */
 const composeEnhancers = composeWithDevTools({ trace: true });
 const sagaMiddleware = createSagaMiddleware();
 const store = createStore(
   combineReducers({
+    device: deviceReducer,
     account: accountReducer,
     gmail: gmailReducer,
     newsletters: newslettersReducer,

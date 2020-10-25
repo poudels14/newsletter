@@ -74,6 +74,16 @@ static_resources:
                                 regex: (.*)$
                               substitution: /static/public/
                         - match:
+                            prefix: /highlights
+                          route:
+                            cluster: staticserver
+                            regex_rewrite:
+                              pattern:
+                                google_re2:
+                                  max_program_size: 100
+                                regex: (.*)$
+                              substitution: /static/public/
+                        - match:
                             prefix: /admin
                           route:
                             cluster: staticserver

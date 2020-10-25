@@ -72,11 +72,7 @@ const NewslettersDropdown = (props) => {
         left: 0;
         right: 0;
         font-size: 16px;
-        display: none;
-        @media (max-width: 425px) {
-          display: block;
-          z-index: 9999;
-        }
+        z-index: 9999;
       `)}
     >
       <div

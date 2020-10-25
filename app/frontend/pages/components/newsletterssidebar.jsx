@@ -30,7 +30,7 @@ const Button = ({ classNames, id, name, authorEmail, totalUnread }) => {
           border-bottom-width: 1px;
           &:hover, &.active {
             color: var(--active-tab-color);
-            background: var(--active-tab-background-color);
+            background: var(--active-tab-background);
           }
         `)}
       >
@@ -75,9 +75,6 @@ const NewslettersSidebar = (props) => {
         background: var(--background);
         color: var(--text-color);
         box-shadow: var(--sidebar-box-shadow);
-        @media (max-width: 425px) {
-          display: none;
-        }
       `)}
       className="newsletters-sidebar"
     >

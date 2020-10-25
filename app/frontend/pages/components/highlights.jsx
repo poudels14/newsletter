@@ -1,4 +1,3 @@
-import { Layout } from 'antd';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -6,18 +5,14 @@ import { connect } from 'react-redux';
 import { css } from '@emotion/core';
 import { format as formatDate } from 'date-fns';
 
-const HighlightsSidebar = ({ highlights, ...props }) => {
+const Highlights = ({ highlights, ...props }) => {
   return (
-    <Layout.Sider
-      width={props.width}
+    <div
       css={css(`
-        background: white;
-        box-shadow: var(--sidebar-box-shadow);
-        @media (max-width: 1020px) {
-          display: none;
-        }
+        height: 100%;
+        background: var(--background);
       `)}
-      className="highlight-sidebar"
+      className="highlights"
     >
       <div
         css={css(`
@@ -88,10 +83,10 @@ const HighlightsSidebar = ({ highlights, ...props }) => {
             );
           })}
       </div>
-    </Layout.Sider>
+    </div>
   );
 };
-HighlightsSidebar.propTypes = {
+Highlights.propTypes = {
   width: PropTypes.string,
   /** Redux */
   highlights: PropTypes.array,
@@ -106,6 +101,6 @@ const mapStateToProps = (state) => {
   };
 };
 
-const connectedHighlightsSidebar = connect(mapStateToProps)(HighlightsSidebar);
+const connectedHighlights = connect(mapStateToProps)(Highlights);
 
-export { connectedHighlightsSidebar as HighlightsSidebar };
+export default connectedHighlights;

@@ -58,7 +58,6 @@ const Settings = () => {
   return (
     <div
       css={css(`
-        height: 100%;
         font-size: 14px;
       `)}
       className="settings"
@@ -74,14 +73,11 @@ const Settings = () => {
       >
         <Layout.Content
           css={css(`
-            flex: 1 1 700px;
-            max-width: 700px;
+            flex: 1 1 300px;
+            max-width: 800px;
             margin: 0 auto;
-            padding: 50px 50px;
+            padding: 15px 15px;
             box-shadow: var(--box-shadow);
-            h2, h3, a, a:hover {
-              // color: white;
-            }
           `)}
         >
           <div
