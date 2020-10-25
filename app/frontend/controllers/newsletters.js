@@ -26,6 +26,9 @@ const Actions = {
 
   LOAD_HIGHLIGHTS: '/newsletters/highlights/load',
   LOAD_HIGHLIGHTS_SUCCEEDED: '/newsletters/highlights/load/succeeded',
+
+  ATTACH_SELECTION_CHANGE_LISTENER:
+    '/newsletters/viewdigest/attach/selectionchange',
 };
 
 const reducer = (state = {}, action) => {
@@ -171,6 +174,19 @@ function* loadHighlightsListener() {
   });
 }
 
+function* captureSelectionChange() {
+  const globalListener = { current: null };
+  document.addEventListener('selectionchange', () => {
+    globalListener.current?.call();
+  });
+
+  yield takeEvery(Actions.ATTACH_SELECTION_CHANGE_LISTENER, function* ({
+    listener,
+  }) {
+    globalListener.current = listener;
+  });
+}
+
 function* sagas() {
   yield all([
     populateListener(),
@@ -179,6 +195,7 @@ function* sagas() {
     updateDigestFiltersListener(),
     loadMoreDigestsListener(),
     loadHighlightsListener(),
+    captureSelectionChange(),
   ]);
 }
 

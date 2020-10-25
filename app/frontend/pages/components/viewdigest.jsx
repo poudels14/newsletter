@@ -6,6 +6,8 @@ import {
   serializeRange,
 } from 'highlighter';
 
+import { Actions as NewslettersActions } from '../../controllers/newsletters';
+import { connect } from 'react-redux';
 import { HighlightOutlined, MessageOutlined } from '@ant-design/icons';
 import PropTypes from 'prop-types';
 import axios from 'axios';
@@ -18,7 +20,7 @@ const bindHighlights = ({ dom, timerRef, setPopoverOptions }) => {
     const highlightId = Array.from(ele.classList).find((s) =>
       s.startsWith('highlight-')
     );
-    ele.addEventListener('mouseenter', () => {
+    const showPopover = () => {
       if (timerRef.current) {
         clearTimeout(timerRef.current);
         timerRef.current = null;
@@ -28,13 +30,18 @@ const bindHighlights = ({ dom, timerRef, setPopoverOptions }) => {
         top,
         left,
       });
-    });
-    ele.addEventListener('mouseleave', () => {
+    };
+
+    const hidePopover = () => {
       timerRef.current = setTimeout(() => {
         setPopoverOptions({});
         timerRef.current = null;
       }, 200);
-    });
+    };
+    ele.addEventListener('mouseenter', showPopover);
+    ele.addEventListener('mouseleave', hidePopover);
+
+    ele.addEventListener('click', showPopover);
   });
 };
 
@@ -308,6 +315,11 @@ const ViewDigest = (props) => {
     }, 10);
   }, [shadowHostContainer.current, shadowDom.current]);
 
+  useEffect(() => {
+    props.attachSelectionChangeListener(showActionPopover);
+    return () => props.attachSelectionChangeListener(null);
+  }, [showActionPopover]);
+
   return (
     <div
       ref={shadowHostContainer}
@@ -326,7 +338,6 @@ const ViewDigest = (props) => {
       >
         <div
           ref={shadowHost}
-          onMouseUp={showActionPopover}
           css={css(`
             flex: 1 0 400px;
             padding: 40px 0 0 0;
@@ -350,6 +361,22 @@ const ViewDigest = (props) => {
 ViewDigest.propTypes = {
   newsletterId: PropTypes.string.isRequired,
   digestId: PropTypes.string.isRequired,
+  /** Redux props */
+  attachSelectionChangeListener: PropTypes.func,
 };
 
-export { ViewDigest };
+/** Redux */
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    attachSelectionChangeListener: (listener) =>
+      dispatch({
+        type: NewslettersActions.ATTACH_SELECTION_CHANGE_LISTENER,
+        listener,
+      }),
+  };
+};
+
+const connectedViewDigest = connect(null, mapDispatchToProps)(ViewDigest);
+
+export { connectedViewDigest as ViewDigest };
