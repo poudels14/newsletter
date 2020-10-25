@@ -6,7 +6,7 @@ import {
   serializeRange,
 } from 'highlighter';
 
-import { HighlightOutlined } from '@ant-design/icons';
+import { HighlightOutlined, MessageOutlined } from '@ant-design/icons';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import { css } from '@emotion/core';
@@ -71,14 +71,20 @@ const ActionTray = (props) => {
           onClick={props.toggleHighlight}
           style={highlightStyle}
         />
-        {/* <div css={css(`display: inline-block; width: 20px;`)}></div>
-        <MessageOutlined /> */}
+        <div css={css(`display: inline-block; width: 20px;`)}></div>
+        <MessageOutlined
+          onClick={() => {
+            props.setPopoverOptions({});
+            alert('Coming soon!');
+          }}
+        />
       </div>
     </div>
   );
 };
 ActionTray.propTypes = {
   popoverOptions: PropTypes.object,
+  setPopoverOptions: PropTypes.func,
   toggleHighlight: PropTypes.func,
   shadowDom: PropTypes.object,
 };
@@ -184,6 +190,7 @@ const SelectedTextActionPopover = ({ hidePopoverTimer, ...props }) => {
     >
       <ActionTray
         popoverOptions={props.popoverOptions}
+        setPopoverOptions={props.setPopoverOptions}
         toggleHighlight={toggleHighlight}
         shadowDom={props.shadowDom}
       />
