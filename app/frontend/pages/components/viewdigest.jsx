@@ -6,6 +6,8 @@ import {
   serializeRange,
 } from 'highlighter';
 
+import debounce from 'lodash/debounce';
+
 import { Actions as NewslettersActions } from '../../controllers/newsletters';
 import { connect } from 'react-redux';
 import { HighlightOutlined, MessageOutlined } from '@ant-design/icons';
@@ -300,9 +302,9 @@ const ViewDigest = (props) => {
     );
   }, [props.newsletterId, props.digestId, shadowHost]);
 
-  const showActionPopover = useCallback(() => {
-    // Note(sagar): run this after timeout so that selection is updated before this is executed
-    setTimeout(() => {
+  const showActionPopover = useCallback(
+    debounce(() => {
+      // Note(sagar): run this after timeout so that selection is updated before this is executed
       const selection = shadowDom.current.getSelection();
       if (selection.rangeCount > 0) {
         const range = shadowDom.current.getSelection().getRangeAt(0);
@@ -312,8 +314,9 @@ const ViewDigest = (props) => {
       } else {
         setPopoverOptions({});
       }
-    }, 10);
-  }, [shadowHostContainer.current, shadowDom.current]);
+    }, 200),
+    [shadowHostContainer.current, shadowDom.current]
+  );
 
   useEffect(() => {
     props.attachSelectionChangeListener(showActionPopover);
