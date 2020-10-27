@@ -16,8 +16,8 @@ const Actions = {
   LOAD_PUBLISHERS_SUCCEEDED: '/newsletters/publishers/load/succeeded',
   LOAD_PUBLISHERS_FAILED: '/newsletters/publishers/load/failed',
 
-  SET_INITIAL_DIGEST_FILTERS: '/newsletters/digests/filters/set', // triggered after stored filters are loaded from server
-  UPDATE_DIGEST_FILTERS: '/newsletters/digests/filters/update',
+  SET_INITIAL_DIGEST_FILTERS: '/newsletters/filters/init', // triggered after stored filters are loaded from server
+  UPDATE_DIGEST_FILTERS: '/newsletters/filters/update',
 
   LOAD_DIGESTS: '/newsletters/digests/load',
   LOAD_DIGESTS_SUCCEEDED: '/newsletters/digests/load/succeeded',
@@ -129,8 +129,9 @@ function* updateDigestFiltersListener() {
       const digestFilters = yield select(
         (state) => state.newsletters?.digestFilters
       );
+      const { unread } = digestFilters;
       yield axios.post('/api/account/updateSettings', {
-        settings: { digestFilters },
+        settings: { digestFilters: { unread } },
       });
     }
   });
@@ -154,6 +155,7 @@ function* loadDigestsListener() {
 }
 
 function* loadMoreDigestsListener() {
+  // TODO(sagar): use takeLatest here
   yield takeEvery(Actions.LOAD_MORE_DIGESTS, function* ({ offset }) {
     const digestFilters = yield select(
       (state) => state.newsletters?.digestFilters

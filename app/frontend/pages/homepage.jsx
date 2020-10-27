@@ -1,5 +1,5 @@
-import React, { useCallback } from 'react';
-
+import React, { useCallback, useEffect } from 'react';
+import { withRouter } from 'react-router-dom';
 import { CloseCircleOutlined } from '@ant-design/icons';
 import { DigestList } from './components/digestlist';
 import Highlights from './components/highlights';
@@ -12,14 +12,19 @@ import PropTypes from 'prop-types';
 import { ViewDigest } from './components/viewdigest';
 import { connect } from 'react-redux';
 import { css } from '@emotion/core';
+import { Actions as NewsletterActions } from '../controllers/newsletters';
 
 const Homepage = (props) => {
   const query = new URLSearchParams(props.location.search);
   const digestId = query.get('digestId');
 
   const closeDialog = useCallback(() => {
-    props.history.push(props.history.location.pathname);
-  }, [props.history.push]);
+    props.history.goBack();
+  }, [props.history]);
+
+  useEffect(() => {
+    props.loadPublishers();
+  }, []);
 
   return (
     <div css={css(`height: 100%;`)}>
@@ -27,15 +32,15 @@ const Homepage = (props) => {
         className="homepage"
         css={css(`background: white; min-height: 100%;`)}
       >
-        {!props.deviceType.mobile && <NewslettersSidebar width="250px" />}
+        {!props.deviceType?.mobile && <NewslettersSidebar width="250px" />}
         <Layout.Content>
           {/* Note(sagar) This will only show in mobile devices */}
-          {props.deviceType.mobile && <NewslettersDropdown />}
+          {props.deviceType?.mobile && <NewslettersDropdown />}
           <PopulateNewslettersStatusBar />
           <DigestList />
         </Layout.Content>
 
-        {props.deviceType.desktop && (
+        {props.deviceType?.desktop && (
           <Layout.Sider
             width="300px"
             css={css(`
@@ -97,21 +102,29 @@ const Homepage = (props) => {
 };
 Homepage.propTypes = {
   publisher: PropTypes.string,
-  route: PropTypes.object,
-  location: PropTypes.object,
-  history: PropTypes.object,
+  /** withRouter props */
+  match: PropTypes.object.isRequired,
+  location: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
   /** Redux props */
   deviceType: PropTypes.object,
+  loadPublishers: PropTypes.func,
 };
 
 /** Redux */
-
 const mapStateToProps = (state) => {
   return {
     deviceType: state?.device?.type,
   };
 };
 
-const connectedHomepage = connect(mapStateToProps)(Homepage);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    loadPublishers: () => dispatch({ type: NewsletterActions.LOAD_PUBLISHERS }),
+  };
+};
+const connectedHomepage = withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(Homepage)
+);
 
 export { connectedHomepage as Homepage };

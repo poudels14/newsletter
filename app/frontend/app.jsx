@@ -1,12 +1,6 @@
 import React, { lazy, useMemo, useEffect } from 'react';
-import {
-  Redirect,
-  Switch,
-  useRouteMatch,
-  useLocation,
-  useHistory,
-} from 'react-router-dom';
-
+import { Redirect, Switch, useRouteMatch } from 'react-router-dom';
+import { Actions as AccountActions } from './controllers/account';
 import { Homepage } from './pages/homepage';
 import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
@@ -39,78 +33,58 @@ const getDeviceType = () => {
   );
 };
 
-const NotFoundPage = () => <div>404 Not found</div>;
-
-const PrivateApp = (props) => {
-  const deviceType = getDeviceType();
-
-  let location = useLocation();
-  let history = useHistory();
-  let homepageRoute = useRouteMatch({
+const useAppRoutes = () => {
+  let homepage = useRouteMatch({
     path: ['/nl/:newsletterId?', '/'],
   });
-  let settingsRoute = useRouteMatch({
+  let settings = useRouteMatch({
     path: ['/settings'],
   });
-  let highlightsRoute = useRouteMatch({
+  let highlights = useRouteMatch({
     path: ['/highlights'],
   });
   const activeTab = useMemo(() => {
-    if (settingsRoute) {
+    if (settings) {
       return 'settings';
     }
-    if (highlightsRoute) {
+    if (highlights) {
       return 'highlights';
     }
     return 'homepage';
-  }, [homepageRoute, settingsRoute, highlightsRoute]);
+  }, [homepage, settings, highlights]);
+
+  return {
+    homepage,
+    settings,
+    highlights,
+    activeTab,
+  };
+};
+
+const NotFoundPage = () => <div>404 Not found</div>;
+
+const PrivateApp = (props) => {
+  const routes = useAppRoutes();
 
   useEffect(() => {
-    props.setDeviceType(deviceType);
-  }, [deviceType]);
-  useEffect(() => {
-    props.setPublisher(homepageRoute?.params?.newsletterId);
-  }, [homepageRoute]);
-
-  if (props.user != undefined && !props.user?.email) {
-    window.location.href = '/signin';
-    return <></>;
-  }
-  if (
-    props.user != undefined &&
-    !props.user?.hasRequiredAccess &&
-    !props.user?.settings?.gmailLinkingSkipped
-  ) {
-    return <Redirect to="/grantaccess" />;
-  }
-  if (!props.user) {
-    return <SplashScreen />;
-  }
+    props.setPublisher(routes.homepage?.params?.newsletterId);
+  }, [routes.homepage?.params?.newsletterId]);
 
   return (
     <>
       <Switch>
-        {homepageRoute?.isExact && (
-          <Homepage
-            publisher={homepageRoute?.params?.newsletterId}
-            route={homepageRoute}
-            location={location}
-            user={props.user}
-            history={history}
-          />
+        {routes.homepage?.isExact && (
+          <Homepage publisher={routes.homepage?.params?.newsletterId} />
         )}
-        {settingsRoute && <Settings />}
-        {highlightsRoute && <Highlights />}
+        {routes.settings && <Settings />}
+        {routes.highlights && <Highlights />}
         <NotFoundPage />
       </Switch>
-      {props.deviceType.mobile && <AppTabMenu active={activeTab} />}
+      {props.deviceType?.mobile && <AppTabMenu active={routes.activeTab} />}
     </>
   );
 };
 PrivateApp.propTypes = {
-  history: PropTypes.object,
-  match: PropTypes.object,
-  location: PropTypes.object,
   /** Redux */
   user: PropTypes.object,
   deviceType: PropTypes.object,
@@ -126,8 +100,6 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchToProps = (dispatch) => {
   return {
-    setDeviceType: (device) =>
-      dispatch({ type: DeviceActions.SET_DEVICE_TYPE, device }),
     setPublisher: (newsletterId) =>
       dispatch({
         type: NewsletterActions.UPDATE_DIGEST_FILTERS,
@@ -140,10 +112,59 @@ const ConnectedPrivateApp = connect(
   mapDispatchToProps
 )(PrivateApp);
 
+const AppContainer = (props) => {
+  const deviceType = getDeviceType();
+  useEffect(() => {
+    props.setDeviceType(deviceType);
+  }, [deviceType]);
+
+  useEffect(() => {
+    props.loadAccount();
+  }, []);
+
+  if (props.user != undefined && !props.user?.email) {
+    window.location.href = '/signin';
+    return <></>;
+  }
+  if (
+    props.user != undefined &&
+    !props.user?.hasRequiredAccess &&
+    !props.user?.settings?.gmailLinkingSkipped
+  ) {
+    return <Redirect to="/grantaccess" />;
+  }
+  if (!props.user) {
+    return <SplashScreen />;
+  }
+  return <ConnectedPrivateApp />;
+};
+AppContainer.propTypes = {
+  /** Redux */
+  user: PropTypes.object,
+  setDeviceType: PropTypes.func,
+  loadAccount: PropTypes.func,
+};
+
+const ConnectedAppContainer = connect(
+  (state) => {
+    const { account } = state;
+    return {
+      user: account?.user,
+    };
+  },
+  (dispatch) => {
+    return {
+      loadAccount: () => dispatch({ type: AccountActions.LOAD }),
+      setDeviceType: (device) =>
+        dispatch({ type: DeviceActions.SET_DEVICE_TYPE, device }),
+    };
+  }
+)(AppContainer);
+
 const ReduxApp = () => {
   return (
     <Provider store={store}>
-      <ConnectedPrivateApp />
+      <ConnectedAppContainer />
     </Provider>
   );
 };

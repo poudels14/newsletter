@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
-import { Actions } from '../../controllers/newsletters';
 import { Layout } from 'antd';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -65,9 +64,6 @@ Button.propTypes = {
 };
 
 const NewslettersSidebar = (props) => {
-  useEffect(() => {
-    props.loadPublishers();
-  }, []);
   return (
     <Layout.Sider
       width={props.width}
@@ -151,7 +147,6 @@ NewslettersSidebar.propTypes = {
   user: PropTypes.object,
   selectedNewsletterId: PropTypes.string,
   publishers: PropTypes.array,
-  loadPublishers: PropTypes.func.isRequired,
 };
 
 /** Redux */
@@ -165,15 +160,8 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    loadPublishers: () => dispatch({ type: Actions.LOAD_PUBLISHERS }),
-  };
-};
-
-const connectedNewslettersSidebar = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(NewslettersSidebar);
+const connectedNewslettersSidebar = connect(mapStateToProps)(
+  NewslettersSidebar
+);
 
 export { connectedNewslettersSidebar as NewslettersSidebar };

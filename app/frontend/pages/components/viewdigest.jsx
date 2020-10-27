@@ -308,11 +308,11 @@ const ViewDigest = (props) => {
       const selection = shadowDom.current.getSelection();
       if (selection.rangeCount > 0) {
         const range = shadowDom.current.getSelection().getRangeAt(0);
-        setPopoverOptions(
-          buildPopoverOptions(shadowHostContainer?.current, range)
+        const options = buildPopoverOptions(
+          shadowHostContainer?.current,
+          range
         );
-      } else {
-        setPopoverOptions({});
+        setPopoverOptions(options);
       }
     }, 200),
     [shadowHostContainer.current, shadowDom.current]
