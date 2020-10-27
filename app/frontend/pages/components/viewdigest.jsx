@@ -305,9 +305,11 @@ const ViewDigest = (props) => {
   const showActionPopover = useCallback(
     debounce(() => {
       // Note(sagar): run this after timeout so that selection is updated before this is executed
-      const selection = shadowDom.current.getSelection();
+      const selection = shadowDom.current.getSelection
+        ? shadowDom.current.getSelection()
+        : window.getSelection();
       if (selection.rangeCount > 0) {
-        const range = shadowDom.current.getSelection().getRangeAt(0);
+        const range = selection.getRangeAt(0);
         const options = buildPopoverOptions(
           shadowHostContainer?.current,
           range
@@ -319,8 +321,18 @@ const ViewDigest = (props) => {
   );
 
   useEffect(() => {
+    // Note(sagar): in mobile, once text is selected, context menu shows up and hides the highlight tray
+    //              disable context menu so that highlight tray isn't hidden
+    // const contextMenuListener = (event) => {
+    //   event.preventDefault();
+    // };
+    // document.addEventListener('contextmenu', contextMenuListener);
+
     props.attachSelectionChangeListener(showActionPopover);
-    return () => props.attachSelectionChangeListener(null);
+    return () => {
+      // document.removeEventListener('contextmenu', contextMenuListener);
+      props.attachSelectionChangeListener(null);
+    };
   }, [showActionPopover]);
 
   return (
