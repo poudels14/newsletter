@@ -2,6 +2,7 @@ const path = require('path');
 const merge = require('webpack-merge');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
   .BundleAnalyzerPlugin;
 
@@ -61,7 +62,7 @@ const commonConfig = {
       },
       {
         test: /\.(css)$/i,
-        use: ['style-loader', 'css-loader'],
+        use: ['style-loader', 'css-loader', 'postcss-loader'],
       },
       {
         test: /\.(png|svg|jpg|gif|woff(2)?|ttf|eot)$/,
@@ -75,6 +76,7 @@ const commonConfig = {
     ],
   },
   plugins: [
+    new CleanWebpackPlugin(),
     new HtmlWebPackPlugin({
       template: './frontend/index.html',
       filename: 'index.html',

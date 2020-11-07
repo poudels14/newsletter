@@ -6,6 +6,7 @@ import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 import Modal from 'react-modal';
 import ReactDOM from 'react-dom';
 
+import './style.css';
 const App = lazy(() => import('./app'));
 const RequestGmailAccess = lazy(() => import('./pages/requestgmailaccess'));
 const AdminHomepage = lazy(() => import('./pages/admin/homepage'));
