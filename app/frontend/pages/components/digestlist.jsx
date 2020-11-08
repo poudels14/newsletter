@@ -3,11 +3,11 @@ import React, { useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Actions as NewslettersActions } from '../../controllers/newsletters';
 import PropTypes from 'prop-types';
-import { Switch } from 'antd';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
 import { css } from '@emotion/core';
 import { format as formatDate } from 'date-fns';
+import Switch from 'ui/Switch';
 
 const DigestList = (props) => {
   const selectedNewsletter = useMemo(() => {
@@ -53,11 +53,10 @@ const DigestList = (props) => {
         `)}
       >
         <Switch
-          defaultChecked={props.digestFilters?.unreadOnly}
+          checked={props.digestFilters?.unreadOnly}
+          toggle={toggleUnreadOnly}
           checkedChildren="Unread Only"
           unCheckedChildren="All"
-          css={css(`background-color: #2c3a61`)}
-          onChange={toggleUnreadOnly}
         />
       </div>
       {selectedNewsletter && (
