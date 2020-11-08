@@ -129,9 +129,9 @@ function* updateDigestFiltersListener() {
       const digestFilters = yield select(
         (state) => state.newsletters?.digestFilters
       );
-      const { unread } = digestFilters;
+      const { unreadOnly } = digestFilters;
       yield axios.post('/api/account/updateSettings', {
-        settings: { digestFilters: { unread } },
+        settings: { digestFilters: { unreadOnly } },
       });
     }
   });
