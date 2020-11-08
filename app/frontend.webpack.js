@@ -15,7 +15,10 @@ const commonConfig = {
     chunkFilename: '[name].[chunkhash].js',
   },
   resolve: {
-    alias: {},
+    alias: {
+      heroicons: path.resolve(__dirname, './frontend/assets/heroicons'),
+      ui: path.resolve(__dirname, './frontend/components/'),
+    },
     extensions: ['.js', '.jsx', '.json'],
   },
   externals: {
@@ -65,7 +68,11 @@ const commonConfig = {
         use: ['style-loader', 'css-loader', 'postcss-loader'],
       },
       {
-        test: /\.(png|svg|jpg|gif|woff(2)?|ttf|eot)$/,
+        test: /\.svg$/,
+        use: ['@svgr/webpack'],
+      },
+      {
+        test: /\.(png|jpg|gif|woff(2)?|ttf|eot)$/,
         use: {
           loader: 'file-loader',
           options: {
@@ -116,7 +123,7 @@ const commonConfig = {
     new CopyPlugin({
       patterns: [
         {
-          from: 'assets/',
+          from: './frontend/assets/',
           to: 'assets/',
         },
         {
