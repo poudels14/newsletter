@@ -1,14 +1,13 @@
 import React from 'react';
 
-import { Layout } from 'antd';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { SettingOutlined } from '@ant-design/icons';
+import SettingsIcon from 'heroicons/outline/cog.svg';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
 import { css } from '@emotion/core';
 
-const Button = ({ classNames, id, name, authorEmail, totalUnread }) => {
+const Button = ({ id, name, authorEmail, totalUnread, active }) => {
   return (
     <Link
       to={`/nl/${id}`}
@@ -22,31 +21,23 @@ const Button = ({ classNames, id, name, authorEmail, totalUnread }) => {
       `)}
     >
       <div
-        className={classNames}
+        className={classnames(
+          'tab-menu-item  hover:bg-gray-200 border-t border-gray-400',
+          {
+            'active text-gray-900 bg-gray-300': active,
+          }
+        )}
         css={css(`
           padding: 5px 14px;
-          border: 0 solid rgba(100, 100, 100, 0.2);
-          border-bottom-width: 1px;
-          &:hover, &.active {
-            color: var(--active-tab-color);
-            background: var(--active-tab-background);
-          }
         `)}
       >
         <span>{name || authorEmail}</span>
         {totalUnread !== 0 && (
           <div
             css={css(`
-              display: inline-block;
-              background: var(--unread-digests-count-background-color);
-              padding: 0 4px;
-              border-radius: 2px;
-              margin-left: 5px;
               font-size: 11px;
-
-              text-align:center;
-              vertical-align: middle;
             `)}
+            className="bg-gray-200 px-1 rounded-sm ml-3 inline-block text-center align-middle"
           >
             {totalUnread}
           </div>
@@ -60,83 +51,58 @@ Button.propTypes = {
   name: PropTypes.string.isRequired,
   authorEmail: PropTypes.string,
   totalUnread: PropTypes.number,
-  classNames: PropTypes.string,
+  active: PropTypes.bool,
 };
 
 const NewslettersSidebar = (props) => {
   return (
-    <Layout.Sider
-      width={props.width}
-      css={css(`
-        background: var(--background);
-        color: var(--text-color);
-        box-shadow: var(--sidebar-box-shadow);
-      `)}
-      className="newsletters-sidebar"
-    >
+    <div width={props.width} className="newsletters-sidebar">
       <div
         css={css(`
           padding: 15px 14px;
-          font-size: 18px;
-          font-weight: 700;
         `)}
+        className="font-bold text-blue-900 text-base leading-4"
       >
-        <span
-          css={css(`
-            color: var(--user-name-text-color);
-          `)}
-        >
+        <span className="align-middle">
           {props.user?.firstName} {props.user?.lastName}
         </span>
-        <div
+        <Link
+          to={`/settings`}
           css={css(`
-            display: inline-block;
-            margin-left: 20px;
-          `)}
-        >
-          <Link
-            to={`/settings`}
-            css={css(`
+            color: inherit;
+            &:hover {
               color: inherit;
-              &:hover {
-                color: inherit;
-              }
-            `)}
-          >
-            <SettingOutlined />
-          </Link>
-        </div>
+            }
+          `)}
+          className="ml-2"
+        >
+          <SettingsIcon width="24" height="24" className="inline-block" />
+        </Link>
       </div>
       {props.publishers && (
         <>
           <Button
             id=""
             name="All"
-            classNames={classnames({
-              active: props.selectedNewsletterId === undefined,
-            })}
+            active={props.selectedNewsletterId === undefined}
           />
           {props.publishers.map((publisher, i) => {
             return (
               <Button
                 {...publisher}
                 key={i}
-                classNames={classnames({
-                  active: props.selectedNewsletterId === publisher.id,
-                })}
+                active={props.selectedNewsletterId === publisher.id}
               />
             );
           })}
           <Button
             id="unknown"
             name="Unknown"
-            classNames={classnames({
-              active: props.selectedNewsletterId === 'unknown',
-            })}
+            active={props.selectedNewsletterId === 'unknown'}
           />
         </>
       )}
-    </Layout.Sider>
+    </div>
   );
 };
 NewslettersSidebar.propTypes = {

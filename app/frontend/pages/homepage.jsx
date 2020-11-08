@@ -3,7 +3,6 @@ import { withRouter } from 'react-router-dom';
 import { CloseCircleOutlined } from '@ant-design/icons';
 import { DigestList } from './components/digestlist';
 import Highlights from './components/highlights';
-import { Layout } from 'antd';
 import Modal from 'react-modal';
 import { NewslettersDropdown } from './components/newslettersdropdown';
 import { NewslettersSidebar } from './components/newsletterssidebar';
@@ -27,30 +26,36 @@ const Homepage = (props) => {
   }, []);
 
   return (
-    <div css={css(`height: 100%;`)}>
-      <Layout
-        className="homepage"
-        css={css(`background: white; min-height: 100%;`)}
-      >
-        {!props.deviceType?.mobile && <NewslettersSidebar width="250px" />}
-        <Layout.Content>
+    <div className="h-full overflow-y-scroll">
+      <div className="homepage flex">
+        {!props.deviceType?.mobile && (
+          <div
+            className="shadow bg-white text-gray-800"
+            css={css(`
+              width: 250px;
+            `)}
+          >
+            <NewslettersSidebar />
+          </div>
+        )}
+        <div className="flex-1">
           {/* Note(sagar) This will only show in mobile devices */}
           {props.deviceType?.mobile && <NewslettersDropdown />}
           <PopulateNewslettersStatusBar />
           <DigestList />
-        </Layout.Content>
+        </div>
 
         {props.deviceType?.desktop && (
-          <Layout.Sider
-            width="300px"
+          <div
+            className="shadow bg-white"
             css={css(`
-              box-shadow: var(--sidebar-box-shadow);
+              width: 300px;
             `)}
           >
             <Highlights />
-          </Layout.Sider>
+          </div>
         )}
-      </Layout>
+      </div>
       <CloseCircleOutlined
         css={css(`
           position: fixed;

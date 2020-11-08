@@ -105,11 +105,6 @@ const DigestList = (props) => {
         {props.digests &&
           props.digests.length > 0 &&
           props.digests.map((digest) => {
-            const readClassName = classnames({
-              read: digest.read,
-              unread: !digest.read,
-            });
-
             return (
               <Link
                 key={digest.id}
@@ -143,30 +138,25 @@ const DigestList = (props) => {
                   ></div>
 
                   <div
-                    className={readClassName}
+                    className={classnames({
+                      'read text-gray-400': digest.read,
+                      'unread text-gray-800': !digest.read,
+                    })}
                     css={css(`
                       flex: 1 0 300px;
                       margin-left: 15px;
-                      color: var(--text-color);
-                      &.read {
-                        color: var(--read-digest-color);
-                      }
                       @media (max-width: 425px) {
                         flex: 1 0 200px;
                       }
                     `)}
                   >
                     <div
-                      className={readClassName}
+                      className={classnames({
+                        'unread font-bold': !digest.read,
+                      })}
                       css={css(`
                         font-size: 19px;
                         margin-bottom: 0;
-                        &.read {
-                          color: inherit !IMPORTANT;
-                        }
-                        &.unread {
-                          font-weight: 600;
-                        }
                       `)}
                     >
                       {digest.title}
@@ -193,6 +183,7 @@ const DigestList = (props) => {
         {shouldShowLoadMore && (
           <div>
             <button
+              className="w-full py-2 bg-gray-100 text-sm rounded border hover:bg-gray-300"
               onClick={() =>
                 props.loadMoreDigests({
                   offset: props.digests.length,

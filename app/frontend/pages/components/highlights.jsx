@@ -7,13 +7,7 @@ import { format as formatDate } from 'date-fns';
 
 const Highlights = ({ highlights }) => {
   return (
-    <div
-      css={css(`
-        height: 100%;
-        background: var(--background);
-      `)}
-      className="highlights"
-    >
+    <div className="highlights">
       <div
         css={css(`
           background: var(--title-background-color);
@@ -27,11 +21,7 @@ const Highlights = ({ highlights }) => {
         <span>Highlights</span>
       </div>
 
-      <div
-        css={css(`
-          background: white;
-        `)}
-      >
+      <div className="bg-white">
         {(highlights === null || highlights?.length === 0) && (
           <div
             css={css(`padding: 10px 20px; width: 100%; text-align: center;`)}
