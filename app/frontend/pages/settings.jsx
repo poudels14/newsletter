@@ -1,4 +1,4 @@
-import { Button, Layout, Modal } from 'antd';
+import { Button, Modal } from 'antd';
 import React, { useCallback, useMemo, useState } from 'react';
 
 import { ArrowLeftOutlined } from '@ant-design/icons';
@@ -62,7 +62,7 @@ const Settings = () => {
       `)}
       className="settings"
     >
-      <Layout
+      <div
         className="settings"
         css={css(`
           background: white;
@@ -71,13 +71,13 @@ const Settings = () => {
           flex-direction: row;
         `)}
       >
-        <Layout.Content
+        <div
+          className="shadow"
           css={css(`
             flex: 1 1 300px;
             max-width: 800px;
             margin: 0 auto;
             padding: 15px 15px;
-            box-shadow: var(--box-shadow);
           `)}
         >
           <div
@@ -88,7 +88,8 @@ const Settings = () => {
             `)}
           >
             <Link to="/">
-              <ArrowLeftOutlined /> Go back to the reader
+              <ArrowLeftOutlined />
+              <span className="align-middle"> Go back to the reader</span>
             </Link>
           </div>
 
@@ -367,8 +368,8 @@ const Settings = () => {
               </Modal>
             </div>
           </div>
-        </Layout.Content>
-      </Layout>
+        </div>
+      </div>
     </div>
   );
 };

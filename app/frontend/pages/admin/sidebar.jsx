@@ -1,4 +1,3 @@
-import { Layout } from 'antd';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -41,11 +40,9 @@ Button.propTypes = {
 
 const Sidebar = (props) => {
   return (
-    <Layout.Sider
-      width={props.width}
+    <div
       css={css(`
-        background: white;
-
+        height: 100%;
         background: rgb(40, 40, 54); /* rgb(42, 40, 77); rgb(37, 35, 75); rgb(66, 63, 134); rgba(54, 52, 105, 1); */
         color: white;
         font-size: 16px;
@@ -69,7 +66,7 @@ const Sidebar = (props) => {
         name="Run commands"
         classNames={classnames({ active: props.pageId === 'runcommand' })}
       />
-    </Layout.Sider>
+    </div>
   );
 };
 Sidebar.propTypes = {

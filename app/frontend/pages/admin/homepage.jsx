@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 
-import { Layout } from 'antd';
 import Newsletters from './newsletters';
 import PropTypes from 'prop-types';
 import RunCommand from './runcommand';
@@ -12,14 +11,11 @@ import { css } from '@emotion/core';
 
 const ContentWrapper = (props) => {
   return (
-    <div css={css(`height: 100%;`)}>
-      <Layout
-        className="admin-homepage"
-        css={css(`background: white; min-height: 100%;`)}
-      >
-        <Sidebar width="250px" pageId={props.pageId} />
-        <Layout.Content>{props.children}</Layout.Content>
-      </Layout>
+    <div className="admin-homepage flex">
+      <div css={css(`width: 250px; height: 100vh;`)}>
+        <Sidebar pageId={props.pageId} />
+      </div>
+      <div>{props.children}</div>
     </div>
   );
 };
