@@ -1,0 +1,17 @@
+{
+  "env": {
+    "es6": true,
+    "browser": true,
+    "node": true
+  },
+  "parser": "@babel/eslint-parser",
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "plugins": ["react", "react-hooks"],
+  "extends": ["eslint:recommended", "plugin:react/recommended"] //"airbnb"
+}
