@@ -3,6 +3,7 @@ const merge = require('webpack-merge');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
   .BundleAnalyzerPlugin;
 
@@ -51,7 +52,7 @@ const commonConfig = {
       {
         test: /\.less$/i,
         use: [
-          'style-loader',
+          MiniCssExtractPlugin.loader,
           'css-loader',
           {
             loader: 'less-loader',
@@ -65,7 +66,7 @@ const commonConfig = {
       },
       {
         test: /\.(css)$/i,
-        use: ['style-loader', 'css-loader', 'postcss-loader'],
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader'],
       },
       {
         test: /\.svg$/,
@@ -84,6 +85,10 @@ const commonConfig = {
   },
   plugins: [
     new CleanWebpackPlugin(),
+    new MiniCssExtractPlugin({
+      filename: '[name].[contenthash].css',
+      chunkFilename: '[id].[contenthash].css',
+    }),
     new HtmlWebPackPlugin({
       template: './frontend/index.html',
       filename: 'index.html',
