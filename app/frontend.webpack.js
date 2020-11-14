@@ -152,7 +152,6 @@ const developmentConfig = {
 
 const productionConfig = {
   mode: 'production',
-  devtool: 'source-map',
   // plugins: [
   //   new BundleAnalyzerPlugin({
   //     generateStatsFile: true,
