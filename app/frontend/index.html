@@ -61,19 +61,19 @@
     <script id="gmail-config" type="application/json">
       <%= htmlWebpackPlugin.options.gmailConfig %>
     </script>
-    <script
-      type="text/javascript"
-      src="<%= htmlWebpackPlugin.options.libraries.react %>"
-    ></script>
-    <script
-      type="text/javascript"
-      src="<%= htmlWebpackPlugin.options.libraries.reactDom %>"
-    ></script>
     <title><%= htmlWebpackPlugin.options.title %></title>
   </head>
 
   <body>
     <div id="the-reading-app"></div>
-    <script src="https://apis.google.com/js/api.js"></script>
+    <script
+      type="text/javascript"
+      src="<%= htmlWebpackPlugin.options.libraries.react %>"
+    />
+    <script
+      type="text/javascript"
+      src="<%= htmlWebpackPlugin.options.libraries.reactDom %>"
+    />
+    <script src="https://apis.google.com/js/api.js" />
   </body>
 </html>
