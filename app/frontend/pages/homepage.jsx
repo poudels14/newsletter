@@ -10,7 +10,7 @@ import { PopulateNewslettersStatusBar } from './components/populateNewslettersSt
 import PropTypes from 'prop-types';
 import { ViewDigest } from './components/viewdigest';
 import { connect } from 'react-redux';
-import { css } from '@emotion/core';
+import { css } from '@emotion/react';
 import { Actions as NewsletterActions } from '../controllers/newsletters';
 
 const Homepage = (props) => {

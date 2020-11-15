@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { Select } from 'antd';
 import { connect } from 'react-redux';
-import { css } from '@emotion/core';
+import { css } from '@emotion/react';
 
 const Button = ({ classNames, id, name, totalUnread }) => {
   return (

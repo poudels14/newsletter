@@ -5,7 +5,7 @@ import { Actions as NewslettersActions } from '../../controllers/newsletters';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
-import { css } from '@emotion/core';
+import { css } from '@emotion/react';
 import { format as formatDate } from 'date-fns';
 import Switch from 'ui/Switch';
 

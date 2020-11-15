@@ -7,7 +7,7 @@ import RunCommand from './runcommand';
 import Sidebar from './sidebar';
 import Users from './users';
 import axios from 'axios';
-import { css } from '@emotion/core';
+import { css } from '@emotion/react';
 
 const ContentWrapper = (props) => {
   return (

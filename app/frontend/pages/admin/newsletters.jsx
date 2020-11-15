@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 
 import axios from 'axios';
-import { css } from '@emotion/core';
+import { css } from '@emotion/react';
 
 const Newsletters = () => {
   const [newsletters, setNewsletters] = useState();

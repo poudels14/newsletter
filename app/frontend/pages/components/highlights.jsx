@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import { css } from '@emotion/core';
+import { css } from '@emotion/react';
 import { format as formatDate } from 'date-fns';
 
 const Highlights = ({ highlights }) => {

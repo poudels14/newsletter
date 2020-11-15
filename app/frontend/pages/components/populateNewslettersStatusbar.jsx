@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { Actions } from '../../controllers/newsletters';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { css } from '@emotion/core';
+import { css } from '@emotion/react';
 
 const PopulateNewslettersStatusBar = (props) => {
   const gmailLinkingSkipped = props.user?.settings?.gmailLinkingSkipped;

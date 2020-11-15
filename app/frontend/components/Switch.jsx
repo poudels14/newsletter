@@ -1,6 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
-import { css } from '@emotion/core';
+import { css } from '@emotion/react';
 import PropTypes from 'prop-types';
 
 const Switch = ({

@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import SettingsIcon from 'heroicons/outline/cog.svg';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
-import { css } from '@emotion/core';
+import { css } from '@emotion/react';
 
 const Button = ({ id, name, authorEmail, totalUnread, active }) => {
   return (

@@ -2,7 +2,7 @@ import React from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { css } from '@emotion/core';
+import { css } from '@emotion/react';
 import { Divider as AntDivider } from 'antd';
 import { Link } from 'react-router-dom';
 import { HomeFilled, HighlightFilled, SettingFilled } from '@ant-design/icons';

@@ -13,7 +13,7 @@ import { connect } from 'react-redux';
 import { HighlightOutlined, MessageOutlined } from '@ant-design/icons';
 import PropTypes from 'prop-types';
 import axios from 'axios';
-import { css } from '@emotion/core';
+import { css } from '@emotion/react';
 
 const bindHighlights = ({ dom, timerRef, setPopoverOptions }) => {
   const highlightedElements = dom.querySelectorAll(`.newsletter-highlight`);

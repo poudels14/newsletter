@@ -4,7 +4,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { css } from '@emotion/core';
+import { css } from '@emotion/react';
 
 const Settings = () => {
   const [uIState, setUIState] = useState({

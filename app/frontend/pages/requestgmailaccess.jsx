@@ -3,7 +3,7 @@ import React, { useCallback, useState } from 'react';
 
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { css } from '@emotion/core';
+import { css } from '@emotion/react';
 import { requestOfflineAccess } from '../authenticate/gmail';
 import SiteWrapper from './sitewrapper';
 

@@ -8,7 +8,7 @@ module.exports = (api) => {
         '@emotion/babel-preset-css-prop',
         {
           sourceMap: true,
-          autoLabel: process.env.NODE_ENV !== 'production',
+          autoLabel: 'dev-only',
           labelFormat: '[local]',
           cssPropOptimization: true,
         },

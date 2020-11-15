@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import React from 'react';
 import classnames from 'classnames';
-import { css } from '@emotion/core';
+import { css } from '@emotion/react';
 
 const Button = ({ classNames, pageId, name }) => {
   return (
