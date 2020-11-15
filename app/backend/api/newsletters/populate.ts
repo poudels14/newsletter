@@ -1,14 +1,13 @@
 import * as uuid from 'uuid';
 
 import { Context } from 'Http';
-import { Cookies } from 'Http';
 import { Response } from 'Http';
 import { User } from 'Repos';
 import { differenceInMinutes } from 'date-fns';
 import { rabbitmq } from 'Utils';
 
 const populate = async (ctxt: Context, res: Response): Promise<void> => {
-  const { id: userId } = await Cookies.getUser(ctxt);
+  const { id: userId } = await ctxt.getAppUser();
   const user = await User.getById(userId);
 
   if (!user) {

@@ -1,6 +1,5 @@
 import { Base64 } from 'js-base64';
 import { Context } from 'Http';
-import { Cookies } from 'Http';
 import { Response } from 'Http';
 import { knex } from 'Utils';
 import lo from 'lodash';
@@ -28,7 +27,7 @@ const markAsRead = async (id: string) => {
 };
 
 const viewNewsletter = async (ctxt: Context, res: Response): Promise<void> => {
-  const { id: userId } = await Cookies.getUser(ctxt);
+  const { id: userId } = await ctxt.getAppUser();
   const { params } = ctxt;
 
   const digest = await queryDigestContent({

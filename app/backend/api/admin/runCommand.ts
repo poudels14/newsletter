@@ -3,7 +3,6 @@ import * as uuid from 'uuid';
 import { database, knex } from 'Utils';
 
 import { Context } from 'Http';
-import { Cookies } from 'Http';
 import { GmailParser } from 'Utils';
 import { Response } from 'Http';
 import { User } from 'Repos';
@@ -73,7 +72,7 @@ const cloneNewsletterDigests = async (
 };
 
 const execScript = async (ctxt: Context, res: Response): Promise<void> => {
-  const { id: userId } = await Cookies.getUser(ctxt);
+  const { id: userId } = await ctxt.getAppUser();
   if (!userId) {
     res.sendStatus(404);
     return;

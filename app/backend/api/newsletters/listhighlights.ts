@@ -1,5 +1,4 @@
 import { Context } from 'Http';
-import { Cookies } from 'Http';
 import { Response } from 'Http';
 import { knex } from 'Utils';
 import lo from 'lodash';
@@ -19,7 +18,7 @@ const queryHighlights = async (filters: Record<string, unknown>) => {
 };
 
 const listHighlights = async (ctxt: Context, res: Response): Promise<void> => {
-  const { id: userId } = await Cookies.getUser(ctxt);
+  const { id: userId } = await ctxt.getAppUser();
 
   const filters = JSON.parse(ctxt.query.filters);
   const queryFilters = lo.omitBy(

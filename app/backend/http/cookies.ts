@@ -1,14 +1,11 @@
-import { Context } from './request';
+import express from 'express';
+import { User } from './request';
 import { Response } from './response';
 import jwt from 'jsonwebtoken';
 
 interface UserCookie {
   id: string;
   exp?: number;
-}
-
-interface User {
-  id?: string;
 }
 
 const setUser = (res: Response, user: UserCookie): void => {
@@ -19,7 +16,7 @@ const setUser = (res: Response, user: UserCookie): void => {
   });
 };
 
-type GetUser = (req: Context) => Promise<User>;
+type GetUser = (req: express.Request) => Promise<User>;
 const getUser: GetUser = (req) => {
   return new Promise((resolve) => {
     // TODO(sagar): make sure the expired tokens are invalid
@@ -38,7 +35,7 @@ const getUser: GetUser = (req) => {
 };
 
 type AuthorizedOnly = () => (
-  req: Context,
+  req: express.Request,
   res: Response,
   next: () => void
 ) => Promise<void>;
@@ -47,7 +44,6 @@ const authorizedOnly: AuthorizedOnly = () => async (req, res, next) => {
     .catch(() => res.sendStatus(403))
     .then((user: User) => {
       if (user?.id) {
-        req.user = user;
         next();
       } else {
         res.sendStatus(403);

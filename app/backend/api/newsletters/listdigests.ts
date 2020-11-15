@@ -1,6 +1,5 @@
 import { Base64 } from 'js-base64';
 import { Context } from 'Http';
-import { Cookies } from 'Http';
 import { JSDOM } from 'jsdom';
 import { Response } from 'Http';
 import { knex } from 'Utils';
@@ -81,7 +80,7 @@ const queryDigests = async ({
 };
 
 const listDigests = async (ctxt: Context, res: Response): Promise<void> => {
-  const { id: userId } = await Cookies.getUser(ctxt);
+  const { id: userId } = await ctxt.getAppUser();
   const filters = JSON.parse(ctxt.query.filters);
   const offset = ctxt.query.offset;
 

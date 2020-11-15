@@ -39,7 +39,7 @@ const setAuthorizationCode = async (
     >;
     const user = await Gmail.getUserInfo(token['id_token']);
 
-    const { id: userId } = await Cookies.getUser(ctxt);
+    const { id: userId } = await ctxt.getAppUser();
 
     const id = userId || uuid.v1();
     await insertUserInfoToDb({

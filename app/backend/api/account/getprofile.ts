@@ -1,5 +1,4 @@
 import { Context } from 'Http';
-import { Cookies } from 'Http';
 import { Gmail } from 'Utils';
 import { Response } from 'Http';
 import { User } from 'Repos';
@@ -17,7 +16,7 @@ const hasValidRefreshToken = async (user: User.User) => {
 };
 
 const getProfile = async (ctxt: Context, res: Response): Promise<void> => {
-  const { id: userId } = await Cookies.getUser(ctxt);
+  const { id: userId } = await ctxt.getAppUser();
   if (userId) {
     const dbUser = await User.getById(userId);
     if (!dbUser) {

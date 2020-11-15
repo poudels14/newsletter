@@ -1,5 +1,4 @@
 import { Context } from 'Http';
-import { Cookies } from 'Http';
 import { Response } from 'Http';
 import { database } from 'Utils';
 
@@ -16,7 +15,7 @@ const queryNewsletters = async ({ userId }: Record<string, string>) => {
 };
 
 const listNewsletters = async (ctxt: Context, res: Response): Promise<void> => {
-  const { id: userId } = await Cookies.getUser(ctxt);
+  const { id: userId } = await ctxt.getAppUser();
 
   const newsletters = await queryNewsletters({ userId });
   res.json(newsletters);

@@ -1,10 +1,9 @@
 import { Context } from 'Http';
-import { Cookies } from 'Http';
 import { Response } from 'Http';
 import { User } from 'Repos';
 
 const listUsers = async (ctxt: Context, res: Response): Promise<void> => {
-  const { id: userId } = await Cookies.getUser(ctxt);
+  const { id: userId } = await ctxt.getAppUser();
   if (!userId) {
     res.sendStatus(404);
     return;

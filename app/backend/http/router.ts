@@ -2,6 +2,7 @@ import * as uuid from 'uuid';
 
 import { Context } from './request';
 import { Response } from './response';
+import { Cookies } from './cookies';
 import express from 'express';
 import helmet from 'helmet';
 
@@ -21,7 +22,7 @@ class Router {
   private buildContext(req: express.Request): Context {
     return {
       id: uuid.v4(),
-      user: req.user,
+      getAppUser: async () => Cookies.getUser(req),
       params: req.params,
       query: req.query,
       body: req.body,
