@@ -26,6 +26,7 @@ const getProfile = async (ctxt: Context, res: Response): Promise<void> => {
     }
 
     const user = {
+      id: userId,
       firstName: dbUser.firstName,
       lastName: dbUser.lastName,
       email: dbUser.email,

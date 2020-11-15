@@ -28,6 +28,8 @@
     "@ant-design/icons": "^4.2.2",
     "@emotion/core": "^10.0.28",
     "@emotion/hash": "^0.8.0",
+    "@sentry/react": "^5.27.4",
+    "@sentry/tracing": "^5.27.4",
     "amqplib": "^0.6.0",
     "antd": "^4.4.2",
     "axios": "^0.19.2",
