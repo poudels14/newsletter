@@ -331,16 +331,8 @@ const ViewDigest = (props) => {
   );
 
   useEffect(() => {
-    // Note(sagar): in mobile, once text is selected, context menu shows up and hides the highlight tray
-    //              disable context menu so that highlight tray isn't hidden
-    // const contextMenuListener = (event) => {
-    //   event.preventDefault();
-    // };
-    // document.addEventListener('contextmenu', contextMenuListener);
-
     props.attachSelectionChangeListener(showActionPopover);
     return () => {
-      // document.removeEventListener('contextmenu', contextMenuListener);
       props.attachSelectionChangeListener(null);
     };
   }, [showActionPopover]);
