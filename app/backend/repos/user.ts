@@ -57,6 +57,7 @@ type ListUsers = ({
 }) => Promise<User[]>;
 const listUsers: ListUsers = async ({ filter, limit }) => {
   const rows = await knex('users')
+    .select('id')
     .select('firstName')
     .select('lastName')
     .select('email')

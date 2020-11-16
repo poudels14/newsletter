@@ -23,6 +23,11 @@ routes.get(
   admin.listNewsletters
 );
 routes.get('/admin/runCommand', Cookies.authorizedOnly(), admin.runCommand);
+routes.get(
+  '/admin/getUserData/:userId/:command',
+  Cookies.authorizedOnly(),
+  admin.getUserData
+);
 
 /** user routes */
 routes.get(

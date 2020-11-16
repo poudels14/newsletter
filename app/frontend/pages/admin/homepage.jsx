@@ -15,7 +15,7 @@ const ContentWrapper = (props) => {
       <div css={css(`width: 250px; height: 100vh;`)}>
         <Sidebar pageId={props.pageId} />
       </div>
-      <div>{props.children}</div>
+      <div className="flex-1">{props.children}</div>
     </div>
   );
 };

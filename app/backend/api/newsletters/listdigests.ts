@@ -52,6 +52,7 @@ const queryDigests = async ({
   unread,
   isNewsletter,
   offset = 0,
+  limit = 10,
 }: Record<string, unknown>) => {
   const filter = lo.omitBy(
     {
@@ -76,13 +77,14 @@ const queryDigests = async ({
     .where(filter)
     .offset(offset)
     .orderBy('receivedDate', 'desc')
-    .limit(10);
+    .limit(limit);
 };
 
 const listDigests = async (ctxt: Context, res: Response): Promise<void> => {
   const { id: userId } = await ctxt.getAppUser();
   const filters = JSON.parse(ctxt.query.filters);
   const offset = ctxt.query.offset;
+  const limit = ctxt.query.limit || 10;
 
   const digests = await queryDigests({
     userId,
@@ -91,6 +93,7 @@ const listDigests = async (ctxt: Context, res: Response): Promise<void> => {
     isNewsletter: filters.newsletterId !== 'unknown',
     unread: filters.unreadOnly ? true : undefined,
     offset,
+    limit,
   }).then((digests) => {
     return Promise.all(
       digests.map(async (d: Record<string, unknown>) => {
