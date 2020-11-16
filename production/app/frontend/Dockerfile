@@ -27,6 +27,7 @@ ENV STATICFILES_DIRECTORY=/public/static/
 
 ARG GMAIL_API_KEY
 ARG GMAIL_CLIENT_ID
+ARG COMMIT_HASH
 
 ADD ./app .
 RUN yarn run frontend:build
