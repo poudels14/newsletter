@@ -10,7 +10,8 @@ import debounce from 'lodash/debounce';
 
 import { Actions as NewslettersActions } from '../../controllers/newsletters';
 import { connect } from 'react-redux';
-import { HighlightOutlined, MessageOutlined } from '@ant-design/icons';
+import PencilIcon from 'heroicons/outline/pencil.svg';
+import AnnotationIcon from 'heroicons/outline/annotation.svg';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import { css } from '@emotion/react';
@@ -60,7 +61,6 @@ const ActionTray = (props) => {
         color: #fff;
         text-align: center;
         border-radius: 6px;
-        padding: 8px 20px;
         z-index: 1;
         
         &::after {
@@ -75,18 +75,24 @@ const ActionTray = (props) => {
         }
       `)}
     >
-      <div css={css(` font-size: 20px; `)}>
-        <HighlightOutlined
-          onClick={props.toggleHighlight}
+      <div css={css(` font-size: 20px; `)} className="flex">
+        <div
+          className="cursor-pointer px-3 py-2"
           style={highlightStyle}
-        />
-        <div css={css(`display: inline-block; width: 20px;`)}></div>
-        <MessageOutlined
+          onClick={props.toggleHighlight}
+        >
+          <PencilIcon width="20" height="20" />
+        </div>
+        <div className="border-l border-gray-700"></div>
+        <div
+          className="cursor-pointer px-3 py-2"
           onClick={() => {
             props.setPopoverOptions({});
             alert('Coming soon!');
           }}
-        />
+        >
+          <AnnotationIcon width="20" height="20" />
+        </div>
       </div>
     </div>
   );
@@ -178,7 +184,7 @@ const SelectedTextActionPopover = ({ hidePopoverTimer, ...props }) => {
         position: absolute;
         top: ${top}px;
         left: ${left}px;
-        transform: translateX(-100%) translateY(calc(-100% - 10px));
+        transform: translateX(-50%) translateY(calc(-100% - 10px));
       `)}
       onMouseEnter={() => {
         if (hidePopoverTimer.current) {
@@ -222,19 +228,23 @@ SelectedTextActionPopover.propTypes = {
 };
 
 const buildPopoverOptions = (shadowHostContainer, range) => {
+  const shadowBoundingRect = shadowHostContainer.getBoundingClientRect();
   const boundingRect = range.getBoundingClientRect();
-  const { top, left, width } = boundingRect;
+  const {
+    top: shadowBoundingTop,
+    left: shadowBoundingLeft,
+  } = shadowBoundingRect;
+  const { top, left, right } = boundingRect;
 
   if (!isTextSelected(range)) {
     return {};
   }
 
   return {
-    top:
-      Math.round(top) +
-      shadowHostContainer.scrollTop -
-      shadowHostContainer.getBoundingClientRect().top,
-    left: Math.round(left + width / 2),
+    top: Math.round(top + shadowHostContainer.scrollTop - shadowBoundingTop),
+    left: Math.round(
+      (left + right) / 2 + shadowHostContainer.scrollLeft - shadowBoundingLeft
+    ),
     range,
   };
 };
