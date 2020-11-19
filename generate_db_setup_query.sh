@@ -14,6 +14,7 @@ cat \
     schemas/add_preview_columns_in_user_emails_table.sql \
     schemas/index_several_columns_of_user_emails_table.sql \
     schemas/add_config_column_in_user_emails.sql \
+    schemas/add_originalStyle_and_cleanStyle_columns_in_user_emails.sql \
     \
     schemas/create_email_headers.sql \
     \
