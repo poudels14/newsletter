@@ -44,7 +44,7 @@ const Highlights = ({ highlights }) => {
                   color: gray;
                 `)}
                 >
-                  {formatDate(new Date(highlight.date), 'LLL dd, yyyy')}
+                  {formatDate(highlight.date, 'LLL dd, yyyy')}
                 </div>
                 <div
                   css={css(`

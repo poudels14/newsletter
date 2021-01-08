@@ -7,6 +7,16 @@ const listDigests = async (options) => {
   return data;
 };
 
+const sortHighlightsInDescByDate = (a, b) => {
+  if (a.date > b.date) {
+    return -1;
+  }
+  if (a.date < b.date) {
+    return 1;
+  }
+  return 0;
+};
+
 const Actions = {
   POPULATE: '/newsletters/populate',
   POLL_POPULATE_STATUS: '/newsletters/populate/status/poll',
@@ -26,6 +36,8 @@ const Actions = {
 
   LOAD_HIGHLIGHTS: '/newsletters/highlights/load',
   LOAD_HIGHLIGHTS_SUCCEEDED: '/newsletters/highlights/load/succeeded',
+  ADD_HIGHLIGHT: '/newsletters/highlights/add',
+  REMOVE_HIGHLIGHT: '/newsletters/highlights/remove',
 
   // toggle publisher on sidebar
   SET_HIDDEN_PUBLISHERS: '/newsletters/sidebar/setHiddenPublishers',
@@ -83,12 +95,25 @@ const reducer = (state = {}, action) => {
       };
     }
     case Actions.LOAD_HIGHLIGHTS_SUCCEEDED: {
-      const highlights = state.highlights
-        ? state.highlights.concat(action.highlights)
-        : action.highlights;
+      const newHighlights = action.highlights.map((h) => {
+        h.date = new Date(h.date);
+        return h;
+      });
+      const highlights = (state.highlights || [])
+        .concat(newHighlights)
+        .sort(sortHighlightsInDescByDate);
       return {
         ...state,
-        highlights: highlights,
+        highlights,
+      };
+    }
+    case Actions.REMOVE_HIGHLIGHT: {
+      const highlights = state.highlights?.filter(
+        (h) => h.id !== action.highlight.id
+      );
+      return {
+        ...state,
+        highlights,
       };
     }
     case Actions.SET_HIDDEN_PUBLISHERS:
@@ -209,6 +234,48 @@ function* loadHighlightsListener() {
   });
 }
 
+function* addHighlightListener() {
+  yield takeEvery(Actions.ADD_HIGHLIGHT, function* ({ highlight }) {
+    // TODO(sagar): error handling
+    yield axios.post('/api/newsletters/highlight', {
+      action: 'highlight',
+      newsletterId: highlight.newsletterId,
+      digestId: highlight.digestId,
+      range: highlight.range,
+      highlightId: highlight.id,
+      dataset: highlight.dataset,
+      content: highlight.content,
+    });
+
+    // add highlight to the redux store
+    yield put({
+      type: Actions.LOAD_HIGHLIGHTS_SUCCEEDED,
+      highlights: [
+        {
+          id: highlight.id,
+          newsletterId: highlight.newsletterId,
+          digestId: highlight.digestId,
+          date: new Date().toISOString(),
+          content: highlight.content,
+          title: highlight.digestTitle,
+        },
+      ],
+    });
+  });
+}
+
+function* removeHighlightListener() {
+  yield takeEvery(Actions.REMOVE_HIGHLIGHT, function* ({ highlight }) {
+    // TODO(sagar): error handling
+    yield axios.post('/api/newsletters/highlight', {
+      action: 'clearHighlight',
+      highlightId: highlight.id,
+      newsletterId: highlight.newsletterId,
+      digestId: highlight.digestId,
+    });
+  });
+}
+
 function* toggleHideFromSidebarListener() {
   yield takeEvery(
     [Actions.HIDE_FROM_SIDEBAR, Actions.SHOW_IN_SIDEBAR],
@@ -245,6 +312,8 @@ function* sagas() {
     updateDigestFiltersListener(),
     loadMoreDigestsListener(),
     loadHighlightsListener(),
+    addHighlightListener(),
+    removeHighlightListener(),
     toggleHideFromSidebarListener(),
     captureSelectionChange(),
   ]);

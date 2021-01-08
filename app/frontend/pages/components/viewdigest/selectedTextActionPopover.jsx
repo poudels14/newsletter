@@ -1,10 +1,13 @@
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { css } from '@emotion/react';
-import axios from 'axios';
+import { connect } from 'react-redux';
+
 import { clearHighlight, highlight, serializeRange } from 'highlighter';
 import PencilIcon from 'heroicons/outline/pencil.svg';
 import AnnotationIcon from 'heroicons/outline/annotation.svg';
+
+import { Actions as NewslettersActions } from '../../../controllers/newsletters';
 
 const ActionTray = (props) => {
   const highlightStyle = {
@@ -73,11 +76,10 @@ const SelectedTextActionPopover = ({ hidePopoverTimer, ...props }) => {
     if (highlightId) {
       clearHighlight(`.${highlightId}`, props.shadowDom);
       // TODO(sagar): show error if the request below fails
-      axios.post('/api/newsletters/highlight', {
-        action: 'clearHighlight',
+      props.removeHighlight({
+        id: highlightId,
         newsletterId: props.newsletterId,
         digestId: props.digestId,
-        highlightId,
       });
       props.setPopoverOptions({});
     } else {
@@ -118,12 +120,12 @@ const SelectedTextActionPopover = ({ hidePopoverTimer, ...props }) => {
         .join(' ');
 
       // TODO(sagar): show error if the request below fails
-      axios.post('/api/newsletters/highlight', {
-        action: 'highlight',
+      props.addHighlight({
+        id: uniqueId,
+        digestTitle: props.digestTitle,
         newsletterId: props.newsletterId,
         digestId: props.digestId,
         range: serialized,
-        highlightId: uniqueId,
         dataset,
         content,
       });
@@ -173,6 +175,7 @@ const SelectedTextActionPopover = ({ hidePopoverTimer, ...props }) => {
 SelectedTextActionPopover.propTypes = {
   newsletterId: PropTypes.string.isRequired,
   digestId: PropTypes.string.isRequired,
+  digestTitle: PropTypes.string,
   shadowDom: PropTypes.object,
   popoverOptions: PropTypes.shape({
     top: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
@@ -182,6 +185,26 @@ SelectedTextActionPopover.propTypes = {
   }),
   setPopoverOptions: PropTypes.func.isRequired,
   hidePopoverTimer: PropTypes.object,
+
+  /** Redux props */
+  addHighlight: PropTypes.func,
+  removeHighlight: PropTypes.func,
 };
 
-export default SelectedTextActionPopover;
+/** Redux */
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    addHighlight: (highlight) => {
+      dispatch({
+        type: NewslettersActions.ADD_HIGHLIGHT,
+        highlight,
+      });
+    },
+    removeHighlight: (highlight) => {
+      dispatch({ type: NewslettersActions.REMOVE_HIGHLIGHT, highlight });
+    },
+  };
+};
+
+export default connect(null, mapDispatchToProps)(SelectedTextActionPopover);

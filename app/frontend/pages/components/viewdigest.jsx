@@ -200,6 +200,7 @@ const ViewDigest = (props) => {
           shadowDom={shadowDom.current}
           newsletterId={props.newsletterId}
           digestId={props.digestId}
+          digestTitle={props.digest?.title}
         />
       </div>
     </div>
