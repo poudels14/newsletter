@@ -32,7 +32,7 @@ type Digest = {
   receiverEmail: string;
   receivedDate: string;
   gmailId: string;
-  content: string;
+  originalContent: string;
 };
 
 type Newsletter = {
@@ -75,7 +75,7 @@ const insertEmailHeaders: InsertEmailHeaders = (emailHeaders) => {
 type InsertDigest = (digest: Digest) => Promise<unknown>;
 const insertDigest: InsertDigest = (digest) => {
   return database.query(
-    `INSERT INTO user_emails(id, newsletter_id, user_id, is_newsletter, title, receiverEmail, receivedDate, gmailId, content)
+    `INSERT INTO user_emails(id, newsletter_id, user_id, is_newsletter, title, receiverEmail, receivedDate, gmailId, originalContent)
      VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)
      ON DUPLICATE KEY UPDATE gmailId=?`,
     [
@@ -87,7 +87,7 @@ const insertDigest: InsertDigest = (digest) => {
       digest.receiverEmail,
       digest.receivedDate,
       digest.gmailId,
-      digest.content,
+      digest.originalContent,
       digest.gmailId,
     ]
   );

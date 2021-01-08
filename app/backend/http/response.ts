@@ -1,4 +1,5 @@
 interface Response {
+  set: (key: string, value: string) => void;
   send: (data: string | number) => void;
   sendStatus: (status: number) => void;
   json: (data: unknown) => void;

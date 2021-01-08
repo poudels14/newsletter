@@ -85,5 +85,10 @@ routes.get(
   Cookies.authorizedOnly(),
   newsletters.listHighlights
 );
+routes.post(
+  '/newsletters/digest/updateConfig',
+  Cookies.authorizedOnly(),
+  newsletters.updateDigestConfig
+);
 
 export { routes };

@@ -18,7 +18,9 @@ const queryDigestContent = async ({
     lo.isUndefined
   );
 
-  const rows = await knex('user_emails').select('content').where(filter);
+  const rows = await knex('user_emails')
+    .select(knex.raw('COALESCE(content, originalContent) as content'))
+    .where(filter);
   return Base64.decode(rows[0].content);
 };
 

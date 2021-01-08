@@ -9,6 +9,8 @@ import { User } from 'Repos';
 import { format as formatQuery } from 'sqlstring';
 import { rabbitmq } from 'Utils';
 
+import extractCss from '../newsletters/extractCss';
+
 const listGmailFilters = async () => {
   const rows = await knex('gmail_newsletter_filters').orderBy('id');
   return rows;
@@ -97,6 +99,16 @@ const execScript = async (ctxt: Context, res: Response): Promise<void> => {
     } else if (command === 'populate') {
       await populateForAllUsers(data as string);
       res.json({ msg: `started populating for filter: ${data}` });
+    } else if (command === 'extractCss') {
+      extractCss(
+        {
+          ...ctxt,
+          query: {
+            digestId: data,
+          },
+        },
+        res
+      );
     } else if (command === 'cloneNewsletterDigests') {
       const { fromUserId, toUserId, newsletterId } = JSON.parse(data as string);
       if (fromUserId && toUserId && newsletterId) {

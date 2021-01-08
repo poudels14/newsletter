@@ -34,6 +34,10 @@ static_resources:
                           route:
                             cluster: api_service
                         - match:
+                            prefix: /stylesheets/
+                          route:
+                            cluster: api_service
+                        - match:
                             prefix: /nl/
                           route:
                             cluster: frontend

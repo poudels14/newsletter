@@ -6,6 +6,8 @@ import express from 'express';
 import helmet from 'helmet';
 import noCache from 'nocache';
 import { routes } from './routes';
+import { newsletters } from './newsletters';
+import { Router } from 'Http';
 
 dotenv.config();
 
@@ -22,6 +24,10 @@ app.use(cors({ origin: [] }));
 app.disable('etag');
 
 app.use('/api/', routes.express);
+
+const cssRouter = new Router();
+cssRouter.get('/stylesheets/digests/:digestId.css', newsletters.getCss);
+app.get('/stylesheets/digests/:digestId.css', cssRouter.express);
 
 app.listen(port, '0.0.0.0', () => {
   console.log(`Listening at 0.0.0.0:${port}`);

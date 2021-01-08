@@ -1,9 +1,12 @@
 import { Base64 } from 'js-base64';
 import { Context } from 'Http';
-import { JSDOM } from 'jsdom';
 import { Response } from 'Http';
 import { knex } from 'Utils';
 import lo from 'lodash';
+import unified from 'unified';
+import rehypeParse from 'rehype-parse';
+import { selectAll } from 'hast-util-select';
+import toTextContent from 'hast-util-to-text';
 
 /** This will replace multiple consecutive spaces with just one space */
 /*eslint no-irregular-whitespace: ["error", { "skipRegExps": true }]*/
@@ -13,27 +16,35 @@ const singleWhiteSpacing = (str: string) => {
       /[\u00A0\u1680​\u180e\u2000-\u2009\u200a​\u200b​\u202f\u205f​\u3000]/g,
       ''
     )
-    .replace(/\s\s+/g, ' ');
+    .replace(/\s\s+/g, ' ')
+    .trim();
 };
 
 const parseAndSavePreviewData = async (digestId: string) => {
-  const rows = await knex('user_emails AS ue')
-    .select('ue.content')
+  const rows = await knex('user_emails')
+    .select('originalContent')
     .where({ id: digestId });
 
-  const digestContent = rows[0].content;
+  const digestContent = rows[0].originalContent;
 
   const html = Base64.decode(digestContent);
+  const htmlTree = unified().use(rehypeParse).parse(html);
+  let previewImage = selectAll('meta', htmlTree)
+    .filter((meta) =>
+      ['og:image', 'twitter:image'].includes(meta.properties?.property)
+    )
+    .map((meta) => meta.properties?.content);
+  if (!previewImage?.length) {
+    const imagesSrc = selectAll('img', htmlTree)
+      .filter((img) => img.properties?.width > 200)
+      .map((img) => img.properties?.src);
+    previewImage = lo.nth(imagesSrc, imagesSrc.length / 2);
+  }
 
-  const dom = new JSDOM(html);
-  const images = Array.from(
-    dom.window.document.getElementsByTagName('img')
-  ).filter((img) => img.width > 200);
-  const previewImage = lo.nth(images, images.length / 2)?.src;
-
-  const previewContent = singleWhiteSpacing(
-    dom.window.document.body.textContent
-  ).substr(0, 250);
+  const previewContent = singleWhiteSpacing(toTextContent(htmlTree)).substr(
+    0,
+    250
+  );
 
   await knex('user_emails').where({ id: digestId }).update({
     previewImage,
@@ -72,6 +83,7 @@ const queryDigests = async ({
     .select('ue.previewImage')
     .select('ue.previewContent')
     .select('ue.unread')
+    .select('ue.config')
     .leftJoin('newsletters AS n', 'n.id', 'ue.newsletter_id')
     .where('n.visible', 1)
     .where(filter)
@@ -116,6 +128,7 @@ const listDigests = async (ctxt: Context, res: Response): Promise<void> => {
           previewImage: previewImage || parsedPreviewImage,
           previewContent: previewContent || parsedPreviewContent,
           read: !d.unread,
+          config: d.config,
         };
       })
     );

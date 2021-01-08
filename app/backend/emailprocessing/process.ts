@@ -53,7 +53,7 @@ const loadAndStoreGmail = async (
       receiverEmail: headers.to,
       receivedDate: datefns.formatISO9075(new Date(headers.date)),
       gmailId: `gmail_${gmailId}`,
-      content: newsletter.base64,
+      originalContent: newsletter.base64,
     });
     await Newsletters.insertEmailHeaders({
       email_id: emailId,

@@ -28,6 +28,7 @@ const RunCommand = () => {
           <option value="addGmailFilter">Add Gmail Filter</option>
           <option value="populate">Populate</option>
           <option value="cloneNewsletterDigests">Clone Newsletters</option>
+          <option value="extractCss">Extract Css</option>
         </select>
         <input
           type="text"

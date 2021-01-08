@@ -6,6 +6,8 @@ import listNewsletters from './listnewsletters';
 import listVerifiedNewsletters from './listverifiednewsletters';
 import populate from './populate';
 import viewNewsletter from './viewnewsletter';
+import updateDigestConfig from './updateDigestConfig';
+import getCss from './getCss';
 
 const newsletters = {
   populate,
@@ -16,6 +18,8 @@ const newsletters = {
   viewNewsletter,
   highlight,
   listHighlights,
+  updateDigestConfig,
+  getCss,
 };
 
 export { newsletters };
