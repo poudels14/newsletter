@@ -48,7 +48,7 @@ const loadAndStoreGmail = async (
       id: emailId,
       newsletterId,
       userId,
-      isNewsetter: visible,
+      isNewsetter: newsletter.base64 && visible,
       title: headers.subject,
       receiverEmail: headers.to,
       receivedDate: datefns.formatISO9075(new Date(headers.date)),
