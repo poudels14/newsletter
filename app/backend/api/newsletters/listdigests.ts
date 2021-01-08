@@ -29,23 +29,24 @@ const parseAndSavePreviewData = async (digestId: string) => {
 
   const html = Base64.decode(digestContent);
   const htmlTree = unified().use(rehypeParse).parse(html);
-  let previewImage = selectAll('meta', htmlTree)
+  let previewImages = selectAll('meta', htmlTree)
     .filter((meta) =>
       ['og:image', 'twitter:image'].includes(meta.properties?.property)
     )
     .map((meta) => meta.properties?.content);
-  if (!previewImage?.length) {
-    const imagesSrc = selectAll('img', htmlTree)
+  if (previewImages.length < 1) {
+    previewImages = selectAll('img', htmlTree)
       .filter((img) => img.properties?.width > 200)
       .map((img) => img.properties?.src);
-    previewImage = lo.nth(imagesSrc, imagesSrc.length / 2);
   }
 
+  const previewImage = lo.nth(previewImages, previewImages.length / 2);
   const previewContent = singleWhiteSpacing(toTextContent(htmlTree)).substr(
     0,
     250
   );
 
+  // TODO(sagar): I am not convinced using knex prevents SQL injection. make sure that's the case
   await knex('user_emails').where({ id: digestId }).update({
     previewImage,
     previewContent,
