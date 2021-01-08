@@ -37,10 +37,10 @@ secretGenerator:
 images:
   - name: envoyproxy
     newName: envoyproxy/envoy
-    newTag: v1.14.2
+    newTag: v1.16.0
   - name: mysql
     newName: mysql
-    newTag: "8.0"
+    newTag: "8.0.22"
   - name: rabbitmq
     newName: rabbitmq
     newTag: 3.8.9-management-alpine
