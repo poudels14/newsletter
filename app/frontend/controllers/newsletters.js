@@ -42,9 +42,14 @@ const reducer = (state = {}, action) => {
     }
     case Actions.LOAD_PUBLISHERS_SUCCEEDED: {
       const { publishers } = action;
+      const publisherById = publishers.reduce((agg, publisher) => {
+        agg[publisher.id] = publisher;
+        return agg;
+      }, {});
       return {
         ...state,
         publishers,
+        publisherById,
       };
     }
     case Actions.SET_INITIAL_DIGEST_FILTERS: {

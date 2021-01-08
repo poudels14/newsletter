@@ -11,10 +11,10 @@ import Switch from 'ui/Switch';
 
 const DigestList = (props) => {
   const selectedNewsletter = useMemo(() => {
-    return props.newsletters?.filter(
+    return props.publishers?.filter(
       (n) => n.id == props.digestFilters?.newsletterId
     )[0];
-  }, [props.newsletters, props.digestFilters?.newsletterId]);
+  }, [props.publishers, props.digestFilters?.newsletterId]);
 
   const toggleUnreadOnly = useCallback(
     (checked) => {
@@ -150,15 +150,24 @@ const DigestList = (props) => {
                     `)}
                   >
                     <div
-                      className={classnames({
-                        'unread font-bold': !digest.read,
-                      })}
                       css={css(`
                         font-size: 19px;
                         margin-bottom: 0;
                       `)}
                     >
                       {digest.title}
+                    </div>
+                    <div
+                      className={classnames({
+                        'unread font-bold': !digest.read,
+                      })}
+                      css={css(`
+                        font-size: 15px;
+                        margin-bottom: 0;
+                      `)}
+                    >
+                      {props.publisherById &&
+                        props.publisherById[digest.newsletterId]?.name}
                     </div>
                     <div css={css(`font-size: 11px;`)}>
                       {formatDate(
@@ -201,7 +210,8 @@ const DigestList = (props) => {
 DigestList.propTypes = {
   className: PropTypes.string,
   /** Redux */
-  newsletters: PropTypes.array,
+  publishers: PropTypes.array,
+  publisherById: PropTypes.object,
   digestFilters: PropTypes.object,
   digests: PropTypes.array,
   loadMoreDigests: PropTypes.func,
@@ -212,9 +222,10 @@ DigestList.propTypes = {
 const mapStateToProps = (state) => {
   const { newsletters } = state;
   return {
-    newsletters: newsletters?.publishers,
+    publishers: newsletters?.publishers,
     digestFilters: newsletters?.digestFilters,
     digests: newsletters?.digests,
+    publisherById: newsletters?.publisherById || {},
   };
 };
 
