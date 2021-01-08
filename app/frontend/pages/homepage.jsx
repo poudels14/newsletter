@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
-import { CloseCircleOutlined } from '@ant-design/icons';
+import CloseCircleIcon from 'heroicons/outline/x-circle.svg';
 import { DigestList } from './components/digestlist';
 import Highlights from './components/highlights';
 import Modal from 'react-modal';
@@ -52,11 +52,13 @@ const Homepage = (props) => {
           </div>
         )}
       </div>
-      <CloseCircleOutlined
+      <CloseCircleIcon
         css={css(`
+          width: 45px;
+          height: 45px;
           position: fixed;
-          top: 2px;
-          right: 5px;
+          top: 0px;
+          right: 4px;
           z-index: 9999;
           background: white;
           border-radius: 22px;

@@ -2,6 +2,7 @@ import React, { useCallback, useMemo } from 'react';
 
 import { Link } from 'react-router-dom';
 import { Actions as NewslettersActions } from '../../controllers/newsletters';
+import PublisherInfo from './digestlist/publisherinfo';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
@@ -57,31 +58,13 @@ const DigestList = (props) => {
           toggle={toggleUnreadOnly}
           checkedChildren="Unread Only"
           unCheckedChildren="All"
+          unCheckedClassName="bg-blue-600 border-blue-600"
+          checkedClassName="bg-blue-600"
+          unCheckedKnobClassName="bg-white"
+          checkedKnobClassName="bg-white"
         />
       </div>
-      {selectedNewsletter && (
-        <div
-          css={css(`
-            padding: 10px 20px;
-          `)}
-        >
-          <div
-            css={css(`
-              font-size: 18px;
-              font-weight: 700;
-            `)}
-          >
-            {selectedNewsletter.authorName}
-          </div>
-          <div
-            css={css(`
-              font-size: 15px;
-            `)}
-          >
-            {selectedNewsletter.authorEmail}
-          </div>
-        </div>
-      )}
+      {selectedNewsletter && <PublisherInfo publisher={selectedNewsletter} />}
       <div
         css={css(`
           padding: 10px 10px;
@@ -166,8 +149,8 @@ const DigestList = (props) => {
                         margin-bottom: 0;
                       `)}
                     >
-                      {props.publisherById &&
-                        props.publisherById[digest.newsletterId]?.name}
+                      {props.publishersById &&
+                        props.publishersById[digest.newsletterId]?.name}
                     </div>
                     <div css={css(`font-size: 11px;`)}>
                       {formatDate(
@@ -211,7 +194,7 @@ DigestList.propTypes = {
   className: PropTypes.string,
   /** Redux */
   publishers: PropTypes.array,
-  publisherById: PropTypes.object,
+  publishersById: PropTypes.object,
   digestFilters: PropTypes.object,
   digests: PropTypes.array,
   loadMoreDigests: PropTypes.func,
@@ -225,7 +208,7 @@ const mapStateToProps = (state) => {
     publishers: newsletters?.publishers,
     digestFilters: newsletters?.digestFilters,
     digests: newsletters?.digests,
-    publisherById: newsletters?.publisherById || {},
+    publishersById: newsletters?.publishersById || {},
   };
 };
 

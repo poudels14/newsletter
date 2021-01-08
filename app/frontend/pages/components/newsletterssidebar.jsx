@@ -6,8 +6,23 @@ import SettingsIcon from 'heroicons/outline/cog.svg';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
 import { css } from '@emotion/react';
+import DownArrorIcon from 'heroicons/outline/chevron-down.svg';
+import RightArrowIcon from 'heroicons/outline/chevron-right.svg';
+import toggleState from 'utils/toggleState';
 
-const Button = ({ id, name, authorEmail, totalUnread, active }) => {
+const sortPublisherByName = (a, b) => {
+  var nameA = a.name?.toLowerCase();
+  var nameB = b.name?.toLowerCase();
+  if (nameA < nameB) {
+    return -1;
+  }
+  if (nameA > nameB) {
+    return 1;
+  }
+  return 0;
+};
+
+const TabButton = ({ id, name, authorEmail, totalUnread, active }) => {
   return (
     <Link
       to={`/nl/${id}`}
@@ -46,7 +61,7 @@ const Button = ({ id, name, authorEmail, totalUnread, active }) => {
     </Link>
   );
 };
-Button.propTypes = {
+TabButton.propTypes = {
   id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   authorEmail: PropTypes.string,
@@ -54,12 +69,58 @@ Button.propTypes = {
   active: PropTypes.bool,
 };
 
-const NewslettersSidebar = (props) => {
+const HiddenPublishers = (props) => {
+  const publishers = props.publishers
+    .map((publisherId) => props.publishersById[publisherId])
+    .sort(sortPublisherByName);
+  const [expanded, toggleExpanded] = toggleState(false);
+  const HiddenIcon = expanded ? DownArrorIcon : RightArrowIcon;
   return (
-    <div width={props.width} className="newsletters-sidebar">
+    <div>
+      <div
+        className={
+          'cursor-default select-none border-gray-400 font-bold space-x-1'
+        }
+        css={css(`
+          padding: 5px 14px;
+        `)}
+        onClick={toggleExpanded}
+      >
+        <HiddenIcon width="16" height="16" className="inline" />
+        <span>Hidden Newsletters</span>
+      </div>
+      {expanded && (
+        <div className="border-b border-gray-400">
+          {publishers.map((publisher, i) => {
+            return (
+              <TabButton
+                {...publisher}
+                key={i}
+                active={props.selectedNewsletterId === publisher.id}
+              />
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+};
+HiddenPublishers.propTypes = {
+  selectedNewsletterId: PropTypes.string,
+  publishers: PropTypes.array,
+  publishersById: PropTypes.object,
+};
+
+const NewslettersSidebar = (props) => {
+  const hiddenPublishers = new Set(props.hiddenPublishers);
+  const visiblePublishers = props.publishers
+    ?.filter((p) => !hiddenPublishers.has(p.id))
+    .sort(sortPublisherByName);
+  return (
+    <div width={props.width} className="newsletters-sidebar space-y-5 pb-20">
       <div
         css={css(`
-          padding: 15px 14px;
+          padding: 15px 14px 0 14px;
         `)}
         className="font-bold text-blue-900 text-base leading-4"
       >
@@ -80,28 +141,33 @@ const NewslettersSidebar = (props) => {
         </Link>
       </div>
       {props.publishers && (
-        <>
-          <Button
+        <div className="border-b border-gray-400">
+          <TabButton
             id=""
             name="All"
             active={props.selectedNewsletterId === undefined}
           />
-          {props.publishers.map((publisher, i) => {
+          {visiblePublishers.map((publisher, i) => {
             return (
-              <Button
+              <TabButton
                 {...publisher}
                 key={i}
                 active={props.selectedNewsletterId === publisher.id}
               />
             );
           })}
-          <Button
+          <TabButton
             id="unknown"
-            name="Unknown"
+            name="Un-recognized"
             active={props.selectedNewsletterId === 'unknown'}
           />
-        </>
+        </div>
       )}
+      <HiddenPublishers
+        selectedNewsletterId={props.selectedNewsletterId}
+        publishers={props.hiddenPublishers}
+        publishersById={props.publishersById}
+      />
     </div>
   );
 };
@@ -113,6 +179,8 @@ NewslettersSidebar.propTypes = {
   user: PropTypes.object,
   selectedNewsletterId: PropTypes.string,
   publishers: PropTypes.array,
+  publishersById: PropTypes.object,
+  hiddenPublishers: PropTypes.array,
 };
 
 /** Redux */
@@ -123,6 +191,8 @@ const mapStateToProps = (state) => {
     user: account?.user,
     selectedNewsletterId: newsletters?.digestFilters?.newsletterId,
     publishers: newsletters?.publishers,
+    publishersById: newsletters?.publishersById || {},
+    hiddenPublishers: newsletters.hiddenPublishers || [],
   };
 };
 

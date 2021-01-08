@@ -5,6 +5,10 @@ import PropTypes from 'prop-types';
 
 const Switch = ({
   className,
+  checkedClassName,
+  unCheckedClassName,
+  checkedKnobClassName,
+  unCheckedKnobClassName,
   checked,
   checkedChildren,
   unCheckedChildren,
@@ -13,7 +17,8 @@ const Switch = ({
   return (
     <button
       className={classnames(
-        'relative border select-none rounded-full focus:outline-none focus:shadow-outline bg-blue-800 border-blue-800',
+        'relative border select-none rounded-full focus:outline-none focus:shadow-outline',
+        checked ? checkedClassName : unCheckedClassName,
         className
       )}
       css={css(`
@@ -25,7 +30,8 @@ const Switch = ({
     >
       <div
         className={classnames(
-          'absolute inline-block rounded-full bg-white transition-all duration-300 ease-in-out'
+          'absolute inline-block rounded-full transition-all duration-300 ease-in-out',
+          checked ? checkedKnobClassName : unCheckedKnobClassName
         )}
         css={css(`
           height: 20px;
@@ -48,6 +54,10 @@ const Switch = ({
 };
 Switch.propTypes = {
   className: PropTypes.string,
+  checkedClassName: PropTypes.string,
+  unCheckedClassName: PropTypes.string,
+  checkedKnobClassName: PropTypes.string,
+  unCheckedKnobClassName: PropTypes.string,
   checked: PropTypes.bool,
   checkedChildren: PropTypes.any,
   unCheckedChildren: PropTypes.any,

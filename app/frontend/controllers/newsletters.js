@@ -27,6 +27,11 @@ const Actions = {
   LOAD_HIGHLIGHTS: '/newsletters/highlights/load',
   LOAD_HIGHLIGHTS_SUCCEEDED: '/newsletters/highlights/load/succeeded',
 
+  // toggle publisher on sidebar
+  SET_HIDDEN_PUBLISHERS: '/newsletters/sidebar/setHiddenPublishers',
+  HIDE_FROM_SIDEBAR: '/newsletters/sidebar/publisher/hide',
+  SHOW_IN_SIDEBAR: '/newsletters/sidebar/publisher/show',
+
   ATTACH_SELECTION_CHANGE_LISTENER:
     '/newsletters/viewdigest/attach/selectionchange',
 };
@@ -42,14 +47,14 @@ const reducer = (state = {}, action) => {
     }
     case Actions.LOAD_PUBLISHERS_SUCCEEDED: {
       const { publishers } = action;
-      const publisherById = publishers.reduce((agg, publisher) => {
+      const publishersById = publishers.reduce((agg, publisher) => {
         agg[publisher.id] = publisher;
         return agg;
       }, {});
       return {
         ...state,
         publishers,
-        publisherById,
+        publishersById,
       };
     }
     case Actions.SET_INITIAL_DIGEST_FILTERS: {
@@ -84,6 +89,29 @@ const reducer = (state = {}, action) => {
       return {
         ...state,
         highlights: highlights,
+      };
+    }
+    case Actions.SET_HIDDEN_PUBLISHERS:
+      return {
+        ...state,
+        hiddenPublishers: action.hiddenPublishers,
+      };
+    case Actions.HIDE_FROM_SIDEBAR: {
+      const hiddenPublishers = (state.hiddenPublishers || []).concat([
+        action.publisherId,
+      ]);
+      return {
+        ...state,
+        hiddenPublishers,
+      };
+    }
+    case Actions.SHOW_IN_SIDEBAR: {
+      const hiddenPublishers = (state.hiddenPublishers || []).filter(
+        (pId) => pId !== action.publisherId
+      );
+      return {
+        ...state,
+        hiddenPublishers,
       };
     }
     default:
@@ -181,6 +209,20 @@ function* loadHighlightsListener() {
   });
 }
 
+function* toggleHideFromSidebarListener() {
+  yield takeEvery(
+    [Actions.HIDE_FROM_SIDEBAR, Actions.SHOW_IN_SIDEBAR],
+    function* () {
+      const hiddenPublishers = yield select(
+        (state) => state.newsletters?.hiddenPublishers
+      );
+      yield axios.post('/api/account/updateSettings', {
+        settings: { hiddenPublishers },
+      });
+    }
+  );
+}
+
 function* captureSelectionChange() {
   const globalListener = { current: null };
   document.addEventListener('selectionchange', () => {
@@ -203,6 +245,7 @@ function* sagas() {
     updateDigestFiltersListener(),
     loadMoreDigestsListener(),
     loadHighlightsListener(),
+    toggleHideFromSidebarListener(),
     captureSelectionChange(),
   ]);
 }

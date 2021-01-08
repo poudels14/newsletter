@@ -26,6 +26,11 @@ function* loadListener() {
   yield takeEvery(Actions.LOAD, function* () {
     const { data: user } = yield axios.get('/api/account/profile');
 
+    yield put({
+      type: NewsletterActions.SET_HIDDEN_PUBLISHERS,
+      hiddenPublishers: user?.settings?.hiddenPublishers,
+    });
+
     // Note(sagar): since user.settings contains digestFilters, update the newsletters filter after profile is loaded
     yield put({
       type: NewsletterActions.SET_INITIAL_DIGEST_FILTERS,
