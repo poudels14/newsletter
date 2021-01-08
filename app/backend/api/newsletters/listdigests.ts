@@ -88,6 +88,7 @@ const queryDigests = async ({
     .leftJoin('newsletters AS n', 'n.id', 'ue.newsletter_id')
     .where('n.visible', 1)
     .where(filter)
+    .whereNotNull('ue.originalContent')
     .offset(offset)
     .orderBy('receivedDate', 'desc')
     .limit(limit);
