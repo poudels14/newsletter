@@ -1,5 +1,5 @@
 import React, { lazy, useMemo, useEffect } from 'react';
-import { Redirect, Switch, useRouteMatch } from 'react-router-dom';
+import { Redirect, Switch, matchPath, withRouter } from 'react-router-dom';
 import { Actions as AccountActions } from './controllers/account';
 import { Homepage } from './pages/homepage';
 import PropTypes from 'prop-types';
@@ -33,14 +33,14 @@ const getDeviceType = () => {
   );
 };
 
-const useAppRoutes = () => {
-  let homepage = useRouteMatch({
+const appRoutes = (path) => {
+  let homepage = matchPath(path, {
     path: ['/nl/:newsletterId?', '/'],
   });
-  let settings = useRouteMatch({
+  let settings = matchPath(path, {
     path: ['/settings'],
   });
-  let highlights = useRouteMatch({
+  let highlights = matchPath(path, {
     path: ['/highlights'],
   });
   const activeTab = useMemo(() => {
@@ -64,17 +64,33 @@ const useAppRoutes = () => {
 const NotFoundPage = () => <div>404 Not found</div>;
 
 const PrivateApp = (props) => {
-  const routes = useAppRoutes();
+  const routes = appRoutes(props.location.pathname);
+  const query = new URLSearchParams(props.location.search);
+  const digestId = query.get('digestId');
 
   useEffect(() => {
-    props.setPublisher(routes.homepage?.params?.newsletterId);
-  }, [routes.homepage?.params?.newsletterId]);
+    // Note(sagar): newsletterId changes when viewing a digest from homepage
+    //              so, only update publisher when user isn't viewing the digest
+    //              and either the digest isn't loaded (first load) or the publisher
+    //              tab changed
+    const newPublisher = routes.homepage?.params?.newsletterId;
+    if (
+      !props.digestsLoaded ||
+      (props.selectedPublisher !== newPublisher && !digestId)
+    ) {
+      props.setPublisher(newPublisher);
+    }
+  }, [routes.homepage?.params?.newsletterId, digestId]);
 
   return (
     <>
       <Switch>
         {routes.homepage?.isExact && (
-          <Homepage publisher={routes.homepage?.params?.newsletterId} />
+          <Homepage
+            publisher={routes.homepage?.params?.newsletterId}
+            digestId={digestId}
+            history={props.history}
+          />
         )}
         {routes.settings && <Settings />}
         {routes.highlights && <Highlights />}
@@ -85,17 +101,24 @@ const PrivateApp = (props) => {
   );
 };
 PrivateApp.propTypes = {
+  /** React router props */
+  location: PropTypes.object,
+  history: PropTypes.object,
   /** Redux */
   user: PropTypes.object,
   deviceType: PropTypes.object,
+  digestsLoaded: PropTypes.bool,
+  selectedPublisher: PropTypes.string,
   setDeviceType: PropTypes.func,
   setPublisher: PropTypes.func,
 };
 const mapStateToProps = (state) => {
-  const { account } = state;
+  const { account, device, newsletters } = state;
   return {
     user: account?.user,
-    deviceType: state?.device?.type,
+    deviceType: device?.type,
+    digestsLoaded: newsletters?.digests?.length > 0,
+    selectedPublisher: newsletters?.digestFilters?.newsletterId,
   };
 };
 const mapDispatchToProps = (dispatch) => {
@@ -107,10 +130,9 @@ const mapDispatchToProps = (dispatch) => {
       }),
   };
 };
-const ConnectedPrivateApp = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PrivateApp);
+const ConnectedPrivateApp = withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(PrivateApp)
+);
 
 const AppContainer = (props) => {
   const deviceType = getDeviceType();

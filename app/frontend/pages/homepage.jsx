@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect } from 'react';
-import { withRouter } from 'react-router-dom';
 import { CloseCircleOutlined } from '@ant-design/icons';
 import { DigestList } from './components/digestlist';
 import Highlights from './components/highlights';
@@ -14,9 +13,6 @@ import { css } from '@emotion/react';
 import { Actions as NewsletterActions } from '../controllers/newsletters';
 
 const Homepage = (props) => {
-  const query = new URLSearchParams(props.location.search);
-  const digestId = query.get('digestId');
-
   const closeDialog = useCallback(() => {
     props.history.goBack();
   }, [props.history]);
@@ -26,7 +22,7 @@ const Homepage = (props) => {
   }, []);
 
   return (
-    <div className="h-full overflow-y-scroll">
+    <div>
       <div className="homepage flex">
         {!props.deviceType?.mobile && (
           <div
@@ -70,25 +66,23 @@ const Homepage = (props) => {
             right: 10px;
           }
         `)}
-        style={{ display: digestId !== null ? 'block' : 'none' }}
+        style={{ display: props.digestId ? 'block' : 'none' }}
         onClick={closeDialog}
       />
       <Modal
-        isOpen={digestId !== null}
+        isOpen={!!props.digestId}
         onRequestClose={closeDialog}
         contentLabel="Digest Modal"
+        bodyOpenClassName="overflow-hidden"
         css={css(`
           position: absolute;
-          top: 10px;
-          left: 10px;
-          right: 10px;
-          bottom: 10px;
-          padding: 20px 10px 20px 10px;
+          top: 0px;
+          left: 0px;
+          right: 0px;
+          bottom: 0px;
+          // padding: 20px 0 0 0;
           @media (max-width: 425px) {
             top: 40px;
-            left: 0px;
-            right: 0px;
-            bottom: 0px;
             padding: 0px;
           }
           border: 1px solid rgb(204, 204, 204);
@@ -98,18 +92,19 @@ const Homepage = (props) => {
           outline: none;
         `)}
       >
-        {digestId && (
-          <ViewDigest newsletterId={props.publisher} digestId={digestId} />
+        {props.digestId && (
+          <ViewDigest
+            newsletterId={props.publisher}
+            digestId={props.digestId}
+          />
         )}
       </Modal>
     </div>
   );
 };
 Homepage.propTypes = {
+  digestId: PropTypes.string,
   publisher: PropTypes.string,
-  /** withRouter props */
-  match: PropTypes.object.isRequired,
-  location: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
   /** Redux props */
   deviceType: PropTypes.object,
@@ -128,8 +123,9 @@ const mapDispatchToProps = (dispatch) => {
     loadPublishers: () => dispatch({ type: NewsletterActions.LOAD_PUBLISHERS }),
   };
 };
-const connectedHomepage = withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(Homepage)
-);
+const connectedHomepage = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Homepage);
 
 export { connectedHomepage as Homepage };
