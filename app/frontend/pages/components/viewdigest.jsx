@@ -72,7 +72,8 @@ const loadAndShowDigest = (
   digestId,
   hidePopoverTimer,
   setPopoverOptions,
-  scrollToHighlightId
+  scrollToHighlightId,
+  markDigestAsRead
 ) => {
   axios
     .get(`/api/newsletters/view/${newsletterId}/${digestId}`)
@@ -104,6 +105,8 @@ const loadAndShowDigest = (
           inline: 'nearest',
         });
       }
+
+      markDigestAsRead(digestId);
     });
 };
 
@@ -151,7 +154,8 @@ const ViewDigest = (props) => {
       props.digestId,
       hidePopoverTimer,
       setPopoverOptions,
-      scrollToHighlightId
+      scrollToHighlightId,
+      props.markDigestAsRead
     );
   }, [props.newsletterId, props.digestId, shadowHost]);
 
@@ -216,6 +220,7 @@ ViewDigest.propTypes = {
   readerConfig: PropTypes.object,
   updateReaderConfig: PropTypes.func,
   attachSelectionChangeListener: PropTypes.func,
+  markDigestAsRead: PropTypes.func,
 };
 
 /** Redux */
@@ -245,6 +250,11 @@ const mapDispatchToProps = (dispatch) => {
       dispatch({
         type: NewslettersActions.ATTACH_SELECTION_CHANGE_LISTENER,
         listener,
+      }),
+    markDigestAsRead: (id) =>
+      dispatch({
+        type: NewslettersActions.MARK_DIGEST_AS_READ,
+        id,
       }),
   };
 };

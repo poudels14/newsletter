@@ -34,6 +34,8 @@ const Actions = {
   LOAD_DIGESTS_FAILED: '/newsletters/digests/load/failed',
   LOAD_MORE_DIGESTS: '/newsletters/digests/load/more',
 
+  MARK_DIGEST_AS_READ: '/newsletters/digest/markasread',
+
   LOAD_HIGHLIGHTS: '/newsletters/highlights/load',
   LOAD_HIGHLIGHTS_SUCCEEDED: '/newsletters/highlights/load/succeeded',
   ADD_HIGHLIGHT: '/newsletters/highlights/add',
@@ -92,6 +94,18 @@ const reducer = (state = {}, action) => {
       return {
         ...state,
         digests: state.digests ? state.digests.concat(digests) : digests,
+      };
+    }
+    case Actions.MARK_DIGEST_AS_READ: {
+      const digests = state.digests?.map((d) => {
+        if (d.id === action.id) {
+          d.read = true;
+        }
+        return d;
+      });
+      return {
+        ...state,
+        digests,
       };
     }
     case Actions.LOAD_HIGHLIGHTS_SUCCEEDED: {
