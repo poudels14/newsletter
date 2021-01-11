@@ -58,8 +58,8 @@ const DigestList = (props) => {
           toggle={toggleUnreadOnly}
           checkedChildren="Unread Only"
           unCheckedChildren="All"
-          unCheckedClassName="bg-blue-600 border-blue-600"
-          checkedClassName="bg-blue-600"
+          unCheckedClassName="bg-blue-500 border-blue-500"
+          checkedClassName="bg-blue-500"
           unCheckedKnobClassName="bg-white"
           checkedKnobClassName="bg-white"
         />
@@ -174,7 +174,7 @@ const DigestList = (props) => {
         {shouldShowLoadMore && (
           <div>
             <button
-              className="w-full py-2 bg-gray-100 text-sm rounded border hover:bg-gray-300"
+              className="w-full py-2 bg-gray-100 text-sm rounded border hover:bg-gray-200"
               onClick={() =>
                 props.loadMoreDigests({
                   offset: props.digests.length,

@@ -1,3 +1,5 @@
+const colors = require('tailwindcss/colors');
+
 module.exports = {
   future: {
     // removeDeprecatedGapUtilities: true,
@@ -6,6 +8,10 @@ module.exports = {
   purge: ['./frontend/**/*.html', './frontend/**/*.jsx'],
   theme: {
     extend: {
+      colors: {
+        gray: colors.coolGray,
+        blueGray: colors.blueGray,
+      },
       spacing: {
         '9/2': '1.125rem',
       },
@@ -17,5 +23,5 @@ module.exports = {
   variants: {
     display: ['focus', 'group-focus', 'group-hover', 'focus-within'],
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/forms')],
 };

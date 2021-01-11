@@ -37,9 +37,9 @@ const TabButton = ({ id, name, authorEmail, totalUnread, active }) => {
     >
       <div
         className={classnames(
-          'tab-menu-item  hover:bg-gray-200 border-t border-gray-400',
+          'tab-menu-item hover:bg-gray-100 border-t border-gray-100',
           {
-            'active text-gray-900 bg-gray-300': active,
+            'active text-gray-900 bg-gray-200': active,
           }
         )}
         css={css(`
@@ -52,7 +52,7 @@ const TabButton = ({ id, name, authorEmail, totalUnread, active }) => {
             css={css(`
               font-size: 11px;
             `)}
-            className="bg-gray-200 px-1 rounded-sm ml-3 inline-block text-center align-middle"
+            className="bg-gray-100 px-1 rounded-sm ml-3 inline-block text-center align-middle"
           >
             {totalUnread}
           </div>
@@ -78,9 +78,7 @@ const HiddenPublishers = (props) => {
   return (
     <div>
       <div
-        className={
-          'cursor-default select-none border-gray-400 font-bold space-x-1'
-        }
+        className={'cursor-default select-none font-bold space-x-1'}
         css={css(`
           padding: 5px 14px;
         `)}
@@ -90,7 +88,7 @@ const HiddenPublishers = (props) => {
         <span>Hidden Newsletters</span>
       </div>
       {expanded && (
-        <div className="border-b border-gray-400">
+        <div className="border-b border-gray-100">
           {publishers.map((publisher, i) => {
             return (
               <TabButton
@@ -122,7 +120,7 @@ const NewslettersSidebar = (props) => {
         css={css(`
           padding: 15px 14px 0 14px;
         `)}
-        className="font-bold text-blue-900 text-base leading-4"
+        className="font-bold text-blueGray-800 text-base leading-4"
       >
         <span className="align-middle">
           {props.user?.firstName} {props.user?.lastName}
@@ -141,7 +139,7 @@ const NewslettersSidebar = (props) => {
         </Link>
       </div>
       {props.publishers && (
-        <div className="border-b border-gray-400">
+        <div className="border-b border-gray-100">
           <TabButton
             id=""
             name="All"

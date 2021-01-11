@@ -124,7 +124,7 @@ const ArticleHeader = ({
 
   return (
     <div
-      className="sticky top-0 py-2 bg-white border-b border-gray-400"
+      className="sticky top-0 py-2 bg-white border-b border-gray-300"
       css={css(`z-index: 9999999;`)}
     >
       <div className="flex" css={css(`max-width: 800px; margin: auto;`)}>

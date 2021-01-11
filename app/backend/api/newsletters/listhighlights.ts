@@ -14,7 +14,7 @@ const queryHighlights = async (filters: Record<string, unknown>) => {
     .leftJoin('user_emails AS ue', 'ue.id', 'h.digest_id')
     .where(filters)
     .orderBy('date', 'desc')
-    .limit(50);
+    .limit(100);
 };
 
 const listHighlights = async (ctxt: Context, res: Response): Promise<void> => {

@@ -26,7 +26,7 @@ const Homepage = (props) => {
       <div className="homepage flex">
         {!props.deviceType?.mobile && (
           <div
-            className="shadow bg-white text-gray-800"
+            className="shadow bg-white h-screen custom-scrollbar"
             css={css(`
               width: 250px;
             `)}
@@ -34,7 +34,7 @@ const Homepage = (props) => {
             <NewslettersSidebar />
           </div>
         )}
-        <div className="flex-1">
+        <div className="flex-1 h-screen custom-thicker-scrollbar">
           {/* Note(sagar) This will only show in mobile devices */}
           {props.deviceType?.mobile && <NewslettersDropdown />}
           <PopulateNewslettersStatusBar />

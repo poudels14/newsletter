@@ -41,9 +41,9 @@ const PublisherInfo = ({ publisher, hiddenFromSidebar, ...props }) => {
           checked={hiddenFromSidebar}
           toggle={toggleHideFromSidebar}
           checkedClassName="bg-gray-600"
-          unCheckedClassName="border-gray-600"
+          unCheckedClassName="border-gray-500"
           checkedKnobClassName="bg-white"
-          unCheckedKnobClassName="bg-gray-600"
+          unCheckedKnobClassName="bg-gray-500"
         />
       </div>
     </div>
