@@ -8,6 +8,7 @@ import ReactDOM from 'react-dom';
 
 import './style.css';
 const App = lazy(() => import('./app'));
+const Integrations = lazy(() => import('./pages/integrations'));
 const RequestGmailAccess = lazy(() => import('./pages/requestgmailaccess'));
 const AdminHomepage = lazy(() => import('./pages/admin/homepage'));
 const VerifiedNewsletters = lazy(() => import('./pages/verifiednewsletters'));
@@ -25,6 +26,12 @@ const Pages = () => {
             path="/grantaccess"
             render={() => {
               return <RequestGmailAccess />;
+            }}
+          />
+          <Route
+            path="/integrations"
+            render={() => {
+              return <Integrations />;
             }}
           />
           <Route

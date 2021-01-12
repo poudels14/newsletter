@@ -22,6 +22,7 @@ module.exports = {
   },
   variants: {
     display: ['focus', 'group-focus', 'group-hover', 'focus-within'],
+    opacity: ['disabled'],
   },
   plugins: [require('@tailwindcss/forms')],
 };

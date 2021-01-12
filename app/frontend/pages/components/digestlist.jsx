@@ -90,7 +90,7 @@ const DigestList = (props) => {
             return (
               <Link
                 key={digest.id}
-                to={`/nl/${digest.newsletterId}/?digestId=${digest.id}`}
+                to={`/nl/${digest.newsletterId}/digests/${digest.id}`}
                 css={css(`color: inherit;`)}
               >
                 <div

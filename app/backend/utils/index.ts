@@ -5,6 +5,7 @@ import GmailParser from './gmailparser';
 import type { Connection as MysqlConnection } from './mysql';
 import { crypto } from './crypto';
 import rabbitmq from './rabbitmq';
+import readwise from './readwise';
 
 export type { MysqlConnection };
-export { database, knex, crypto, rabbitmq, Gmail, GmailParser };
+export { database, knex, crypto, rabbitmq, Gmail, GmailParser, readwise };

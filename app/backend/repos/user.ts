@@ -11,6 +11,7 @@ type User = {
   isAdmin?: boolean;
   settings?: string;
   mailgunEmailId?: string;
+  readwiseToken?: string;
 };
 
 const ADMIN_EMAILS = ['poudels14@gmail.com'];
@@ -107,6 +108,19 @@ const clearRefreshToken: ClearRefreshToken = async (userId) => {
     });
 };
 
+type SetReadwiseAccessToken = (
+  userId: string,
+  accessToken: string
+) => Promise<void>;
+const setReadwiseAccessToken: SetReadwiseAccessToken = async (
+  userId,
+  readwiseToken
+) => {
+  return await knex('users').where({ id: userId }).update({
+    readwiseToken,
+  });
+};
+
 export type { User };
 export {
   getById,
@@ -115,4 +129,5 @@ export {
   update,
   updateSettings,
   clearRefreshToken,
+  setReadwiseAccessToken,
 };

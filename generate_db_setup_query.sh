@@ -9,6 +9,7 @@ cat \
     schemas/add_settings_column_in_users.sql \
     schemas/add_populate_status_columns_in_users.sql \
     schemas/add_mailgun_columns_in_users.sql \
+    schemas/add_readwise_token_column_in_users.sql \
     \
     schemas/create_user_emails_table.sql \
     schemas/add_preview_columns_in_user_emails_table.sql \
@@ -23,6 +24,7 @@ cat \
     schemas/populate_gmail_newsletter_filters.sql \
     \
     schemas/create_highlights_table.sql \
+    schemas/add_readwise_id_column_in_highlights.sql \
     \
     schemas/create_newsletter_table.sql \
     schemas/add_visible_columns_in_newsletters.sql \

@@ -40,10 +40,20 @@ routes.post(
   Cookies.authorizedOnly(),
   account.updateSettings
 );
+routes.get(
+  '/account/integrations',
+  Cookies.authorizedOnly(),
+  account.getIntegrations
+);
 routes.post(
   '/account/unlinkGmail',
   Cookies.authorizedOnly(),
   account.unlinkGmail
+);
+routes.post(
+  '/account/setReadwiseToken',
+  Cookies.authorizedOnly(),
+  account.setReadwiseToken
 );
 routes.post(
   '/account/deleteAccount',

@@ -8,7 +8,7 @@ import { Base64 } from 'js-base64';
 import { Context } from 'Http';
 import { JSDOM } from 'jsdom';
 import { Response } from 'Http';
-import { knex } from 'Utils';
+import { knex, readwise } from 'Utils';
 import lo from 'lodash';
 
 const queryDigestContent = async ({
@@ -38,7 +38,7 @@ const saveDigestContent = async ({
   await knex('user_emails').where({ id }).update({ content });
 };
 
-const saveHighlight = ({
+const saveHighlight = async ({
   id,
   userId,
   digestId,
@@ -49,12 +49,14 @@ const saveHighlight = ({
   digestId: string;
   content: string;
 }): Promise<void> => {
-  return knex('highlights').insert({
+  await knex('highlights').insert({
     id,
     user_id: userId,
     digest_id: digestId,
     content,
   });
+
+  await readwise.addHighlight({ userId, highlightId: id });
 };
 
 const deleteHighlight = (highlightId: string): Promise<void> => {
@@ -104,6 +106,10 @@ const highlight = async (ctxt: Context, res: Response): Promise<void> => {
     await saveHighlight({ id: highlightId, userId, digestId, content });
   } else if (action === 'clearHighlight') {
     clearHighlight(`.${highlightId}`, shadow);
+    await readwise.deleteHighlight({ userId, highlightId }).catch((e) => {
+      // ignore readwise delete error
+      console.log(e);
+    });
     await deleteHighlight(highlightId);
   }
 

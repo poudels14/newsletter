@@ -17,6 +17,7 @@ const commonConfig = {
   },
   resolve: {
     alias: {
+      assets: path.resolve(__dirname, './frontend/assets'),
       heroicons: path.resolve(__dirname, './frontend/assets/heroicons'),
       ui: path.resolve(__dirname, './frontend/components/'),
       utils: path.resolve(__dirname, './frontend/utils/'),

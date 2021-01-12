@@ -11,12 +11,11 @@ const updateDigestConfig = async (
   if (userId) {
     const { digestId, config } = ctxt.body;
 
-    console.log('body = ', ctxt.body);
     const rows = await knex('user_emails')
       .select('config')
       .where({ id: digestId });
     const currentConfig = rows[0]?.config;
-    console.log('rows = ', rows);
+
     if (!currentConfig) {
       return res.json({ error: "Couldn't get current config" });
     }

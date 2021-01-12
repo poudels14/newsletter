@@ -15,6 +15,7 @@ import useMedia from './utils/media';
 
 const Highlights = lazy(() => import('./pages/components/highlights'));
 const Settings = lazy(() => import('./pages/settings'));
+const Integrations = lazy(() => import('./pages/integrations'));
 
 const getDeviceType = () => {
   return useMedia(
@@ -35,10 +36,13 @@ const getDeviceType = () => {
 
 const appRoutes = (path) => {
   let homepage = matchPath(path, {
-    path: ['/nl/:newsletterId?', '/'],
+    path: ['/nl/:newsletterId/digests/:digestId', '/nl/:newsletterId?', '/'],
   });
   let settings = matchPath(path, {
     path: ['/settings'],
+  });
+  let integrations = matchPath(path, {
+    path: ['/integrations'],
   });
   let highlights = matchPath(path, {
     path: ['/highlights'],
@@ -57,6 +61,7 @@ const appRoutes = (path) => {
     homepage,
     settings,
     highlights,
+    integrations,
     activeTab,
   };
 };
@@ -65,8 +70,7 @@ const NotFoundPage = () => <div>404 Not found</div>;
 
 const PrivateApp = (props) => {
   const routes = appRoutes(props.location.pathname);
-  const query = new URLSearchParams(props.location.search);
-  const digestId = query.get('digestId');
+  const digestId = routes.homepage?.params?.digestId;
 
   useEffect(() => {
     // Note(sagar): newsletterId changes when viewing a digest from homepage
@@ -94,6 +98,7 @@ const PrivateApp = (props) => {
         )}
         {routes.settings && <Settings />}
         {routes.highlights && <Highlights />}
+        {routes.integrations && <Integrations />}
         <NotFoundPage />
       </Switch>
       {props.deviceType?.mobile && <AppTabMenu active={routes.activeTab} />}
@@ -153,7 +158,7 @@ const AppContainer = (props) => {
     !props.user?.hasRequiredAccess &&
     !props.user?.settings?.gmailLinkingSkipped
   ) {
-    return <Redirect to="/grantaccess" />;
+    return <Redirect to="/integrations/gmail" />;
   }
   if (!props.user) {
     return <SplashScreen />;
