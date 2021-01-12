@@ -48,6 +48,10 @@ const parseNewsletter = (payload: Payload): Record<string, string> => {
     data = lo.find(payload.parts, { mimeType: 'text/html' })?.body?.data;
   }
 
+  if (!data) {
+    return null;
+  }
+
   return {
     base64: data,
     html: Base64.decode(data),

@@ -19,6 +19,9 @@ const loadAndStoreGmail = async (
 
   const headers = GmailParser.parseHeaders(gmailId, email.payload?.headers);
   const newsletter = GmailParser.parseNewsletter(email.payload);
+  if (!newsletter) {
+    return;
+  }
 
   try {
     const emailId = uuid.v4();
