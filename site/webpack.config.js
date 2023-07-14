@@ -55,8 +55,8 @@ const commonConfig = {
   },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: developmentMode ? '[name].css' : '[name].[contenthash].css',
-      chunkFilename: developmentMode ? '[id].css' : '[id].[contenthash].css',
+      filename: '[name].[contenthash].css',
+      chunkFilename: '[id].[contenthash].css',
     }),
     new CleanWebpackPlugin(),
     new ESLintPlugin({

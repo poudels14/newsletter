@@ -1,0 +1,14 @@
+stages:
+  - build-apibackend
+  # - deploy
+build-apibackend:
+  tags:
+    - apibackend
+  stage: build
+  script:
+    - echo "Building backend"
+    # - composer.phar install
+    - docker build -t registry.digitalocean.com/journal/newsletter/apibackend:$CI_COMMIT_REF_NAME -f production/app/backend/Dockerfile .
+    - docker push registry.digitalocean.com/journal/newsletter/apibackend:$CI_COMMIT_REF_NAME
+  only:
+  - master

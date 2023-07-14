@@ -1,0 +1,42 @@
+[
+  {
+    "index": 1,
+    "title": "How does importing newsletters from Gmail work?",
+    "description": "Alpine reader only searches and imports emails from the supported newsletters. If some of your newsletters are not imported into the Alpine Reader, forward an email digest to import[@]alpinereader.com and we will add support for that newsletter as soon as possible."
+  },
+  {
+    "index": 2,
+    "title": "What data does the app collect when linking my Gmail?",
+    "description": ""
+  },
+  {
+    "index": 3,
+    "title": "Is data linked with my account secure?",
+    "description": "Proper measures are taken to make sure that your data is stored securely and only you can access data linked with your account. Furthermore, Gmail tokens are 256-bit AES encrypted before storing them in our servers."
+  },
+  {
+    "index": 4,
+    "title": "Is my data shared with third-party?",
+    "description": "No, your data is not shared with any third-party, nor it will ever be shared in the future."
+  },
+  {
+    "index": 5,
+    "title": "How do I see all the data that's linked to my account?",
+    "description": "In settings page, there is an option to download all the data linked to your account."
+  },
+  {
+    "index": 6,
+    "title": "What happens if the app imported emails that weren't newsletters?",
+    "description": "We try our best to make sure the emails that were imported are in fact newsletter digests. If in a rare case that an email that isn't a newsletter digest is imported in the app, you can email support@alpinereader.com and we will resolve the issue immediately.**************In the future, we will add a feature to delete an individual digest in the app."
+  },
+  {
+    "index": 7,
+    "title": "How do I unlink Gmail from the app?",
+    "description": "You can unlink Gmail from the settings page. This won't delete any existing data in our system. To delete all the data linked to your account, you should delete your account."
+  },
+  {
+    "index": 8,
+    "title": "How do I delete my account?",
+    "description": "You can delete your account from the settings page.********************NOTE: If you delete your account, all the data linked to your account will be deleted and can't be recovered."
+  }
+]
